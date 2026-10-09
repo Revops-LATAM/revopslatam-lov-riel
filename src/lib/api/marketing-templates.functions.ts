@@ -12,9 +12,7 @@ type TemplatePiece = {
 
 export const listCampaignTemplates = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ workspaceId: z.string().uuid() }).parse(input),
-  )
+  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows, error } = await supabase

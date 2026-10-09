@@ -32,8 +32,7 @@ function ServiceTypesPage() {
 
   const [newName, setNewName] = useState("");
 
-  const invalidate = () =>
-    qc.invalidateQueries({ queryKey: ["service-types", ws.id] });
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["service-types", ws.id] });
 
   const create = useMutation({
     mutationFn: async (name: string) =>

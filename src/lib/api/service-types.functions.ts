@@ -59,10 +59,7 @@ export const deleteServiceType = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase
-      .from("service_types")
-      .delete()
-      .eq("id", data.id);
+    const { error } = await context.supabase.from("service_types").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });

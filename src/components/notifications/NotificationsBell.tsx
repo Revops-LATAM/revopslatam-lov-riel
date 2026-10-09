@@ -8,11 +8,7 @@ import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -222,9 +218,7 @@ export function NotificationsBell() {
                     !n.read_at ? "bg-accent/30" : ""
                   }`}
                 >
-                  <div className="text-lg leading-none pt-0.5">
-                    {KIND_ICON[n.kind] ?? "🔔"}
-                  </div>
+                  <div className="text-lg leading-none pt-0.5">{KIND_ICON[n.kind] ?? "🔔"}</div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium truncate">{n.title}</div>
                     {n.body && (
@@ -239,9 +233,7 @@ export function NotificationsBell() {
                       })}
                     </div>
                   </div>
-                  {!n.read_at && (
-                    <div className="w-2 h-2 rounded-full bg-primary shrink-0 mt-2" />
-                  )}
+                  {!n.read_at && <div className="w-2 h-2 rounded-full bg-primary shrink-0 mt-2" />}
                 </button>
               ))}
             </div>

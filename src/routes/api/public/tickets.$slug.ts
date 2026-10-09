@@ -3,7 +3,11 @@ import { z } from "zod";
 import { computeSlaTargets } from "@/lib/sla";
 
 const PayloadSchema = z.object({
-  email: z.string().email().max(255).transform((s) => s.toLowerCase().trim()),
+  email: z
+    .string()
+    .email()
+    .max(255)
+    .transform((s) => s.toLowerCase().trim()),
   title: z.string().trim().min(2).max(200),
   request_type: z.enum(["incidencia", "requerimiento"]),
   area: z.string().trim().min(1).max(60),
@@ -12,7 +16,11 @@ const PayloadSchema = z.object({
 });
 
 const EmailCheckSchema = z.object({
-  email: z.string().email().max(255).transform((s) => s.toLowerCase().trim()),
+  email: z
+    .string()
+    .email()
+    .max(255)
+    .transform((s) => s.toLowerCase().trim()),
 });
 
 export const Route = createFileRoute("/api/public/tickets/$slug")({
@@ -76,7 +84,10 @@ export const Route = createFileRoute("/api/public/tickets/$slug")({
               .select("id")
               .single();
             if (pErr || !created) {
-              return Response.json({ error: "No se pudo inicializar la bandeja de tickets." }, { status: 500 });
+              return Response.json(
+                { error: "No se pudo inicializar la bandeja de tickets." },
+                { status: 500 },
+              );
             }
             phaseId = created.id;
           }
@@ -142,8 +153,6 @@ export const Route = createFileRoute("/api/public/tickets/$slug")({
           );
         }
         const data = parsed.data;
-
-
 
         // Re-validate email is authorized
         const { data: allowed } = await supabaseAdmin
@@ -274,15 +283,15 @@ export const Route = createFileRoute("/api/public/tickets/$slug")({
           .select("id")
           .single();
         if (tErr || !task) {
-          return Response.json({ error: tErr?.message ?? "No se pudo crear el ticket." }, { status: 500 });
+          return Response.json(
+            { error: tErr?.message ?? "No se pudo crear el ticket." },
+            { status: 500 },
+          );
         }
         // Prepend short ticket ID to title for identification
         const shortId = String(task.id).slice(0, 8);
         const titledName = `#${shortId} · ${data.title}`;
-        await supabaseAdmin
-          .from("tasks")
-          .update({ title: titledName })
-          .eq("id", task.id);
+        await supabaseAdmin.from("tasks").update({ title: titledName }).eq("id", task.id);
 
         await supabaseAdmin.from("client_ticket_submissions").insert({
           form_id: form.id,
@@ -330,7 +339,6 @@ export const Route = createFileRoute("/api/public/tickets/$slug")({
           }
         }
 
-
         const { data: projectInfo } = await supabaseAdmin
           .from("projects")
           .select("name")
@@ -338,9 +346,7 @@ export const Route = createFileRoute("/api/public/tickets/$slug")({
           .maybeSingle();
 
         try {
-          const { enqueueTransactionalEmailServer } = await import(
-            "@/lib/email/enqueue.server"
-          );
+          const { enqueueTransactionalEmailServer } = await import("@/lib/email/enqueue.server");
           await enqueueTransactionalEmailServer({
             templateName: "ticket-received",
             to: data.email,
@@ -378,7 +384,6 @@ export const Route = createFileRoute("/api/public/tickets/$slug")({
               description: data.description,
               ticketUrl: `${appBase}/tasks/${task.id}`,
             });
-
           } catch (e) {
             console.error("[tickets] slack notification failed", e);
           }

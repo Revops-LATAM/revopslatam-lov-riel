@@ -2,19 +2,12 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const frequencyEnum = z.enum([
-  "mensual",
-  "trimestral",
-  "semestral",
-  "anual",
-  "unica",
-  "hitos",
-]);
+const frequencyEnum = z.enum(["mensual", "trimestral", "semestral", "anual", "unica", "hitos"]);
 const currencyEnum = z.enum(["USD", "CLP", "UF"]);
 const modeEnum = z.enum(["simple", "multiservicio"]);
 const typeEnum = z.enum(["implementation", "recurrente"]);
 const duracionTipoEnum = z.enum(["meses", "indefinido", "manual"]);
-const statusEnum = z.enum(["borrador","activo"]);
+const statusEnum = z.enum(["borrador", "activo"]);
 
 const milestoneInput = z.object({
   numeroHito: z.number().int().min(1),
@@ -222,16 +215,14 @@ export const createProjectedContract = createServerFn({ method: "POST" })
 
     const feeTotal = recurringTotal + oneTimeTotal + milestoneTotal;
     if (monthlyFee > 0 || feeTotal > 0) {
-      const { error: fnerr } = await context.supabase
-        .from("contract_financials")
-        .upsert(
-          {
-            contract_id: row.id,
-            monthly_fee: monthlyFee > 0 ? Number(monthlyFee.toFixed(2)) : null,
-            fee_total: feeTotal > 0 ? Number(feeTotal.toFixed(2)) : null,
-          },
-          { onConflict: "contract_id" },
-        );
+      const { error: fnerr } = await context.supabase.from("contract_financials").upsert(
+        {
+          contract_id: row.id,
+          monthly_fee: monthlyFee > 0 ? Number(monthlyFee.toFixed(2)) : null,
+          fee_total: feeTotal > 0 ? Number(feeTotal.toFixed(2)) : null,
+        },
+        { onConflict: "contract_id" },
+      );
       if (fnerr) throw new Error(fnerr.message);
     }
 
@@ -274,9 +265,7 @@ export const regenerateContractPayments = createServerFn({ method: "POST" })
     const sb = context.supabase;
     const { data: contract, error: cerr } = await sb
       .from("contracts")
-      .select(
-        "id, currency, start_date, end_date, dia_facturacion, fecha_primera_facturacion",
-      )
+      .select("id, currency, start_date, end_date, dia_facturacion, fecha_primera_facturacion")
       .eq("id", data.contractId)
       .maybeSingle();
     if (cerr) throw new Error(cerr.message);
@@ -284,7 +273,9 @@ export const regenerateContractPayments = createServerFn({ method: "POST" })
 
     const { data: lines, error: lerr } = await sb
       .from("contract_service_lines")
-      .select("id, tipo_servicio, frecuencia, numero_cuotas, monto, moneda, es_bono, fecha_primer_pago, orden")
+      .select(
+        "id, tipo_servicio, frecuencia, numero_cuotas, monto, moneda, es_bono, fecha_primer_pago, orden",
+      )
       .eq("contract_id", data.contractId)
       .order("orden", { ascending: true });
     if (lerr) throw new Error(lerr.message);
@@ -296,16 +287,13 @@ export const regenerateContractPayments = createServerFn({ method: "POST" })
       anual: 12,
     };
 
-    const baseDate =
-      contract.fecha_primera_facturacion ?? contract.start_date ?? null;
+    const baseDate = contract.fecha_primera_facturacion ?? contract.start_date ?? null;
     if (!baseDate) throw new Error("El contrato no tiene fecha de inicio");
 
     const addMonths = (iso: string, n: number) => {
       const d = new Date(`${iso}T00:00:00Z`);
       const day = contract.dia_facturacion ?? d.getUTCDate();
-      const target = new Date(
-        Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + n, 1),
-      );
+      const target = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + n, 1));
       const lastDay = new Date(
         Date.UTC(target.getUTCFullYear(), target.getUTCMonth() + 1, 0),
       ).getUTCDate();
@@ -319,9 +307,7 @@ export const regenerateContractPayments = createServerFn({ method: "POST" })
       const e = new Date(`${contract.end_date}T00:00:00Z`);
       return Math.max(
         1,
-        (e.getUTCFullYear() - s.getUTCFullYear()) * 12 +
-          (e.getUTCMonth() - s.getUTCMonth()) +
-          1,
+        (e.getUTCFullYear() - s.getUTCFullYear()) * 12 + (e.getUTCMonth() - s.getUTCMonth()) + 1,
       );
     };
 
@@ -357,8 +343,7 @@ export const regenerateContractPayments = createServerFn({ method: "POST" })
         continue;
       }
       const step = monthsStep[l.frecuencia] ?? 1;
-      const count =
-        l.numero_cuotas ?? Math.max(1, Math.round(monthsBetween() / step));
+      const count = l.numero_cuotas ?? Math.max(1, Math.round(monthsBetween() / step));
       for (let i = 0; i < count; i++) {
         rows.push({
           contract_id: data.contractId,
@@ -391,19 +376,14 @@ export const regenerateContractPayments = createServerFn({ method: "POST" })
       .eq("contract_id", data.contractId);
     if (kerr) throw new Error(kerr.message);
 
-    const keptKeys = new Set(
-      (kept ?? []).map((k) => `${k.service_line_id ?? ""}|${k.due_date}`),
-    );
+    const keptKeys = new Set((kept ?? []).map((k) => `${k.service_line_id ?? ""}|${k.due_date}`));
     // Además, contamos cuántas cuotas conservadas hay por línea para no
     // regenerar los primeros períodos ya facturados aunque la fecha se
     // haya movido (p. ej. cambio de día de facturación).
     const keptCountByLine = new Map<string, number>();
     for (const k of kept ?? []) {
       if (!k.service_line_id) continue;
-      keptCountByLine.set(
-        k.service_line_id,
-        (keptCountByLine.get(k.service_line_id) ?? 0) + 1,
-      );
+      keptCountByLine.set(k.service_line_id, (keptCountByLine.get(k.service_line_id) ?? 0) + 1);
     }
 
     const skipByLine = new Map<string, number>();

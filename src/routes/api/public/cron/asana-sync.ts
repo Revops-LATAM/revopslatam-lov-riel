@@ -23,7 +23,14 @@ export const Route = createFileRoute("/api/public/cron/asana-sync")({
           return Response.json({ ok: false, error: error.message }, { status: 500 });
         }
 
-        const results: Array<{ projectId: string; name: string; created?: number; updated?: number; total?: number; error?: string }> = [];
+        const results: Array<{
+          projectId: string;
+          name: string;
+          created?: number;
+          updated?: number;
+          total?: number;
+          error?: string;
+        }> = [];
         for (const p of projects ?? []) {
           try {
             const r = await syncProjectFromAsana(supabaseAdmin, p.id, { createdBy: null });

@@ -4,13 +4,22 @@ import { useServerFn } from "@tanstack/react-start";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Sparkles } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createCampaign } from "@/lib/api/marketing-campaigns.functions";
-import { applyCampaignTemplate, listCampaignTemplates } from "@/lib/api/marketing-templates.functions";
+import {
+  applyCampaignTemplate,
+  listCampaignTemplates,
+} from "@/lib/api/marketing-templates.functions";
 
 export function CreateCampaignDialog({
   workspaceId,
@@ -110,7 +119,9 @@ export function CreateCampaignDialog({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <Label htmlFor="camp-name" className="text-xs">Nombre</Label>
+              <Label htmlFor="camp-name" className="text-xs">
+                Nombre
+              </Label>
               <Input
                 id="camp-name"
                 value={name}
@@ -120,7 +131,9 @@ export function CreateCampaignDialog({
               />
             </div>
             <div>
-              <Label htmlFor="camp-launch" className="text-xs">Fecha de lanzamiento</Label>
+              <Label htmlFor="camp-launch" className="text-xs">
+                Fecha de lanzamiento
+              </Label>
               <Input
                 id="camp-launch"
                 type="date"
@@ -131,7 +144,9 @@ export function CreateCampaignDialog({
           </div>
 
           <div>
-            <Label htmlFor="camp-obj" className="text-xs">Objetivo (opcional)</Label>
+            <Label htmlFor="camp-obj" className="text-xs">
+              Objetivo (opcional)
+            </Label>
             <Textarea
               id="camp-obj"
               value={objective}
@@ -143,11 +158,10 @@ export function CreateCampaignDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>Cancelar</Button>
-          <Button
-            onClick={() => createMut.mutate()}
-            disabled={!name.trim() || createMut.isPending}
-          >
+          <Button variant="ghost" onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button onClick={() => createMut.mutate()} disabled={!name.trim() || createMut.isPending}>
             {createMut.isPending ? "Creando…" : "Crear campaña"}
           </Button>
         </DialogFooter>
@@ -176,9 +190,7 @@ function TemplateCard({
       type="button"
       onClick={onClick}
       className={`text-left rounded-md border p-3 transition-colors ${
-        selected
-          ? "border-pink-500 bg-pink-500/10"
-          : "border-border bg-card hover:bg-accent/40"
+        selected ? "border-pink-500 bg-pink-500/10" : "border-border bg-card hover:bg-accent/40"
       }`}
     >
       <div className="flex items-start justify-between gap-2">
@@ -189,7 +201,11 @@ function TemplateCard({
           </span>
         )}
       </div>
-      {desc && <div className="text-[11px] text-muted-foreground leading-snug mt-1 line-clamp-2">{desc}</div>}
+      {desc && (
+        <div className="text-[11px] text-muted-foreground leading-snug mt-1 line-clamp-2">
+          {desc}
+        </div>
+      )}
       {isSystem && (
         <div className="flex items-center gap-1 mt-1.5 text-[10px] text-pink-400">
           <Sparkles className="w-2.5 h-2.5" /> Template Riel

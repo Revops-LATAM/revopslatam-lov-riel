@@ -1,5 +1,15 @@
 import * as React from "react";
-import { Body, Button, Container, Head, Heading, Html, Preview, Section, Text } from "@react-email/components";
+import {
+  Body,
+  Button,
+  Container,
+  Head,
+  Heading,
+  Html,
+  Preview,
+  Section,
+  Text,
+} from "@react-email/components";
 import type { TemplateEntry } from "./registry";
 
 interface Props {
@@ -25,11 +35,13 @@ const PortalMagicLink = ({
             : "Toca el botón para entrar al portal y revisar tus tickets."}
         </Text>
         <Section style={{ margin: "24px 0" }}>
-          <Button href={magic_url} style={btn}>Entrar al portal</Button>
+          <Button href={magic_url} style={btn}>
+            Entrar al portal
+          </Button>
         </Section>
         <Text style={pSmall}>
-          El enlace expira en {expires_in_minutes} minutos y solo funciona una vez. Si no solicitaste este acceso,
-          puedes ignorar este correo.
+          El enlace expira en {expires_in_minutes} minutos y solo funciona una vez. Si no
+          solicitaste este acceso, puedes ignorar este correo.
         </Text>
         <Text style={pSmall}>
           Si el botón no funciona, copia este enlace en tu navegador:
@@ -52,7 +64,10 @@ export const template = {
   },
 } satisfies TemplateEntry;
 
-const main = { backgroundColor: "#ffffff", fontFamily: "system-ui, -apple-system, Segoe UI, Arial, sans-serif" };
+const main = {
+  backgroundColor: "#ffffff",
+  fontFamily: "system-ui, -apple-system, Segoe UI, Arial, sans-serif",
+};
 const container = { padding: "28px 28px", maxWidth: 560, margin: "0 auto" };
 const h1 = { fontSize: 22, color: "#0f172a", margin: "0 0 12px" };
 const p = { fontSize: 15, color: "#334155", lineHeight: "22px", margin: "0 0 12px" };

@@ -7,7 +7,13 @@ import { upsertCurrencyRate, deleteCurrencyRate } from "@/lib/api/tasko.function
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { RouteError } from "@/components/tasko/RouteError";
@@ -64,7 +70,9 @@ function CurrenciesPage() {
           <div>
             <Label>Moneda</Label>
             <Select value={currency} onValueChange={(v) => setCurrency(v as typeof currency)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="USD">USD</SelectItem>
                 <SelectItem value="CLP">CLP</SelectItem>

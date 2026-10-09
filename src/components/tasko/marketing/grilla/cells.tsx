@@ -6,12 +6,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 import {
   CHANNEL_LABEL,
   CHANNEL_META,
@@ -20,7 +15,6 @@ import {
   MONTH_NAMES,
   STATUS_LABEL,
   STATUS_META,
-  
   type PieceChannel,
   type PieceFormat,
   type PieceStatus,
@@ -64,7 +58,10 @@ export function PillarChip({
         {allPillars.map((pl) => (
           <SelectItem key={pl.id} value={pl.id}>
             <span className="inline-flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full" style={{ background: pl.color ?? "#94a3b8" }} />
+              <span
+                className="w-2 h-2 rounded-full"
+                style={{ background: pl.color ?? "#94a3b8" }}
+              />
               {pl.label}
             </span>
           </SelectItem>
@@ -146,13 +143,28 @@ export function DateCell({
       <PopoverContent className="w-auto p-0 pointer-events-auto" align="start">
         <div className="flex flex-col">
           <div className="flex items-center gap-1 p-2 border-b">
-            <Button size="sm" variant="ghost" className="h-7 text-[11px]" onClick={() => quickPick("today")}>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-7 text-[11px]"
+              onClick={() => quickPick("today")}
+            >
               Hoy
             </Button>
-            <Button size="sm" variant="ghost" className="h-7 text-[11px]" onClick={() => quickPick("tomorrow")}>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-7 text-[11px]"
+              onClick={() => quickPick("tomorrow")}
+            >
               Mañana
             </Button>
-            <Button size="sm" variant="ghost" className="h-7 text-[11px]" onClick={() => quickPick("nextWeek")}>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-7 text-[11px]"
+              onClick={() => quickPick("nextWeek")}
+            >
               +1 semana
             </Button>
           </div>
@@ -302,7 +314,10 @@ export function ChannelPicker({
             className="w-6 h-6 rounded-md flex items-center justify-center transition-all"
             style={
               on
-                ? { background: `color-mix(in oklab, ${meta.color} 14%, transparent)`, color: meta.color }
+                ? {
+                    background: `color-mix(in oklab, ${meta.color} 14%, transparent)`,
+                    color: meta.color,
+                  }
                 : { background: "transparent", color: "var(--muted-foreground)", opacity: 0.35 }
             }
           >
@@ -330,10 +345,15 @@ export function InlineText({
       value={v}
       placeholder={placeholder}
       onChange={(e) => setV(e.target.value)}
-      onBlur={() => { if (v !== value) onCommit(v); }}
+      onBlur={() => {
+        if (v !== value) onCommit(v);
+      }}
       onKeyDown={(e) => {
         if (e.key === "Enter") e.currentTarget.blur();
-        else if (e.key === "Escape") { setV(value); e.currentTarget.blur(); }
+        else if (e.key === "Escape") {
+          setV(value);
+          e.currentTarget.blur();
+        }
       }}
       className="h-7 text-[12px] w-full border-0 bg-transparent hover:bg-black/[0.04] focus-visible:bg-background focus-visible:ring-1 px-1.5 font-medium"
     />
@@ -356,7 +376,9 @@ export function InlineTextarea({
       value={v}
       placeholder={placeholder}
       onChange={(e) => setV(e.target.value)}
-      onBlur={() => { if (v !== value) onCommit(v); }}
+      onBlur={() => {
+        if (v !== value) onCommit(v);
+      }}
       rows={2}
       className="min-h-[44px] text-[12px] w-full max-w-[20rem] resize-y border-0 bg-transparent hover:bg-black/[0.04] focus-visible:bg-background focus-visible:ring-1 px-1.5 py-1 leading-snug shadow-none"
     />

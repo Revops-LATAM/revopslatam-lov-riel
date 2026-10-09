@@ -23,7 +23,6 @@ function FinanceDashboard() {
 
   const fmt = (n: number, cur: string) => formatMoney(n, cur);
 
-
   return (
     <div className="p-6 space-y-6">
       <section>
@@ -66,11 +65,7 @@ function FinanceDashboard() {
 
 function Card({ label, value, tone }: { label: string; value: string; tone?: "ok" | "warn" }) {
   const color =
-    tone === "ok"
-      ? "text-emerald-500"
-      : tone === "warn"
-        ? "text-amber-500"
-        : "text-foreground";
+    tone === "ok" ? "text-emerald-500" : tone === "warn" ? "text-amber-500" : "text-foreground";
   return (
     <div className="border border-border rounded-md p-4">
       <div className="text-xs text-muted-foreground">{label}</div>
@@ -81,11 +76,7 @@ function Card({ label, value, tone }: { label: string; value: string; tone?: "ok
 
 function Row({ label, value, tone }: { label: string; value: string; tone?: "ok" | "warn" }) {
   const color =
-    tone === "ok"
-      ? "text-emerald-500"
-      : tone === "warn"
-        ? "text-amber-500"
-        : "text-foreground";
+    tone === "ok" ? "text-emerald-500" : tone === "warn" ? "text-amber-500" : "text-foreground";
   return (
     <div className="flex items-center justify-between text-sm">
       <span className="text-muted-foreground">{label}</span>

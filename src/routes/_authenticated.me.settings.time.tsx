@@ -8,9 +8,7 @@ export const Route = createFileRoute("/_authenticated/me/settings/time")({
 
 function MeTime() {
   const workspaces = useQuery(workspacesQO());
-  const ws =
-    workspaces.data?.find((w) => w.kind === "operations") ??
-    workspaces.data?.[0];
+  const ws = workspaces.data?.find((w) => w.kind === "operations") ?? workspaces.data?.[0];
 
   return (
     <div className="p-6 space-y-4 max-w-2xl">

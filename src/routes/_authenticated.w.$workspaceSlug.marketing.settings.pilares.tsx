@@ -11,12 +11,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 
-export const Route = createFileRoute("/_authenticated/w/$workspaceSlug/marketing/settings/pilares")({
-  ssr: false,
-  head: () => ({ meta: [{ title: "Pilares · Marketing · Riel" }] }),
-  errorComponent: RouteError,
-  component: PillarsSettings,
-});
+export const Route = createFileRoute("/_authenticated/w/$workspaceSlug/marketing/settings/pilares")(
+  {
+    ssr: false,
+    head: () => ({ meta: [{ title: "Pilares · Marketing · Riel" }] }),
+    errorComponent: RouteError,
+    component: PillarsSettings,
+  },
+);
 
 type Draft = {
   id?: string;
@@ -81,7 +83,13 @@ function PillarsSettings() {
   }
 
   function patchDraft(id: string, patch: Partial<Draft>) {
-    setDrafts((d) => ({ ...d, [id]: { ...(d[id] ?? { id, key: "", label: "", color: "#94a3b8", sort_order: 0, is_active: true }), ...patch } }));
+    setDrafts((d) => ({
+      ...d,
+      [id]: {
+        ...(d[id] ?? { id, key: "", label: "", color: "#94a3b8", sort_order: 0, is_active: true }),
+        ...patch,
+      },
+    }));
   }
 
   return (
@@ -121,18 +129,39 @@ function PillarsSettings() {
             const d = draftFor(p);
             const isDirty = !!drafts[p.id];
             return (
-              <div key={p.id} className="grid grid-cols-[3rem_2fr_2fr_5rem_5rem_3rem_3rem] items-center gap-2 px-3 py-2 rounded-md border border-border bg-card">
+              <div
+                key={p.id}
+                className="grid grid-cols-[3rem_2fr_2fr_5rem_5rem_3rem_3rem] items-center gap-2 px-3 py-2 rounded-md border border-border bg-card"
+              >
                 <Input
                   type="number"
                   className="h-8"
                   value={d.sort_order}
-                  onChange={(e) => patchDraft(p.id, { sort_order: parseInt(e.target.value, 10) || 0 })}
+                  onChange={(e) =>
+                    patchDraft(p.id, { sort_order: parseInt(e.target.value, 10) || 0 })
+                  }
                 />
-                <Input className="h-8" value={d.label} onChange={(e) => patchDraft(p.id, { label: e.target.value })} />
-                <Input className="h-8 font-mono text-xs" value={d.key} onChange={(e) => patchDraft(p.id, { key: e.target.value })} />
-                <Input type="color" className="h-8 p-1" value={d.color} onChange={(e) => patchDraft(p.id, { color: e.target.value })} />
+                <Input
+                  className="h-8"
+                  value={d.label}
+                  onChange={(e) => patchDraft(p.id, { label: e.target.value })}
+                />
+                <Input
+                  className="h-8 font-mono text-xs"
+                  value={d.key}
+                  onChange={(e) => patchDraft(p.id, { key: e.target.value })}
+                />
+                <Input
+                  type="color"
+                  className="h-8 p-1"
+                  value={d.color}
+                  onChange={(e) => patchDraft(p.id, { color: e.target.value })}
+                />
                 <div className="flex justify-center">
-                  <Switch checked={d.is_active} onCheckedChange={(v) => patchDraft(p.id, { is_active: v })} />
+                  <Switch
+                    checked={d.is_active}
+                    onCheckedChange={(v) => patchDraft(p.id, { is_active: v })}
+                  />
                 </div>
                 <Button
                   size="icon"
@@ -175,13 +204,33 @@ function PillarsSettings() {
                 type="number"
                 className="h-8"
                 value={newRow.sort_order}
-                onChange={(e) => setNewRow({ ...newRow, sort_order: parseInt(e.target.value, 10) || 0 })}
+                onChange={(e) =>
+                  setNewRow({ ...newRow, sort_order: parseInt(e.target.value, 10) || 0 })
+                }
               />
-              <Input className="h-8" placeholder="Etiqueta" value={newRow.label} onChange={(e) => setNewRow({ ...newRow, label: e.target.value })} />
-              <Input className="h-8 font-mono text-xs" placeholder="key_slug" value={newRow.key} onChange={(e) => setNewRow({ ...newRow, key: e.target.value })} />
-              <Input type="color" className="h-8 p-1" value={newRow.color} onChange={(e) => setNewRow({ ...newRow, color: e.target.value })} />
+              <Input
+                className="h-8"
+                placeholder="Etiqueta"
+                value={newRow.label}
+                onChange={(e) => setNewRow({ ...newRow, label: e.target.value })}
+              />
+              <Input
+                className="h-8 font-mono text-xs"
+                placeholder="key_slug"
+                value={newRow.key}
+                onChange={(e) => setNewRow({ ...newRow, key: e.target.value })}
+              />
+              <Input
+                type="color"
+                className="h-8 p-1"
+                value={newRow.color}
+                onChange={(e) => setNewRow({ ...newRow, color: e.target.value })}
+              />
               <div className="flex justify-center">
-                <Switch checked={newRow.is_active} onCheckedChange={(v) => setNewRow({ ...newRow, is_active: v })} />
+                <Switch
+                  checked={newRow.is_active}
+                  onCheckedChange={(v) => setNewRow({ ...newRow, is_active: v })}
+                />
               </div>
               <Button
                 size="icon"
@@ -203,7 +252,12 @@ function PillarsSettings() {
               >
                 <Save className="w-3.5 h-3.5" />
               </Button>
-              <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setNewRow(null)}>
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-8 w-8"
+                onClick={() => setNewRow(null)}
+              >
                 <Trash2 className="w-3.5 h-3.5" />
               </Button>
             </div>

@@ -98,9 +98,7 @@ export const listAllWorkspaces = createServerFn({ method: "GET" })
     for (const m of membersRes.data ?? []) {
       counts.set(m.workspace_id, (counts.get(m.workspace_id) ?? 0) + 1);
     }
-    const profById = new Map(
-      (profilesRes.data ?? []).map((p) => [p.id, p] as const),
-    );
+    const profById = new Map((profilesRes.data ?? []).map((p) => [p.id, p] as const));
 
     return (wsRes.data ?? []).map((w) => {
       const owner = w.owner_id ? profById.get(w.owner_id) : null;
@@ -134,10 +132,7 @@ export const grantAppRole = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("user_roles")
-      .upsert(
-        { user_id: data.userId, role: data.role },
-        { onConflict: "user_id,role" },
-      );
+      .upsert({ user_id: data.userId, role: data.role }, { onConflict: "user_id,role" });
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -247,7 +242,6 @@ export const getSystemConfig = createServerFn({ method: "GET" })
       "CRON_SECRET",
     ] as const;
     const secretNames = EXPECTED_SECRETS.filter((k) => !!process.env[k]).sort();
-
 
     return {
       secret_names: secretNames,

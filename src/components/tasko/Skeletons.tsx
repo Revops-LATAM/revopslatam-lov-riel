@@ -1,7 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-
-
 export function PageHeaderSkeleton() {
   return (
     <header className="h-12 border-b border-border px-6 flex items-center gap-2">
@@ -58,7 +56,6 @@ export function MemberListSkeleton({ rows = 4 }: { rows?: number }) {
     </div>
   );
 }
-
 
 export function MyTasksSkeleton() {
   return (

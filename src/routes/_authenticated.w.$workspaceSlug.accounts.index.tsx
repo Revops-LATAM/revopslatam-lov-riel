@@ -7,7 +7,13 @@ import { wsBySlugQO, accountsQO } from "@/lib/api/tasko.queries";
 import { createAccount } from "@/lib/api/tasko.functions";
 import { useDerivedArea } from "@/lib/active-space";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -103,7 +109,9 @@ function AccountsPage() {
   const q = (search.q ?? "").trim().toLowerCase();
   const filteredAccounts = useMemo(() => {
     if (!q) return accounts;
-    return (accounts as Array<{ name: string; legal_name: string | null; tax_id: string | null }>).filter(
+    return (
+      accounts as Array<{ name: string; legal_name: string | null; tax_id: string | null }>
+    ).filter(
       (a) =>
         a.name.toLowerCase().includes(q) ||
         (a.legal_name ?? "").toLowerCase().includes(q) ||
@@ -135,9 +143,7 @@ function AccountsPage() {
         header: "Razón social",
         sortable: true,
         accessor: (a) => a.legal_name ?? "",
-        cell: (a) => (
-          <span className="text-[12px] truncate">{a.legal_name ?? "—"}</span>
-        ),
+        cell: (a) => <span className="text-[12px] truncate">{a.legal_name ?? "—"}</span>,
         width: 220,
       },
       {
@@ -165,9 +171,7 @@ function AccountsPage() {
         header: "Email DTE",
         sortable: true,
         accessor: (a) => a.billing_email ?? "",
-        cell: (a) => (
-          <span className="text-[12px] truncate">{a.billing_email ?? "—"}</span>
-        ),
+        cell: (a) => <span className="text-[12px] truncate">{a.billing_email ?? "—"}</span>,
         width: 220,
       },
       {
@@ -175,9 +179,7 @@ function AccountsPage() {
         header: "Contacto",
         sortable: true,
         accessor: (a) => a.primary_contact_name ?? "",
-        cell: (a) => (
-          <span className="text-[12px] truncate">{a.primary_contact_name ?? "—"}</span>
-        ),
+        cell: (a) => <span className="text-[12px] truncate">{a.primary_contact_name ?? "—"}</span>,
         width: 180,
       },
       {
@@ -185,9 +187,7 @@ function AccountsPage() {
         header: "Email contacto",
         sortable: true,
         accessor: (a) => a.primary_contact_email ?? "",
-        cell: (a) => (
-          <span className="text-[12px] truncate">{a.primary_contact_email ?? "—"}</span>
-        ),
+        cell: (a) => <span className="text-[12px] truncate">{a.primary_contact_email ?? "—"}</span>,
         width: 220,
       },
       {
@@ -361,7 +361,8 @@ function NewAccountDialog({
 
   // Chilean RUT format validation (e.g. 12.345.678-9 or 12345678-9)
   const rutOk = !taxId.trim() || isValidRut(taxId);
-  const billingEmailOk = !billingEmail.trim() || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(billingEmail.trim());
+  const billingEmailOk =
+    !billingEmail.trim() || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(billingEmail.trim());
   const primaryEmailOk =
     !primaryContactEmail.trim() || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(primaryContactEmail.trim());
   const secondaryOk = secondaryContacts.every(
@@ -392,7 +393,11 @@ function NewAccountDialog({
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2">
               <Label>Nombre de la empresa *</Label>
-              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Acme S.A." />
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Acme S.A."
+              />
             </div>
             <div>
               <Label>Razón social</Label>
@@ -413,15 +418,14 @@ function NewAccountDialog({
                 className={!rutOk ? "border-destructive focus-visible:ring-destructive" : undefined}
               />
               {!rutOk && (
-                <p className="text-[11px] text-destructive mt-1">RUT inválido (verifica el dígito verificador)</p>
+                <p className="text-[11px] text-destructive mt-1">
+                  RUT inválido (verifica el dígito verificador)
+                </p>
               )}
             </div>
             <div className="col-span-2">
               <Label>Giro / Actividad económica</Label>
-              <SiiActivitySelect
-                value={businessActivity}
-                onChange={setBusinessActivity}
-              />
+              <SiiActivitySelect value={businessActivity} onChange={setBusinessActivity} />
             </div>
             <div className="col-span-2">
               <Label>Email para envío de DTE</Label>
@@ -445,7 +449,11 @@ function NewAccountDialog({
             </div>
             <div>
               <Label>Comuna</Label>
-              <Input value={commune} onChange={(e) => setCommune(e.target.value)} placeholder="Las Condes" />
+              <Input
+                value={commune}
+                onChange={(e) => setCommune(e.target.value)}
+                placeholder="Las Condes"
+              />
             </div>
           </div>
 
@@ -486,9 +494,7 @@ function NewAccountDialog({
                 type="button"
                 size="sm"
                 variant="outline"
-                onClick={() =>
-                  setSecondaryContacts((prev) => [...prev, newSecondaryContact()])
-                }
+                onClick={() => setSecondaryContacts((prev) => [...prev, newSecondaryContact()])}
               >
                 <Plus className="w-3 h-3 mr-1" /> Agregar
               </Button>
@@ -505,7 +511,9 @@ function NewAccountDialog({
                         value={c.nombre}
                         onChange={(e) =>
                           setSecondaryContacts((prev) =>
-                            prev.map((x, idx) => (idx === i ? { ...x, nombre: e.target.value } : x)),
+                            prev.map((x, idx) =>
+                              idx === i ? { ...x, nombre: e.target.value } : x,
+                            ),
                           )
                         }
                       />
@@ -577,4 +585,3 @@ function NewAccountDialog({
     </Dialog>
   );
 }
-

@@ -15,10 +15,7 @@ import {
   updateTask,
 } from "@/lib/api/tasko.functions";
 import { listTaskEstimates } from "@/lib/api/time.functions";
-import {
-  setTaskEstimateForUser,
-  resetTaskEstimateSplit,
-} from "@/lib/api/tasks.functions";
+import { setTaskEstimateForUser, resetTaskEstimateSplit } from "@/lib/api/tasks.functions";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,7 +38,12 @@ import { currentProfileQO } from "@/lib/api/auth.queries";
 
 type Member = {
   user_id: string;
-  profile: { id: string; full_name: string | null; email: string | null; avatar_url: string | null } | null;
+  profile: {
+    id: string;
+    full_name: string | null;
+    email: string | null;
+    avatar_url: string | null;
+  } | null;
 };
 
 // Parses inputs like "1h30", "1.5", "90m", "1:30" → minutes
@@ -54,7 +56,7 @@ export function parseDuration(input: string): number | null {
   // 1h30, 1h 30m, 1h, 30m
   const hm = s.match(/^(?:(\d+(?:\.\d+)?)h)?\s*(?:(\d+)m)?$/);
   if (hm && (hm[1] || hm[2])) {
-    return Math.round((parseFloat(hm[1] || "0") * 60) + parseInt(hm[2] || "0"));
+    return Math.round(parseFloat(hm[1] || "0") * 60 + parseInt(hm[2] || "0"));
   }
   // decimal hours: "1.5", "2"
   const n = parseFloat(s);
@@ -93,9 +95,7 @@ export function parseDurationToHours(input: string): number | null {
       if (raw[i] !== " " && raw[i] !== "\t") return null;
     }
     lastIndex = match.index + match[0].length;
-    hours += match[2].startsWith("h")
-      ? parseFloat(match[1])
-      : parseFloat(match[1]) / 60;
+    hours += match[2].startsWith("h") ? parseFloat(match[1]) : parseFloat(match[1]) / 60;
   }
   if (!matched) return null;
   // Verify only whitespace remains after the last token
@@ -104,7 +104,6 @@ export function parseDurationToHours(input: string): number | null {
   }
   return hours;
 }
-
 
 // Format decimal hours back into a Wrike-style compact string.
 export function formatDuration(hours: number): string {
@@ -117,14 +116,7 @@ export function formatDuration(hours: number): string {
   return `${h}h ${m}m`;
 }
 
-
-export function TimeTab({
-  taskId,
-  members,
-}: {
-  taskId: string;
-  members: Member[];
-}) {
+export function TimeTab({ taskId, members }: { taskId: string; members: Member[] }) {
   const { data: currentProfile } = useQuery(currentProfileQO());
   const currentUserId = currentProfile?.id ?? null;
 
@@ -142,7 +134,6 @@ export function TimeTab({
   const startTimerFn = useServerFn(startTimer);
   const stopTimerFn = useServerFn(stopTimer);
   const updateTaskFn = useServerFn(updateTask);
-
 
   const entriesQ = useQuery({
     queryKey: ["entries", taskId],
@@ -162,15 +153,18 @@ export function TimeTab({
     queryFn: () => fetchEstimates({ data: { taskId } }),
   });
 
-
   // Realtime: refrescar al cambiar entries de esta tarea
   useEffect(() => {
     const ch = supabase
       .channel(`time-task-${taskId}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "time_entries", filter: `task_id=eq.${taskId}` }, () => {
-        qc.invalidateQueries({ queryKey: ["entries", taskId] });
-        qc.invalidateQueries({ queryKey: ["active-timer"] });
-      })
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "time_entries", filter: `task_id=eq.${taskId}` },
+        () => {
+          qc.invalidateQueries({ queryKey: ["entries", taskId] });
+          qc.invalidateQueries({ queryKey: ["active-timer"] });
+        },
+      )
       .subscribe();
     return () => {
       supabase.removeChannel(ch);
@@ -186,10 +180,11 @@ export function TimeTab({
     qc.invalidateQueries({ queryKey: ["workload"] });
   };
 
-
   const updateTaskMut = useMutation({
-    mutationFn: (vars: { effortMode?: "basic" | "flexible" | "fixed_daily" | "due_date"; totalEffortHours?: number | null }) =>
-      updateTaskFn({ data: { taskId, ...vars } }),
+    mutationFn: (vars: {
+      effortMode?: "basic" | "flexible" | "fixed_daily" | "due_date";
+      totalEffortHours?: number | null;
+    }) => updateTaskFn({ data: { taskId, ...vars } }),
     onSuccess: invalidateAll,
     onError: (e: Error) => toast.error(e.message),
   });
@@ -209,8 +204,12 @@ export function TimeTab({
     },
   });
   const createEntryMut = useMutation({
-    mutationFn: (vars: { startedAt: string; endedAt: string; note?: string; isBillable: boolean }) =>
-      createEntryFn({ data: { taskId, ...vars } }),
+    mutationFn: (vars: {
+      startedAt: string;
+      endedAt: string;
+      note?: string;
+      isBillable: boolean;
+    }) => createEntryFn({ data: { taskId, ...vars } }),
     onSuccess: () => {
       invalidateAll();
       toast.success("Tiempo agregado");
@@ -254,7 +253,6 @@ export function TimeTab({
 
   // tick para el cronómetro vivo
   const [, force] = useState(0);
-  
 
   useEffect(() => {
     if (!activeIsThisTask) return;
@@ -357,8 +355,13 @@ export function TimeTab({
       {/* Estimado de la tarea (fuente única de verdad) */}
       {(() => {
         const task = taskQ.data;
-        const mode = (task?.effort_mode ?? "flexible") as "basic" | "flexible" | "fixed_daily" | "due_date";
-        const totalHours = task?.total_effort_hours != null ? Number(task.total_effort_hours) : null;
+        const mode = (task?.effort_mode ?? "flexible") as
+          | "basic"
+          | "flexible"
+          | "fixed_daily"
+          | "due_date";
+        const totalHours =
+          task?.total_effort_hours != null ? Number(task.total_effort_hours) : null;
         const displayValue = totalHours == null ? "" : formatDuration(totalHours);
         const estimates = estimatesQ.data ?? [];
         const assigneeCount = estimates.filter((e) => e.user_id).length;
@@ -402,7 +405,6 @@ export function TimeTab({
                     : "Asigna a alguien para distribuir las horas en su carga."}
                 </p>
               </div>
-
 
               <div className="min-w-[160px]">
                 <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
@@ -498,21 +500,18 @@ export function TimeTab({
         );
       })()}
 
-
-
-
       {/* Registros */}
       <div>
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
             Registros de tiempo
           </h3>
-          <ManualEntryPopover
-            onAdd={(v) => createEntryMut.mutate(v)}
-          />
+          <ManualEntryPopover onAdd={(v) => createEntryMut.mutate(v)} />
         </div>
         {entries.length === 0 ? (
-          <p className="text-xs text-muted-foreground italic">Aún no hay registros. Inicia el timer o agrega tiempo manual.</p>
+          <p className="text-xs text-muted-foreground italic">
+            Aún no hay registros. Inicia el timer o agrega tiempo manual.
+          </p>
         ) : (
           <div className="space-y-1">
             {entries.map((e) => {
@@ -586,7 +585,6 @@ export function TimeTab({
     </div>
   );
 }
-
 
 function ManualEntryPopover({
   onAdd,
@@ -686,7 +684,12 @@ function EditEntryPopover({
     note: string | null;
     is_billable: boolean;
   };
-  onSave: (v: { startedAt?: string; endedAt?: string; note?: string | null; isBillable?: boolean }) => void;
+  onSave: (v: {
+    startedAt?: string;
+    endedAt?: string;
+    note?: string | null;
+    isBillable?: boolean;
+  }) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [duration, setDuration] = useState(formatMinutes(entry.duration_minutes ?? 0));
@@ -751,4 +754,3 @@ function EditEntryPopover({
     </Popover>
   );
 }
-

@@ -9,8 +9,18 @@ export default defineTool({
     "Detail of one Riel project: tasks by status, estimated hours vs logged hours, and the most recent tasks.",
   inputSchema: {
     projectId: z.string().uuid().describe("Project id (use list_projects first)."),
-    sprintId: z.string().uuid().optional().describe("Optional: restrict to one sprint (use list_sprints first)."),
-    taskLimit: z.number().int().min(1).max(200).optional().describe("Recent tasks to list (default 50)."),
+    sprintId: z
+      .string()
+      .uuid()
+      .optional()
+      .describe("Optional: restrict to one sprint (use list_sprints first)."),
+    taskLimit: z
+      .number()
+      .int()
+      .min(1)
+      .max(200)
+      .optional()
+      .describe("Recent tasks to list (default 50)."),
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async ({ projectId, sprintId, taskLimit }, ctx) => {
@@ -40,7 +50,9 @@ export default defineTool({
     for (let page = 0; ; page += 1) {
       let tq = sb
         .from("tasks")
-        .select("id, title, status, sprint_id, total_effort_hours, start_date, due_date, updated_at")
+        .select(
+          "id, title, status, sprint_id, total_effort_hours, start_date, due_date, updated_at",
+        )
         .eq("project_id", projectId)
         .range(page * 1000, page * 1000 + 999);
       if (sprintId) tq = tq.eq("sprint_id", sprintId);
@@ -67,7 +79,6 @@ export default defineTool({
       }
     }
 
-
     const byStatus: Record<string, number> = {};
     let estimatedHours = 0;
     for (const t of tasks) {
@@ -77,7 +88,10 @@ export default defineTool({
     }
 
     const sprintIds = [...new Set(tasks.map((t) => t.sprint_id).filter(Boolean))] as string[];
-    const sprintById = new Map<string, { id: string; sprint_number: number; start_date: string; end_date: string; status: string }>();
+    const sprintById = new Map<
+      string,
+      { id: string; sprint_number: number; start_date: string; end_date: string; status: string }
+    >();
     for (const ids of chunk(sprintIds, 100)) {
       if (ids.length === 0) continue;
       const { data: srows, error: sErr } = await sb
@@ -88,7 +102,17 @@ export default defineTool({
       for (const s of srows ?? []) sprintById.set(s.id, s);
     }
 
-    const bySprint: Record<string, { sprintNumber: number | null; startDate: string | null; endDate: string | null; status: string | null; tasks: number; estimatedHours: number }> = {};
+    const bySprint: Record<
+      string,
+      {
+        sprintNumber: number | null;
+        startDate: string | null;
+        endDate: string | null;
+        status: string | null;
+        tasks: number;
+        estimatedHours: number;
+      }
+    > = {};
     for (const t of tasks) {
       const key = t.sprint_id ?? "sin_sprint";
       const meta = t.sprint_id ? sprintById.get(t.sprint_id) : undefined;
@@ -101,7 +125,8 @@ export default defineTool({
         estimatedHours: 0,
       };
       cur.tasks += 1;
-      cur.estimatedHours = Math.round((cur.estimatedHours + Number(t.total_effort_hours ?? 0)) * 100) / 100;
+      cur.estimatedHours =
+        Math.round((cur.estimatedHours + Number(t.total_effort_hours ?? 0)) * 100) / 100;
       bySprint[key] = cur;
     }
 

@@ -13,7 +13,10 @@ function toDate(input: Date | string | number | null | undefined): Date | null {
 }
 
 /** dd/mm/yyyy */
-export function formatDateCL(input: Date | string | number | null | undefined, fallback = "—"): string {
+export function formatDateCL(
+  input: Date | string | number | null | undefined,
+  fallback = "—",
+): string {
   const d = toDate(input);
   if (!d) return fallback;
   return d.toLocaleDateString("es-CL", {
@@ -25,7 +28,10 @@ export function formatDateCL(input: Date | string | number | null | undefined, f
 }
 
 /** dd/mm (sin año) */
-export function formatDateShortCL(input: Date | string | number | null | undefined, fallback = "—"): string {
+export function formatDateShortCL(
+  input: Date | string | number | null | undefined,
+  fallback = "—",
+): string {
   const d = toDate(input);
   if (!d) return fallback;
   return d.toLocaleDateString("es-CL", {
@@ -36,7 +42,10 @@ export function formatDateShortCL(input: Date | string | number | null | undefin
 }
 
 /** dd/mm/yy */
-export function formatDateCompactCL(input: Date | string | number | null | undefined, fallback = "—"): string {
+export function formatDateCompactCL(
+  input: Date | string | number | null | undefined,
+  fallback = "—",
+): string {
   const d = toDate(input);
   if (!d) return fallback;
   return d.toLocaleDateString("es-CL", {
@@ -48,7 +57,10 @@ export function formatDateCompactCL(input: Date | string | number | null | undef
 }
 
 /** dd/mm/yyyy HH:mm */
-export function formatDateTimeCL(input: Date | string | number | null | undefined, fallback = "—"): string {
+export function formatDateTimeCL(
+  input: Date | string | number | null | undefined,
+  fallback = "—",
+): string {
   const d = toDate(input);
   if (!d) return fallback;
   const date = d.toLocaleDateString("es-CL", {

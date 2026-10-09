@@ -73,14 +73,20 @@ function CopyCell({
   const Icon = meta?.icon ?? Instagram;
 
   const commit = () => {
-    const nextTags = tags.split(/\s+/).map((t) => t.trim()).filter(Boolean);
+    const nextTags = tags
+      .split(/\s+/)
+      .map((t) => t.trim())
+      .filter(Boolean);
     if (body !== initialBody || nextTags.join(" ") !== initialHashtags.join(" ")) {
       onCommit(body, nextTags);
     }
   };
 
   return (
-    <div className="rounded-lg border bg-white p-3 space-y-2" style={{ borderColor: "var(--border)" }}>
+    <div
+      className="rounded-lg border bg-white p-3 space-y-2"
+      style={{ borderColor: "var(--border)" }}
+    >
       <div className="flex items-center gap-1.5">
         <Icon className="w-3.5 h-3.5" style={{ color: meta?.color }} />
         <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">

@@ -93,14 +93,12 @@ export const inviteWorkspaceMember = createServerFn({ method: "POST" })
       .eq("email", email)
       .maybeSingle();
     if (existing) {
-      const { error } = await supabase
-        .from("workspace_members")
-        .insert({
-          workspace_id: data.workspaceId,
-          user_id: existing.id,
-          role: data.role,
-          role_template_id: data.roleTemplateId ?? null,
-        });
+      const { error } = await supabase.from("workspace_members").insert({
+        workspace_id: data.workspaceId,
+        user_id: existing.id,
+        role: data.role,
+        role_template_id: data.roleTemplateId ?? null,
+      });
       if (error && !error.message.toLowerCase().includes("duplicate")) {
         throw new Error(error.message);
       }

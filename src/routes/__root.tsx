@@ -96,11 +96,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "Riel· Donde corre nuestra operación" },
-      { name: "description", content: "Riel is a project and task management application designed for operational workflows." },
-      { property: "og:description", content: "Riel is a project and task management application designed for operational workflows." },
-      { name: "twitter:description", content: "Riel is a project and task management application designed for operational workflows." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7e0663e3-4693-40a9-8d70-3d6c9884dec4/id-preview-a695236a--310d0c09-7379-442d-bfc0-2277f67bc9bb.lovable.app-1780616580953.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7e0663e3-4693-40a9-8d70-3d6c9884dec4/id-preview-a695236a--310d0c09-7379-442d-bfc0-2277f67bc9bb.lovable.app-1780616580953.png" },
+      {
+        name: "description",
+        content:
+          "Riel is a project and task management application designed for operational workflows.",
+      },
+      {
+        property: "og:description",
+        content:
+          "Riel is a project and task management application designed for operational workflows.",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Riel is a project and task management application designed for operational workflows.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7e0663e3-4693-40a9-8d70-3d6c9884dec4/id-preview-a695236a--310d0c09-7379-442d-bfc0-2277f67bc9bb.lovable.app-1780616580953.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7e0663e3-4693-40a9-8d70-3d6c9884dec4/id-preview-a695236a--310d0c09-7379-442d-bfc0-2277f67bc9bb.lovable.app-1780616580953.png",
+      },
     ],
     links: [{ rel: "stylesheet", href: appCss }],
   }),
@@ -131,13 +151,9 @@ async function syncProfileFromProvider() {
     const u = userData.user;
     const meta = (u.user_metadata ?? {}) as Record<string, unknown>;
     const providerFullName =
-      (meta.full_name as string | undefined) ??
-      (meta.name as string | undefined) ??
-      null;
+      (meta.full_name as string | undefined) ?? (meta.name as string | undefined) ?? null;
     const providerAvatar =
-      (meta.avatar_url as string | undefined) ??
-      (meta.picture as string | undefined) ??
-      null;
+      (meta.avatar_url as string | undefined) ?? (meta.picture as string | undefined) ?? null;
     if (!providerFullName && !providerAvatar) return;
 
     const { data: profile } = await supabase
@@ -149,9 +165,7 @@ async function syncProfileFromProvider() {
 
     const emailLocal = u.email ? u.email.split("@")[0] : "";
     const needsName =
-      !profile.full_name ||
-      profile.full_name.trim() === "" ||
-      profile.full_name === emailLocal;
+      !profile.full_name || profile.full_name.trim() === "" || profile.full_name === emailLocal;
     const needsAvatar = !profile.avatar_url || profile.avatar_url.trim() === "";
 
     const patch: { full_name?: string; avatar_url?: string } = {};

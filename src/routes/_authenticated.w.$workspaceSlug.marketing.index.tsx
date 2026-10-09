@@ -51,10 +51,14 @@ function MarketingHome() {
               <AlertTriangle className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium text-amber-100">
-                  {dash.overduePieces.length} pieza{dash.overduePieces.length !== 1 && "s"} atrasada{dash.overduePieces.length !== 1 && "s"}
+                  {dash.overduePieces.length} pieza{dash.overduePieces.length !== 1 && "s"} atrasada
+                  {dash.overduePieces.length !== 1 && "s"}
                 </div>
                 <div className="text-xs text-amber-200/80 mt-0.5">
-                  {dash.overduePieces.slice(0, 3).map((p) => p.title).join(" · ")}
+                  {dash.overduePieces
+                    .slice(0, 3)
+                    .map((p) => p.title)
+                    .join(" · ")}
                   {dash.overduePieces.length > 3 && ` y ${dash.overduePieces.length - 3} más`}
                 </div>
               </div>
@@ -95,11 +99,7 @@ function MarketingHome() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {dash.activeCampaigns.map((c) => (
-                    <CampaignSummaryCard
-                      key={c.id}
-                      workspaceSlug={workspaceSlug}
-                      campaign={c}
-                    />
+                    <CampaignSummaryCard key={c.id} workspaceSlug={workspaceSlug} campaign={c} />
                   ))}
                 </div>
               )}
@@ -160,9 +160,7 @@ function CampaignSummaryCard({
   };
 }) {
   const launch = campaign.launch_date ? new Date(campaign.launch_date) : null;
-  const daysToLaunch = launch
-    ? Math.ceil((launch.getTime() - Date.now()) / 86400000)
-    : null;
+  const daysToLaunch = launch ? Math.ceil((launch.getTime() - Date.now()) / 86400000) : null;
   const pct =
     campaign.kpi_target && campaign.kpi_actual
       ? Math.min(100, (Number(campaign.kpi_actual) / Number(campaign.kpi_target)) * 100)
@@ -175,10 +173,7 @@ function CampaignSummaryCard({
       className="block rounded-md border border-border bg-card hover:bg-accent/30 transition-colors p-3"
     >
       <div className="flex items-start gap-2">
-        <div
-          className="w-1 self-stretch rounded-full"
-          style={{ background: campaign.color }}
-        />
+        <div className="w-1 self-stretch rounded-full" style={{ background: campaign.color }} />
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div className="text-sm font-medium truncate">{campaign.name}</div>
@@ -242,9 +237,7 @@ function UpcomingPieceRow({
   return (
     <div className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-accent/30 group">
       <div className="text-[11px] text-muted-foreground w-14 shrink-0 tabular-nums">
-        {d
-          ? d.toLocaleDateString("es-CL", { day: "2-digit", month: "2-digit" })
-          : "—"}
+        {d ? d.toLocaleDateString("es-CL", { day: "2-digit", month: "2-digit" }) : "—"}
       </div>
       <FileText className="w-3 h-3 text-muted-foreground shrink-0" />
       <div className="flex-1 min-w-0">
@@ -265,11 +258,7 @@ function StatusBadge({ status }: { status: string }) {
     closed: { label: "Cerrada", cls: "bg-muted text-muted-foreground" },
   };
   const s = map[status] ?? map.idea;
-  return (
-    <span className={`text-[10px] px-1.5 py-0.5 rounded shrink-0 ${s.cls}`}>
-      {s.label}
-    </span>
-  );
+  return <span className={`text-[10px] px-1.5 py-0.5 rounded shrink-0 ${s.cls}`}>{s.label}</span>;
 }
 
 function EmptyState({

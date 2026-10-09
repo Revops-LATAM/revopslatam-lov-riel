@@ -9,7 +9,12 @@ export type ActivityItem =
       created_at: string;
       author_id: string | null;
       client_author_email: string | null;
-      author: { id: string; full_name: string | null; email: string | null; avatar_url: string | null } | null;
+      author: {
+        id: string;
+        full_name: string | null;
+        email: string | null;
+        avatar_url: string | null;
+      } | null;
       body: string;
       is_client_visible: boolean;
     }
@@ -18,12 +23,16 @@ export type ActivityItem =
       id: string;
       created_at: string;
       actor_id: string | null;
-      actor: { id: string; full_name: string | null; email: string | null; avatar_url: string | null } | null;
+      actor: {
+        id: string;
+        full_name: string | null;
+        email: string | null;
+        avatar_url: string | null;
+      } | null;
       event_kind: string;
       from_value: string | null;
       to_value: string | null;
     };
-
 
 export const listTaskActivity = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -74,7 +83,7 @@ export const listTaskActivity = createServerFn({ method: "GET" })
           created_at: c.created_at,
           author_id: c.author_id,
           client_author_email: c.client_author_email ?? null,
-          author: c.author_id ? profilesById.get(c.author_id) ?? null : null,
+          author: c.author_id ? (profilesById.get(c.author_id) ?? null) : null,
           body: c.body,
           is_client_visible: !!(c as { is_client_visible?: boolean | null }).is_client_visible,
         }),
@@ -85,13 +94,12 @@ export const listTaskActivity = createServerFn({ method: "GET" })
           id: e.id,
           created_at: e.created_at,
           actor_id: e.actor_id,
-          actor: e.actor_id ? profilesById.get(e.actor_id) ?? null : null,
+          actor: e.actor_id ? (profilesById.get(e.actor_id) ?? null) : null,
           event_kind: e.kind as string,
           from_value: e.from_value,
           to_value: e.to_value,
         }),
       ),
-
     ].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
 
     return merged;

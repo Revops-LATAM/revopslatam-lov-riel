@@ -1,13 +1,7 @@
 import { Briefcase, Shield } from "lucide-react";
 import type { Space } from "@/lib/active-space";
 
-export function SpaceSwitcher({
-  space,
-  setSpace,
-}: {
-  space: Space;
-  setSpace: (s: Space) => void;
-}) {
+export function SpaceSwitcher({ space, setSpace }: { space: Space; setSpace: (s: Space) => void }) {
   const items: { id: Space; label: string; icon: React.ReactNode }[] = [
     { id: "work", label: "Trabajo", icon: <Briefcase className="w-3.5 h-3.5" /> },
     { id: "admin", label: "Administración", icon: <Shield className="w-3.5 h-3.5" /> },

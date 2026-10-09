@@ -22,7 +22,6 @@ export const taskStatusSchema = z.enum([
   "cancelada",
 ]);
 
-
 export const taskPrioritySchema = z.enum(["none", "low", "medium", "high", "urgent"]);
 
 export const workspaceRoleSchema = z.enum(["owner", "admin", "super_admin", "member", "guest"]);

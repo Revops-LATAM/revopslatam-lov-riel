@@ -101,9 +101,7 @@ export function RecurrenceDialog({
   const canSubmit =
     !!taskId &&
     interval >= 1 &&
-    (endMode === "count"
-      ? count >= 2
-      : !!until && (!anchorDate || until > anchorDate)) &&
+    (endMode === "count" ? count >= 2 : !!until && (!anchorDate || until > anchorDate)) &&
     (frequency !== "weekly" || weekdays.length > 0);
 
   return (
@@ -121,7 +119,9 @@ export function RecurrenceDialog({
             <div className="space-y-1.5">
               <Label className="text-xs">Frecuencia</Label>
               <Select value={frequency} onValueChange={(v) => setFrequency(v as Frequency)}>
-                <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="daily">Diaria</SelectItem>
                   <SelectItem value="weekly">Semanal</SelectItem>
@@ -141,7 +141,11 @@ export function RecurrenceDialog({
                   className="h-8 text-xs w-20"
                 />
                 <span className="text-xs text-muted-foreground">
-                  {frequency === "daily" ? "día(s)" : frequency === "weekly" ? "semana(s)" : "mes(es)"}
+                  {frequency === "daily"
+                    ? "día(s)"
+                    : frequency === "weekly"
+                      ? "semana(s)"
+                      : "mes(es)"}
                 </span>
               </div>
             </div>
@@ -171,7 +175,11 @@ export function RecurrenceDialog({
 
           <div className="space-y-2">
             <Label className="text-xs">Termina</Label>
-            <RadioGroup value={endMode} onValueChange={(v) => setEndMode(v as EndMode)} className="space-y-2">
+            <RadioGroup
+              value={endMode}
+              onValueChange={(v) => setEndMode(v as EndMode)}
+              className="space-y-2"
+            >
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="count" id="rc-count" />
                 <Label htmlFor="rc-count" className="text-xs font-normal flex items-center gap-2">
@@ -181,7 +189,9 @@ export function RecurrenceDialog({
                     min={2}
                     max={100}
                     value={count}
-                    onChange={(e) => setCount(Math.max(2, Math.min(100, Number(e.target.value) || 2)))}
+                    onChange={(e) =>
+                      setCount(Math.max(2, Math.min(100, Number(e.target.value) || 2)))
+                    }
                     onFocus={() => setEndMode("count")}
                     className="h-7 text-xs w-16"
                   />

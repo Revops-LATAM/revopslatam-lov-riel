@@ -24,10 +24,15 @@ const LABEL_WIDTH = 260;
 
 // Fallback palette for phases without a color set
 const PHASE_PALETTE = [
-  "#6224BE", "#0ea5e9", "#22c55e", "#f59e0b",
-  "#ec4899", "#14b8a6", "#8b5cf6", "#ef4444",
+  "#6224BE",
+  "#0ea5e9",
+  "#22c55e",
+  "#f59e0b",
+  "#ec4899",
+  "#14b8a6",
+  "#8b5cf6",
+  "#ef4444",
 ];
-
 
 type Dependency = { id: string; predecessor_task_id: string; successor_task_id: string };
 
@@ -53,10 +58,7 @@ export function ProjectGanttView({
     enabled: dependencies === undefined,
   });
 
-  const scheduled = useMemo(
-    () => tasks.filter((t) => t.start_date && t.due_date),
-    [tasks],
-  );
+  const scheduled = useMemo(() => tasks.filter((t) => t.start_date && t.due_date), [tasks]);
 
   const range = useMemo(() => {
     if (scheduled.length === 0) {
@@ -97,7 +99,6 @@ export function ProjectGanttView({
     if (orphan) groups.push({ phase: null, tasks: orphan, color: "#64748b" });
     return groups;
   }, [scheduled, phases]);
-
 
   // Row index per task (including phase header rows)
   const rowIndex = useMemo(() => {
@@ -152,185 +153,183 @@ export function ProjectGanttView({
       )}
       <div ref={containerRef} className="flex-1 min-h-0 overflow-auto">
         <div style={{ width: LABEL_WIDTH + chartWidth, position: "relative" }}>
-        {/* Header con fechas */}
-        <div
-          className="sticky top-0 z-20 bg-background border-b border-border flex"
-          style={{ height: HEADER_HEIGHT }}
-        >
+          {/* Header con fechas */}
           <div
-            className="shrink-0 border-r border-border px-3 flex items-center text-xs font-semibold text-muted-foreground"
-            style={{ width: LABEL_WIDTH }}
+            className="sticky top-0 z-20 bg-background border-b border-border flex"
+            style={{ height: HEADER_HEIGHT }}
           >
-            Tareas
-          </div>
-          <div className="relative" style={{ width: chartWidth, height: HEADER_HEIGHT }}>
-            {Array.from({ length: range.days }).map((_, i) => {
-              const d = addDays(range.start, i);
-              const isWeekend = d.getDay() === 0 || d.getDay() === 6;
-              const isMonthStart = d.getDate() === 1;
-              return (
-                <div
-                  key={i}
-                  className={`absolute top-0 bottom-0 border-r ${
-                    isMonthStart ? "border-border" : "border-border/30"
-                  } ${isWeekend ? "bg-muted/40" : ""}`}
-                  style={{ left: i * DAY_WIDTH, width: DAY_WIDTH }}
-                >
-                  <div className="text-[9px] text-muted-foreground text-center pt-0.5">
-                    {isMonthStart ? format(d, "MMM", { locale: es }) : ""}
-                  </div>
-                  <div className="text-[10px] text-center tabular-nums">
-                    {d.getDate()}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Body */}
-        <div className="relative flex" style={{ minHeight: chartHeight - HEADER_HEIGHT }}>
-          {/* Labels */}
-          <div
-            className="shrink-0 border-r border-border sticky left-0 bg-background z-10"
-            style={{ width: LABEL_WIDTH }}
-          >
-            {grouped.map((g) => (
-              <div key={g.phase?.id ?? "none"}>
-                <div
-                  className="h-8 px-3 flex items-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground border-b border-border bg-muted/30"
-                  style={{ borderLeft: `3px solid ${g.color}` }}
-                >
-                  {g.phase?.name ?? "Sin fase"}
-                </div>
-                {g.tasks.map((t) => (
-                  <button
-                    key={t.id}
-                    onClick={() => onOpenTask(t.id)}
-                    className="w-full h-8 px-3 flex items-center text-xs text-left hover:bg-muted/50 border-b border-border/50 truncate"
-                    title={t.title}
+            <div
+              className="shrink-0 border-r border-border px-3 flex items-center text-xs font-semibold text-muted-foreground"
+              style={{ width: LABEL_WIDTH }}
+            >
+              Tareas
+            </div>
+            <div className="relative" style={{ width: chartWidth, height: HEADER_HEIGHT }}>
+              {Array.from({ length: range.days }).map((_, i) => {
+                const d = addDays(range.start, i);
+                const isWeekend = d.getDay() === 0 || d.getDay() === 6;
+                const isMonthStart = d.getDate() === 1;
+                return (
+                  <div
+                    key={i}
+                    className={`absolute top-0 bottom-0 border-r ${
+                      isMonthStart ? "border-border" : "border-border/30"
+                    } ${isWeekend ? "bg-muted/40" : ""}`}
+                    style={{ left: i * DAY_WIDTH, width: DAY_WIDTH }}
                   >
-                    <span className="truncate">{t.title}</span>
-                  </button>
-                ))}
-              </div>
-            ))}
+                    <div className="text-[9px] text-muted-foreground text-center pt-0.5">
+                      {isMonthStart ? format(d, "MMM", { locale: es }) : ""}
+                    </div>
+                    <div className="text-[10px] text-center tabular-nums">{d.getDate()}</div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Chart */}
-          <div className="relative" style={{ width: chartWidth }}>
-            {/* Grid rows */}
-            {Array.from({ length: rowIndex.total }).map((_, i) => (
-              <div
-                key={i}
-                className="absolute left-0 right-0 border-b border-border/50"
-                style={{ top: i * ROW_HEIGHT, height: ROW_HEIGHT }}
-              />
-            ))}
-            {/* Vertical day lines / weekends */}
-            {Array.from({ length: range.days }).map((_, i) => {
-              const d = addDays(range.start, i);
-              const isWeekend = d.getDay() === 0 || d.getDay() === 6;
-              return (
-                <div
-                  key={i}
-                  className={`absolute top-0 bottom-0 border-r border-border/20 ${
-                    isWeekend ? "bg-muted/30" : ""
-                  }`}
-                  style={{ left: i * DAY_WIDTH, width: DAY_WIDTH }}
-                />
-              );
-            })}
-            {/* Today line */}
-            {todayX >= 0 && todayX <= chartWidth && (
-              <div
-                className="absolute top-0 bottom-0 w-px bg-primary/60 z-10"
-                style={{ left: todayX }}
-              />
-            )}
-
-            {/* Bars */}
-            {grouped.map((g) => (
-              <div key={g.phase?.id ?? "none"}>
-                {/* phase spacer row */}
-                {g.tasks.map((t) => {
-                  const row = rowIndex.map.get(t.id)!;
-                  const s = parseISO(t.start_date!);
-                  const e = parseISO(t.due_date!);
-                  const x = dayToX(s);
-                  const w = Math.max((differenceInCalendarDays(e, s) + 1) * DAY_WIDTH - 2, 6);
-                  const color = t.task_statuses?.color || g.color;
-                  return (
+          {/* Body */}
+          <div className="relative flex" style={{ minHeight: chartHeight - HEADER_HEIGHT }}>
+            {/* Labels */}
+            <div
+              className="shrink-0 border-r border-border sticky left-0 bg-background z-10"
+              style={{ width: LABEL_WIDTH }}
+            >
+              {grouped.map((g) => (
+                <div key={g.phase?.id ?? "none"}>
+                  <div
+                    className="h-8 px-3 flex items-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground border-b border-border bg-muted/30"
+                    style={{ borderLeft: `3px solid ${g.color}` }}
+                  >
+                    {g.phase?.name ?? "Sin fase"}
+                  </div>
+                  {g.tasks.map((t) => (
                     <button
                       key={t.id}
                       onClick={() => onOpenTask(t.id)}
-                      className="absolute rounded text-white text-[11px] px-1.5 truncate hover:brightness-110 shadow-sm"
-                      style={{
-                        left: x,
-                        top: row * ROW_HEIGHT + 4,
-                        width: w,
-                        height: ROW_HEIGHT - 8,
-                        backgroundColor: color,
-                      }}
-                      data-task-bar={t.id}
-                      title={`${t.title} · ${format(s, "dd/MM", { locale: es })} → ${format(e, "dd/MM", { locale: es })}`}
+                      className="w-full h-8 px-3 flex items-center text-xs text-left hover:bg-muted/50 border-b border-border/50 truncate"
+                      title={t.title}
                     >
-                      <span className="truncate block">{t.title}</span>
+                      <span className="truncate">{t.title}</span>
                     </button>
-                  );
-                })}
-              </div>
-            ))}
+                  ))}
+                </div>
+              ))}
+            </div>
 
-            {/* SVG dependencies */}
-            <svg
-              className="absolute inset-0 pointer-events-none"
-              width={chartWidth}
-              height={chartHeight}
-              style={{ overflow: "visible" }}
-            >
-              <defs>
-                <marker
-                  id="arrow"
-                  viewBox="0 0 10 10"
-                  refX="8"
-                  refY="5"
-                  markerWidth="6"
-                  markerHeight="6"
-                  orient="auto-start-reverse"
-                >
-                  <path d="M 0 0 L 10 5 L 0 10 z" fill="hsl(var(--muted-foreground))" />
-                </marker>
-              </defs>
-              {deps.map((d) => {
-                const pred = taskById.get(d.predecessor_task_id);
-                const succ = taskById.get(d.successor_task_id);
-                if (!pred || !succ) return null;
-                const predRow = rowIndex.map.get(pred.id);
-                const succRow = rowIndex.map.get(succ.id);
-                if (predRow == null || succRow == null) return null;
-                if (!pred.due_date || !succ.start_date) return null;
-                const x1 = dayToX(parseISO(pred.due_date)) + DAY_WIDTH - 2;
-                const y1 = predRow * ROW_HEIGHT + ROW_HEIGHT / 2;
-                const x2 = dayToX(parseISO(succ.start_date));
-                const y2 = succRow * ROW_HEIGHT + ROW_HEIGHT / 2;
-                const midX = x1 + Math.max(10, (x2 - x1) / 2);
-                const path = `M ${x1} ${y1} L ${midX} ${y1} L ${midX} ${y2} L ${x2} ${y2}`;
+            {/* Chart */}
+            <div className="relative" style={{ width: chartWidth }}>
+              {/* Grid rows */}
+              {Array.from({ length: rowIndex.total }).map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute left-0 right-0 border-b border-border/50"
+                  style={{ top: i * ROW_HEIGHT, height: ROW_HEIGHT }}
+                />
+              ))}
+              {/* Vertical day lines / weekends */}
+              {Array.from({ length: range.days }).map((_, i) => {
+                const d = addDays(range.start, i);
+                const isWeekend = d.getDay() === 0 || d.getDay() === 6;
                 return (
-                  <path
-                    key={d.id}
-                    d={path}
-                    fill="none"
-                    stroke="hsl(var(--muted-foreground))"
-                    strokeWidth={1.2}
-                    strokeDasharray="3 3"
-                    markerEnd="url(#arrow)"
+                  <div
+                    key={i}
+                    className={`absolute top-0 bottom-0 border-r border-border/20 ${
+                      isWeekend ? "bg-muted/30" : ""
+                    }`}
+                    style={{ left: i * DAY_WIDTH, width: DAY_WIDTH }}
                   />
                 );
               })}
-            </svg>
+              {/* Today line */}
+              {todayX >= 0 && todayX <= chartWidth && (
+                <div
+                  className="absolute top-0 bottom-0 w-px bg-primary/60 z-10"
+                  style={{ left: todayX }}
+                />
+              )}
+
+              {/* Bars */}
+              {grouped.map((g) => (
+                <div key={g.phase?.id ?? "none"}>
+                  {/* phase spacer row */}
+                  {g.tasks.map((t) => {
+                    const row = rowIndex.map.get(t.id)!;
+                    const s = parseISO(t.start_date!);
+                    const e = parseISO(t.due_date!);
+                    const x = dayToX(s);
+                    const w = Math.max((differenceInCalendarDays(e, s) + 1) * DAY_WIDTH - 2, 6);
+                    const color = t.task_statuses?.color || g.color;
+                    return (
+                      <button
+                        key={t.id}
+                        onClick={() => onOpenTask(t.id)}
+                        className="absolute rounded text-white text-[11px] px-1.5 truncate hover:brightness-110 shadow-sm"
+                        style={{
+                          left: x,
+                          top: row * ROW_HEIGHT + 4,
+                          width: w,
+                          height: ROW_HEIGHT - 8,
+                          backgroundColor: color,
+                        }}
+                        data-task-bar={t.id}
+                        title={`${t.title} · ${format(s, "dd/MM", { locale: es })} → ${format(e, "dd/MM", { locale: es })}`}
+                      >
+                        <span className="truncate block">{t.title}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+
+              {/* SVG dependencies */}
+              <svg
+                className="absolute inset-0 pointer-events-none"
+                width={chartWidth}
+                height={chartHeight}
+                style={{ overflow: "visible" }}
+              >
+                <defs>
+                  <marker
+                    id="arrow"
+                    viewBox="0 0 10 10"
+                    refX="8"
+                    refY="5"
+                    markerWidth="6"
+                    markerHeight="6"
+                    orient="auto-start-reverse"
+                  >
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="hsl(var(--muted-foreground))" />
+                  </marker>
+                </defs>
+                {deps.map((d) => {
+                  const pred = taskById.get(d.predecessor_task_id);
+                  const succ = taskById.get(d.successor_task_id);
+                  if (!pred || !succ) return null;
+                  const predRow = rowIndex.map.get(pred.id);
+                  const succRow = rowIndex.map.get(succ.id);
+                  if (predRow == null || succRow == null) return null;
+                  if (!pred.due_date || !succ.start_date) return null;
+                  const x1 = dayToX(parseISO(pred.due_date)) + DAY_WIDTH - 2;
+                  const y1 = predRow * ROW_HEIGHT + ROW_HEIGHT / 2;
+                  const x2 = dayToX(parseISO(succ.start_date));
+                  const y2 = succRow * ROW_HEIGHT + ROW_HEIGHT / 2;
+                  const midX = x1 + Math.max(10, (x2 - x1) / 2);
+                  const path = `M ${x1} ${y1} L ${midX} ${y1} L ${midX} ${y2} L ${x2} ${y2}`;
+                  return (
+                    <path
+                      key={d.id}
+                      d={path}
+                      fill="none"
+                      stroke="hsl(var(--muted-foreground))"
+                      strokeWidth={1.2}
+                      strokeDasharray="3 3"
+                      markerEnd="url(#arrow)"
+                    />
+                  );
+                })}
+              </svg>
+            </div>
           </div>
-        </div>
         </div>
       </div>
     </div>

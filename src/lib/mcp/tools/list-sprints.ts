@@ -20,7 +20,11 @@ export default defineTool({
     "List Riel sprints for a project or a contract, with dates, status, contracted hours and (optionally) task counts, estimated hours and logged hours per sprint.",
   inputSchema: {
     projectId: z.string().uuid().optional().describe("Project id (use list_projects first)."),
-    contractId: z.string().uuid().optional().describe("Contract id. Use instead of projectId to see all sprints of a contract."),
+    contractId: z
+      .string()
+      .uuid()
+      .optional()
+      .describe("Contract id. Use instead of projectId to see all sprints of a contract."),
     includeTotals: z
       .boolean()
       .optional()
@@ -35,7 +39,9 @@ export default defineTool({
 
     let q = sb
       .from("sprints")
-      .select("id, sprint_number, start_date, end_date, status, contracted_hours, contract_id, project_id")
+      .select(
+        "id, sprint_number, start_date, end_date, status, contracted_hours, contract_id, project_id",
+      )
       .order("sprint_number", { ascending: true })
       .limit(limit ?? 60);
     if (projectId) q = q.eq("project_id", projectId);
@@ -48,7 +54,12 @@ export default defineTool({
     if (includeTotals === false) return ok({ sprints });
 
     const sprintIds = sprints.map((s) => s.id);
-    const tasks: Array<{ id: string; sprint_id: string | null; status: string | null; total_effort_hours: number | null }> = [];
+    const tasks: Array<{
+      id: string;
+      sprint_id: string | null;
+      status: string | null;
+      total_effort_hours: number | null;
+    }> = [];
     for (const ids of chunk(sprintIds, 50)) {
       for (let page = 0; ; page += 1) {
         const { data: rows, error: tErr } = await sb

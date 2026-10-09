@@ -13,11 +13,8 @@ export const Route = createFileRoute("/api/public/cron/asana-queue")({
         }
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-        const {
-          pushTaskToAsana,
-          pushCommentToAsana,
-          handleAsanaWebhookEvent,
-        } = await import("@/lib/api/asana.server");
+        const { pushTaskToAsana, pushCommentToAsana, handleAsanaWebhookEvent } =
+          await import("@/lib/api/asana.server");
 
         const { data: jobs } = await supabaseAdmin
           .from("asana_sync_queue")
@@ -43,7 +40,10 @@ export const Route = createFileRoute("/api/public/cron/asana-queue")({
             } else if (j.direction === "push" && j.resource_kind === "comment" && j.riel_id) {
               await pushCommentToAsana(supabaseAdmin, j.riel_id);
             } else if (j.direction === "pull") {
-              await handleAsanaWebhookEvent(supabaseAdmin, j.payload as Parameters<typeof handleAsanaWebhookEvent>[1]);
+              await handleAsanaWebhookEvent(
+                supabaseAdmin,
+                j.payload as Parameters<typeof handleAsanaWebhookEvent>[1],
+              );
             }
             await supabaseAdmin
               .from("asana_sync_queue")

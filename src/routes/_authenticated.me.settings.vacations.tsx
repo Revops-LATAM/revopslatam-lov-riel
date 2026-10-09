@@ -43,8 +43,7 @@ const PORTION_LABEL: Record<Portion, string> = {
 function MyVacations() {
   const qc = useQueryClient();
   const workspaces = useQuery(workspacesQO());
-  const opsWs =
-    workspaces.data?.find((w) => w.kind === "operations") ?? workspaces.data?.[0];
+  const opsWs = workspaces.data?.find((w) => w.kind === "operations") ?? workspaces.data?.[0];
 
   const listFn = useServerFn(listMyTimeOff);
   const addFn = useServerFn(addMyTimeOffRange);
@@ -81,9 +80,7 @@ function MyVacations() {
     onSuccess: (res) => {
       const conflicts = (res as { conflicts?: string[] }).conflicts ?? [];
       if (res.inserted > 0) {
-        toast.success(
-          `Se marcaron ${res.inserted} ${isHalfDay ? "medio(s) día(s)" : "día(s)"}.`,
-        );
+        toast.success(`Se marcaron ${res.inserted} ${isHalfDay ? "medio(s) día(s)" : "día(s)"}.`);
       }
       if (conflicts.length > 0) {
         toast.error(conflicts[0]);
@@ -94,7 +91,6 @@ function MyVacations() {
     },
     onError: (e: Error) => toast.error(e.message),
   });
-
 
   const delMutation = useMutation({
     mutationFn: async (id: string) => delFn({ data: { id } }),
@@ -115,17 +111,15 @@ function MyVacations() {
     return map;
   }, [timeOffQuery.data]);
 
-  const wsName = (id: string) =>
-    workspaces.data?.find((w) => w.id === id)?.name ?? "Workspace";
+  const wsName = (id: string) => workspaces.data?.find((w) => w.id === id)?.name ?? "Workspace";
 
   return (
     <div className="p-6 space-y-6 max-w-3xl">
       <div>
         <h2 className="text-sm font-semibold">Días libres y vacaciones</h2>
         <p className="text-xs text-muted-foreground mt-0.5">
-          Marca los días en que no estarás disponible. El sistema no permitirá
-          agendarte tareas en fines de semana, feriados del workspace ni en los
-          días que marques aquí.
+          Marca los días en que no estarás disponible. El sistema no permitirá agendarte tareas en
+          fines de semana, feriados del workspace ni en los días que marques aquí.
         </p>
       </div>
 
@@ -137,10 +131,7 @@ function MyVacations() {
           {workspaces.data && workspaces.data.length > 1 && (
             <div className="space-y-1 sm:col-span-2">
               <Label className="text-xs">Workspace</Label>
-              <Select
-                value={effectiveWs}
-                onValueChange={(v) => setWorkspaceId(v)}
-              >
+              <Select value={effectiveWs} onValueChange={(v) => setWorkspaceId(v)}>
                 <SelectTrigger className="h-8 text-xs">
                   <SelectValue placeholder="Selecciona workspace" />
                 </SelectTrigger>
@@ -184,8 +175,12 @@ function MyVacations() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Vacaciones" className="text-xs">Vacaciones</SelectItem>
-                <SelectItem value="Día Libre" className="text-xs">Día Libre</SelectItem>
+                <SelectItem value="Vacaciones" className="text-xs">
+                  Vacaciones
+                </SelectItem>
+                <SelectItem value="Día Libre" className="text-xs">
+                  Día Libre
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -196,13 +191,18 @@ function MyVacations() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="full" className="text-xs">Día completo</SelectItem>
-                <SelectItem value="am" className="text-xs">Media mañana (AM)</SelectItem>
-                <SelectItem value="pm" className="text-xs">Media tarde (PM)</SelectItem>
+                <SelectItem value="full" className="text-xs">
+                  Día completo
+                </SelectItem>
+                <SelectItem value="am" className="text-xs">
+                  Media mañana (AM)
+                </SelectItem>
+                <SelectItem value="pm" className="text-xs">
+                  Media tarde (PM)
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
-
         </div>
         <div className="flex justify-end">
           <Button
@@ -215,10 +215,10 @@ function MyVacations() {
           </Button>
         </div>
         <p className="text-[11px] text-muted-foreground">
-          Para un solo día, deja la misma fecha en "Desde" y "Hasta". Los medios días solo aplican a un día.
-          Los medios días no bloquean el agendamiento de tareas; solo el día completo lo hace.
+          Para un solo día, deja la misma fecha en "Desde" y "Hasta". Los medios días solo aplican a
+          un día. Los medios días no bloquean el agendamiento de tareas; solo el día completo lo
+          hace.
         </p>
-
       </div>
 
       <div className="space-y-3">
@@ -252,9 +252,7 @@ function MyVacations() {
                           {PORTION_LABEL[r.portion ?? "full"]}
                         </span>
                         {r.name && r.name !== "Vacaciones" && (
-                          <span className="text-muted-foreground truncate">
-                            {r.name}
-                          </span>
+                          <span className="text-muted-foreground truncate">{r.name}</span>
                         )}
                       </div>
 

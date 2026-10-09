@@ -38,24 +38,82 @@ export const Route = createFileRoute("/_authenticated/admin/permissions")({
   component: AdminRoleTemplates,
 });
 
-const PERMISSION_LABELS: Record<WorkspacePermission, { label: string; group: string; desc: string }> = {
+const PERMISSION_LABELS: Record<
+  WorkspacePermission,
+  { label: string; group: string; desc: string }
+> = {
   ops_view: { group: "Operaciones", label: "Ver", desc: "Ver clientes, contratos y tareas." },
-  ops_manage: { group: "Operaciones", label: "Gestionar", desc: "Crear/editar contratos, sprints, fases." },
-  workload_view: { group: "Operaciones", label: "Ver carga de trabajo", desc: "Acceso al panel de carga." },
-  reports_view: { group: "Análisis", label: "Ver reportes", desc: "Acceso a la sección de reportes." },
+  ops_manage: {
+    group: "Operaciones",
+    label: "Gestionar",
+    desc: "Crear/editar contratos, sprints, fases.",
+  },
+  workload_view: {
+    group: "Operaciones",
+    label: "Ver carga de trabajo",
+    desc: "Acceso al panel de carga.",
+  },
+  reports_view: {
+    group: "Análisis",
+    label: "Ver reportes",
+    desc: "Acceso a la sección de reportes.",
+  },
   finance_view: { group: "Finanzas", label: "Ver", desc: "Ver resumen, pagos y monedas." },
-  finance_manage: { group: "Finanzas", label: "Gestionar", desc: "Editar pagos, monedas y contratos financieros." },
-  marketing_view: { group: "Marketing y Ventas", label: "Ver", desc: "Ver el espacio Marketing y Ventas y sus proyectos." },
-  marketing_manage: { group: "Marketing y Ventas", label: "Gestionar", desc: "Crear/editar proyectos y tareas de Marketing y Ventas." },
-  internal_view: { group: "Interno", label: "Ver", desc: "Ver el espacio Interno (reuniones, formación, eventos, admin)." },
-  internal_manage: { group: "Interno", label: "Gestionar", desc: "Crear/editar proyectos, tareas y categorías internas." },
-  admin_members: { group: "Admin", label: "Miembros", desc: "Invitar, editar y eliminar miembros." },
-  admin_roles: { group: "Admin", label: "Roles y permisos", desc: "Crear/editar plantillas de roles." },
-  admin_settings: { group: "Admin", label: "Ajustes", desc: "Configuración general del workspace." },
-  admin_capacity: { group: "Admin", label: "Tiempo y capacidad", desc: "Capacidad, feriados y zona horaria." },
+  finance_manage: {
+    group: "Finanzas",
+    label: "Gestionar",
+    desc: "Editar pagos, monedas y contratos financieros.",
+  },
+  marketing_view: {
+    group: "Marketing y Ventas",
+    label: "Ver",
+    desc: "Ver el espacio Marketing y Ventas y sus proyectos.",
+  },
+  marketing_manage: {
+    group: "Marketing y Ventas",
+    label: "Gestionar",
+    desc: "Crear/editar proyectos y tareas de Marketing y Ventas.",
+  },
+  internal_view: {
+    group: "Interno",
+    label: "Ver",
+    desc: "Ver el espacio Interno (reuniones, formación, eventos, admin).",
+  },
+  internal_manage: {
+    group: "Interno",
+    label: "Gestionar",
+    desc: "Crear/editar proyectos, tareas y categorías internas.",
+  },
+  admin_members: {
+    group: "Admin",
+    label: "Miembros",
+    desc: "Invitar, editar y eliminar miembros.",
+  },
+  admin_roles: {
+    group: "Admin",
+    label: "Roles y permisos",
+    desc: "Crear/editar plantillas de roles.",
+  },
+  admin_settings: {
+    group: "Admin",
+    label: "Ajustes",
+    desc: "Configuración general del workspace.",
+  },
+  admin_capacity: {
+    group: "Admin",
+    label: "Tiempo y capacidad",
+    desc: "Capacidad, feriados y zona horaria.",
+  },
 };
 
-const GROUP_ORDER = ["Operaciones", "Análisis", "Finanzas", "Marketing y Ventas", "Interno", "Admin"];
+const GROUP_ORDER = [
+  "Operaciones",
+  "Análisis",
+  "Finanzas",
+  "Marketing y Ventas",
+  "Interno",
+  "Admin",
+];
 
 function AdminRoleTemplates() {
   const qc = useQueryClient();
@@ -83,8 +141,7 @@ function AdminRoleTemplates() {
     is_system?: boolean;
   }>(null);
 
-  const invalidate = () =>
-    qc.invalidateQueries({ queryKey: ["role-templates", activeWs] });
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["role-templates", activeWs] });
 
   const create = useMutation({
     mutationFn: (v: { name: string; description?: string; permissions: WorkspacePermission[] }) =>
@@ -97,7 +154,12 @@ function AdminRoleTemplates() {
     onError: (e: Error) => toast.error(e.message),
   });
   const update = useMutation({
-    mutationFn: (v: { templateId: string; name: string; description: string; permissions: WorkspacePermission[] }) =>
+    mutationFn: (v: {
+      templateId: string;
+      name: string;
+      description: string;
+      permissions: WorkspacePermission[];
+    }) =>
       updateFn({
         data: {
           workspaceId: activeWs!,
@@ -115,8 +177,7 @@ function AdminRoleTemplates() {
     onError: (e: Error) => toast.error(e.message),
   });
   const del = useMutation({
-    mutationFn: (templateId: string) =>
-      deleteFn({ data: { templateId, workspaceId: activeWs! } }),
+    mutationFn: (templateId: string) => deleteFn({ data: { templateId, workspaceId: activeWs! } }),
     onSuccess: () => {
       toast.success("Rol eliminado");
       invalidate();
@@ -239,7 +300,13 @@ function RoleEditorDialog({
   onSave,
   saving,
 }: {
-  value: { id?: string; name: string; description: string; permissions: WorkspacePermission[]; is_system?: boolean };
+  value: {
+    id?: string;
+    name: string;
+    description: string;
+    permissions: WorkspacePermission[];
+    is_system?: boolean;
+  };
   onClose: () => void;
   onSave: (v: { name: string; description: string; permissions: WorkspacePermission[] }) => void;
   saving: boolean;
@@ -286,7 +353,11 @@ function RoleEditorDialog({
           </div>
           <div className="space-y-2">
             <Label>Descripción</Label>
-            <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} />
+            <Textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={2}
+            />
           </div>
           <div className="space-y-3">
             <Label>Permisos</Label>
@@ -321,7 +392,11 @@ function RoleEditorDialog({
           </Button>
           <Button
             onClick={() =>
-              onSave({ name: name.trim(), description: description.trim(), permissions: Array.from(perms) })
+              onSave({
+                name: name.trim(),
+                description: description.trim(),
+                permissions: Array.from(perms),
+              })
             }
             disabled={saving || !name.trim()}
           >

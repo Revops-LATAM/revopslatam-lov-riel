@@ -39,10 +39,10 @@ async function resolveAccountsWorkspaceId(
     .limit(1)
     .maybeSingle();
   if (opsErr) throw new Error(opsErr.message);
-  if (!ops) throw new Error("No hay un workspace de Operaciones asociado para el módulo de Clientes");
+  if (!ops)
+    throw new Error("No hay un workspace de Operaciones asociado para el módulo de Clientes");
   return ops.id as string;
 }
-
 
 const secondaryContactsSchema = z
   .array(
@@ -274,7 +274,6 @@ export const deleteAccount = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-
 // ============ CONTRACTS ============
 
 export const listContracts = createServerFn({ method: "GET" })
@@ -309,11 +308,14 @@ export const listContracts = createServerFn({ method: "GET" })
     const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
     const contracts = rows ?? [];
-    if (contracts.length === 0) return [] as Array<typeof contracts[number] & {
-      sprints_count: number;
-      open_tasks_count: number;
-      fee_total: number | null;
-    }>;
+    if (contracts.length === 0)
+      return [] as Array<
+        (typeof contracts)[number] & {
+          sprints_count: number;
+          open_tasks_count: number;
+          fee_total: number | null;
+        }
+      >;
     const ids = contracts.map((c) => c.id);
 
     const [sprintsRes, tasksRes, finRes] = await Promise.all([
@@ -353,7 +355,6 @@ export const listContracts = createServerFn({ method: "GET" })
       fee_total: feeByC.get(c.id) ?? null,
     }));
   });
-
 
 export const getContract = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -411,10 +412,8 @@ export const createContract = createServerFn({ method: "POST" })
         owner_consultant_id: data.ownerConsultantId ?? null,
         sprint_duration_days:
           data.type === "implementation" ? null : (data.sprintDurationDays ?? 14),
-        sprint_cadence:
-          data.type === "implementation" ? null : (data.sprintCadence ?? null),
-        hours_per_sprint:
-          data.type === "implementation" ? null : (data.hoursPerSprint ?? null),
+        sprint_cadence: data.type === "implementation" ? null : (data.sprintCadence ?? null),
+        hours_per_sprint: data.type === "implementation" ? null : (data.hoursPerSprint ?? null),
         payment_schedule_type: data.paymentScheduleType,
         created_by: context.userId,
       })
@@ -446,11 +445,11 @@ export const updateContract = createServerFn({ method: "POST" })
       .object({
         contractId: z.string().uuid(),
         name: z.string().min(1).max(160).optional(),
-        status: z.enum(["borrador","activo","en_renovacion","finalizado","cancelado"]).optional(),
-        endDate: z.string().nullable().optional(),
-        paymentScheduleType: z
-          .enum(["monthly_fixed", "per_milestone", "mixed", "none"])
+        status: z
+          .enum(["borrador", "activo", "en_renovacion", "finalizado", "cancelado"])
           .optional(),
+        endDate: z.string().nullable().optional(),
+        paymentScheduleType: z.enum(["monthly_fixed", "per_milestone", "mixed", "none"]).optional(),
         notes: z.string().max(5000).nullable().optional(),
         ownerConsultantId: z.string().uuid().nullable().optional(),
         descripcionFactura: z.string().max(500).nullable().optional(),
@@ -458,7 +457,14 @@ export const updateContract = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    const { contractId, endDate, ownerConsultantId, paymentScheduleType, descripcionFactura, ...rest } = data;
+    const {
+      contractId,
+      endDate,
+      ownerConsultantId,
+      paymentScheduleType,
+      descripcionFactura,
+      ...rest
+    } = data;
     const patch = {
       ...rest,
       ...(endDate !== undefined ? { end_date: endDate } : {}),
@@ -468,10 +474,7 @@ export const updateContract = createServerFn({ method: "POST" })
         ? { descripcion_factura: descripcionFactura?.trim() ? descripcionFactura.trim() : null }
         : {}),
     };
-    const { error } = await context.supabase
-      .from("contracts")
-      .update(patch)
-      .eq("id", contractId);
+    const { error } = await context.supabase.from("contracts").update(patch).eq("id", contractId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -537,16 +540,12 @@ export const listSprints = createServerFn({ method: "GET" })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    let q = context.supabase
-      .from("sprints")
-      .select("*")
-      .eq("contract_id", data.contractId);
+    let q = context.supabase.from("sprints").select("*").eq("contract_id", data.contractId);
     if (data.projectId) q = q.eq("project_id", data.projectId);
     const { data: rows, error } = await q.order("sprint_number", { ascending: true });
     if (error) throw new Error(error.message);
     return rows ?? [];
   });
-
 
 export const createSprint = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -592,7 +591,7 @@ export const updateSprintStatus = createServerFn({ method: "POST" })
     z
       .object({
         sprintId: z.string().uuid(),
-        status: z.enum(["por_planificar","planificado","en_curso","cerrado"]),
+        status: z.enum(["por_planificar", "planificado", "en_curso", "cerrado"]),
       })
       .parse(input),
   )
@@ -655,7 +654,6 @@ export const getSprintMetrics = createServerFn({ method: "GET" })
       }
     }
 
-
     const realByTask = new Map<string, number>();
     for (const e of entries) {
       const mins = Number(e.duration_minutes ?? 0);
@@ -687,9 +685,18 @@ export const getSprintMetrics = createServerFn({ method: "GET" })
     const capacityForUserInRange = (userId: string, start: string, end: string): number => {
       const c = capByUser.get(userId);
       if (!c) return 0;
-      const pattern: number[] = Array.isArray(c.weekly_pattern) && c.weekly_pattern.length === 7
-        ? c.weekly_pattern.map((v) => Number(v) || 0)
-        : [Number(c.daily_hours ?? 0), Number(c.daily_hours ?? 0), Number(c.daily_hours ?? 0), Number(c.daily_hours ?? 0), Number(c.daily_hours ?? 0), 0, 0];
+      const pattern: number[] =
+        Array.isArray(c.weekly_pattern) && c.weekly_pattern.length === 7
+          ? c.weekly_pattern.map((v) => Number(v) || 0)
+          : [
+              Number(c.daily_hours ?? 0),
+              Number(c.daily_hours ?? 0),
+              Number(c.daily_hours ?? 0),
+              Number(c.daily_hours ?? 0),
+              Number(c.daily_hours ?? 0),
+              0,
+              0,
+            ];
       let total = 0;
       const d = new Date(start + "T00:00:00Z");
       const endD = new Date(end + "T00:00:00Z");
@@ -704,14 +711,8 @@ export const getSprintMetrics = createServerFn({ method: "GET" })
 
     return sprints.map((s) => {
       const sprintTasks = (tasks ?? []).filter((t) => t.sprint_id === s.id);
-      const estimated = sprintTasks.reduce(
-        (acc, t) => acc + Number(t.total_effort_hours ?? 0),
-        0,
-      );
-      const realMin = sprintTasks.reduce(
-        (acc, t) => acc + (realByTask.get(t.id) ?? 0),
-        0,
-      );
+      const estimated = sprintTasks.reduce((acc, t) => acc + Number(t.total_effort_hours ?? 0), 0);
+      const realMin = sprintTasks.reduce((acc, t) => acc + (realByTask.get(t.id) ?? 0), 0);
       const real = realMin / 60;
       const pending = sprintTasks.filter(
         (t) => t.status !== "completada" && t.status !== "cancelada",
@@ -764,7 +765,8 @@ export const moveSprintPendingTasks = createServerFn({ method: "POST" })
         .order("sprint_number", { ascending: true })
         .limit(1)
         .maybeSingle();
-      if (!next) throw new Error("No hay un sprint siguiente. Crea uno nuevo antes de mover tareas.");
+      if (!next)
+        throw new Error("No hay un sprint siguiente. Crea uno nuevo antes de mover tareas.");
       targetId = next.id;
     }
 
@@ -778,10 +780,7 @@ export const moveSprintPendingTasks = createServerFn({ method: "POST" })
     const ids = (pending ?? []).map((t) => t.id);
     if (ids.length === 0) return { moved: 0, targetSprintId: targetId };
 
-    const { error } = await supabase
-      .from("tasks")
-      .update({ sprint_id: targetId })
-      .in("id", ids);
+    const { error } = await supabase.from("tasks").update({ sprint_id: targetId }).in("id", ids);
     if (error) throw new Error(error.message);
     return { moved: ids.length, targetSprintId: targetId };
   });
@@ -881,10 +880,7 @@ export const deletePhase = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ phaseId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase
-      .from("phases")
-      .delete()
-      .eq("id", data.phaseId);
+    const { error } = await context.supabase.from("phases").delete().eq("id", data.phaseId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -1013,8 +1009,7 @@ export const updatePaymentStatus = createServerFn({ method: "POST" })
       ready_to_invoice?: boolean;
     } = {
       status: data.status,
-      paid_at:
-        data.status === "paid" ? (data.paidAt ?? new Date().toISOString()) : null,
+      paid_at: data.status === "paid" ? (data.paidAt ?? new Date().toISOString()) : null,
     };
     if (data.status === "invoiced" || data.status === "paid" || data.status === "cancelled") {
       patch.ready_to_invoice = false;
@@ -1036,39 +1031,46 @@ export const listOperationsTree = createServerFn({ method: "GET" })
   .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
-    const [accountsRes, contractsRes, projectsRes, phasesRes, tasksRes, handoffsRes] = await Promise.all([
-      supabase
-        .from("accounts")
-        .select("id, name, status")
-        .eq("workspace_id", data.workspaceId)
-        .order("name", { ascending: true }),
-      supabase
-        .from("contracts")
-        .select("id, name, type, status, start_date, end_date, account_id, is_partner")
-        .eq("workspace_id", data.workspaceId)
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("projects")
-        .select("id, contract_id, created_at")
-        .eq("workspace_id", data.workspaceId)
-        .not("contract_id", "is", null)
-        .order("created_at", { ascending: true }),
-      supabase
-        .from("phases")
-        .select("project_id, projects!inner(workspace_id)")
-        .eq("projects.workspace_id", data.workspaceId),
-      supabase
-        .from("tasks")
-        .select("contract_id, task_statuses(category)")
-        .not("contract_id", "is", null),
-      supabase
-        .from("contract_handoffs")
-        .select("contract_id, state")
-        .eq("state", "completado"),
-    ]);
-    const fail = (label: string, err: { message: string; code?: string; details?: string; hint?: string } | null) => {
+    const [accountsRes, contractsRes, projectsRes, phasesRes, tasksRes, handoffsRes] =
+      await Promise.all([
+        supabase
+          .from("accounts")
+          .select("id, name, status")
+          .eq("workspace_id", data.workspaceId)
+          .order("name", { ascending: true }),
+        supabase
+          .from("contracts")
+          .select("id, name, type, status, start_date, end_date, account_id, is_partner")
+          .eq("workspace_id", data.workspaceId)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("projects")
+          .select("id, contract_id, created_at")
+          .eq("workspace_id", data.workspaceId)
+          .not("contract_id", "is", null)
+          .order("created_at", { ascending: true }),
+        supabase
+          .from("phases")
+          .select("project_id, projects!inner(workspace_id)")
+          .eq("projects.workspace_id", data.workspaceId),
+        supabase
+          .from("tasks")
+          .select("contract_id, task_statuses(category)")
+          .not("contract_id", "is", null),
+        supabase.from("contract_handoffs").select("contract_id, state").eq("state", "completado"),
+      ]);
+    const fail = (
+      label: string,
+      err: { message: string; code?: string; details?: string; hint?: string } | null,
+    ) => {
       if (!err) return;
-      const parts = [`[listOperationsTree/${label}]`, err.message, err.code && `(code=${err.code})`, err.details && `details=${err.details}`, err.hint && `hint=${err.hint}`].filter(Boolean);
+      const parts = [
+        `[listOperationsTree/${label}]`,
+        err.message,
+        err.code && `(code=${err.code})`,
+        err.details && `details=${err.details}`,
+        err.hint && `hint=${err.hint}`,
+      ].filter(Boolean);
       throw new Error(parts.join(" "));
     };
     fail("accounts", accountsRes.error);
@@ -1078,16 +1080,17 @@ export const listOperationsTree = createServerFn({ method: "GET" })
     fail("tasks", tasksRes.error);
     fail("handoffs", handoffsRes.error);
 
-
     const completedHandoffContracts = new Set<string>(
       (handoffsRes.data ?? []).map((h) => h.contract_id).filter(Boolean) as string[],
     );
 
-
     const phaseCountByProject = new Map<string, number>();
     for (const phase of phasesRes.data ?? []) {
       if (!phase.project_id) continue;
-      phaseCountByProject.set(phase.project_id, (phaseCountByProject.get(phase.project_id) ?? 0) + 1);
+      phaseCountByProject.set(
+        phase.project_id,
+        (phaseCountByProject.get(phase.project_id) ?? 0) + 1,
+      );
     }
     const projectsByContract = new Map<string, NonNullable<typeof projectsRes.data>[number][]>();
     for (const p of projectsRes.data ?? []) {
@@ -1098,11 +1101,15 @@ export const listOperationsTree = createServerFn({ method: "GET" })
     }
     const projectByContract = new Map<string, string>();
     for (const [contractId, candidates] of projectsByContract) {
-      const preferred = candidates.find((p) => (phaseCountByProject.get(p.id) ?? 0) > 0) ?? candidates[0];
+      const preferred =
+        candidates.find((p) => (phaseCountByProject.get(p.id) ?? 0) > 0) ?? candidates[0];
       if (preferred) projectByContract.set(contractId, preferred.id);
     }
     const openByContract = new Map<string, number>();
-    for (const t of (tasksRes.data ?? []) as Array<{ contract_id: string | null; task_statuses: { category: string } | null }>) {
+    for (const t of (tasksRes.data ?? []) as Array<{
+      contract_id: string | null;
+      task_statuses: { category: string } | null;
+    }>) {
       if (!t.contract_id) continue;
       const cat = t.task_statuses?.category;
       if (cat === "completada" || cat === "cancelada") continue;
@@ -1179,7 +1186,18 @@ export const listContractChildren = createServerFn({ method: "GET" })
             .select("id, project_id, name, status, start_date, end_date, order_index")
             .in("project_id", projectIds)
             .order("order_index", { ascending: true })
-        : Promise.resolve({ data: [] as Array<{ id: string; project_id: string; name: string; status: string; start_date: string | null; end_date: string | null; order_index: number }>, error: null }),
+        : Promise.resolve({
+            data: [] as Array<{
+              id: string;
+              project_id: string;
+              name: string;
+              status: string;
+              start_date: string | null;
+              end_date: string | null;
+              order_index: number;
+            }>,
+            error: null,
+          }),
       supabase
         .from("tasks")
         .select("sprint_id, phase_id, status")
@@ -1358,10 +1376,7 @@ export const updateContractProject = createServerFn({ method: "POST" })
           .eq("contract_id", p.contract_id);
       }
     }
-    const { error } = await supabase
-      .from("projects")
-      .update(data.patch)
-      .eq("id", data.projectId);
+    const { error } = await supabase.from("projects").update(data.patch).eq("id", data.projectId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -1513,8 +1528,7 @@ export const createOngoingProject = createServerFn({ method: "POST" })
           owner_consultant_id: c.ownerConsultantId ?? null,
           vendedor_id: c.vendedorId ?? null,
           comision_pct: c.comisionPct ?? 6,
-          sprint_duration_days:
-            c.type === "implementation" ? null : (c.sprintDurationDays ?? 14),
+          sprint_duration_days: c.type === "implementation" ? null : (c.sprintDurationDays ?? 14),
           hours_per_sprint: c.type === "implementation" ? null : (c.hoursPerSprint ?? null),
           payment_schedule_type: "none",
           legacy_milestone_billing: true,
@@ -1530,9 +1544,7 @@ export const createOngoingProject = createServerFn({ method: "POST" })
     // 3) Project
     const p = data.project;
     const wrikeNote = "[Migrado desde Wrike]";
-    const description = p.description
-      ? `${wrikeNote}\n\n${p.description}`
-      : wrikeNote;
+    const description = p.description ? `${wrikeNote}\n\n${p.description}` : wrikeNote;
     const { data: projectRow, error: pErr } = await supabase
       .from("projects")
       .insert({
@@ -1600,8 +1612,7 @@ export const createOngoingProject = createServerFn({ method: "POST" })
           .insert({
             project_id: projectId,
             title: "Migración Wrike — horas previas",
-            description:
-              "Registro de horas ya consumidas en Wrike antes de la marcha blanca.",
+            description: "Registro de horas ya consumidas en Wrike antes de la marcha blanca.",
             status: "completada",
             priority: "none",
             assignee_id: leadOrUser,
@@ -1727,8 +1738,7 @@ export const getContractSprintSummary = createServerFn({ method: "GET" })
         sprintNumber: p.sprintNumber,
         startDate: p.startDate,
         endDate: p.endDate,
-        status:
-          today < p.startDate ? "planificado" : today > p.endDate ? "cerrado" : "en_curso",
+        status: today < p.startDate ? "planificado" : today > p.endDate ? "cerrado" : "en_curso",
         contractedHours: contractedPerPeriod > 0 ? contractedPerPeriod : p.contractedHours,
         estimatedHours: round(p.estimatedHours),
         realHours: round(p.realHours),
@@ -1736,9 +1746,7 @@ export const getContractSprintSummary = createServerFn({ method: "GET" })
         tasksDone: p.tasksDone,
         byProject: p.byProject
           .filter((bp) => bp.tasksTotal > 0 || bp.realHours > 0)
-          .sort(
-            (a, b) => b.realHours - a.realHours || a.projectName.localeCompare(b.projectName),
-          ),
+          .sort((a, b) => b.realHours - a.realHours || a.projectName.localeCompare(b.projectName)),
       }));
 
     return { periods, contractedPerPeriod };

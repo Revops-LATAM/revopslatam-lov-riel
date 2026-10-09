@@ -15,14 +15,8 @@ import {
   Clock,
 } from "lucide-react";
 import { getWorkspaceBySlug } from "@/lib/api/tasko.functions";
-import {
-  getCampaign,
-  updateCampaign,
-} from "@/lib/api/marketing-campaigns.functions";
-import {
-  listPiecesByCampaign,
-  updatePiece,
-} from "@/lib/api/marketing-pieces.functions";
+import { getCampaign, updateCampaign } from "@/lib/api/marketing-campaigns.functions";
+import { listPiecesByCampaign, updatePiece } from "@/lib/api/marketing-pieces.functions";
 import { RouteError } from "@/components/tasko/RouteError";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -131,9 +125,7 @@ function CampaignDetail() {
 
   const launch = c.launch_date ? new Date(c.launch_date) : null;
   const end = c.end_date ? new Date(c.end_date) : null;
-  const daysToLaunch = launch
-    ? Math.ceil((launch.getTime() - Date.now()) / 86400000)
-    : null;
+  const daysToLaunch = launch ? Math.ceil((launch.getTime() - Date.now()) / 86400000) : null;
   const pct =
     c.kpi_target && c.kpi_actual
       ? Math.min(100, (Number(c.kpi_actual) / Number(c.kpi_target)) * 100)
@@ -153,17 +145,13 @@ function CampaignDetail() {
           </Link>
         </div>
         <div className="flex items-start gap-3">
-          <div
-            className="w-1.5 self-stretch rounded-full mt-1"
-            style={{ background: c.color }}
-          />
+          <div className="w-1.5 self-stretch rounded-full mt-1" style={{ background: c.color }} />
           <div className="flex-1 min-w-0">
             <input
               defaultValue={c.name}
               onBlur={(e) => {
                 const v = e.target.value.trim();
-                if (v && v !== c.name)
-                  updateMut.mutate({ data: { campaignId, name: v } });
+                if (v && v !== c.name) updateMut.mutate({ data: { campaignId, name: v } });
               }}
               className="text-lg font-semibold bg-transparent border-none outline-none w-full focus:ring-1 focus:ring-ring rounded px-1 -mx-1"
             />
@@ -215,10 +203,7 @@ function CampaignDetail() {
               {c.channels && c.channels.length > 0 && (
                 <span className="flex items-center gap-1">
                   {c.channels.slice(0, 6).map((ch) => (
-                    <span
-                      key={ch}
-                      className="text-[10px] px-1.5 py-0.5 rounded bg-muted"
-                    >
+                    <span key={ch} className="text-[10px] px-1.5 py-0.5 rounded bg-muted">
                       {ch}
                     </span>
                   ))}
@@ -284,9 +269,7 @@ function CampaignDetail() {
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <h2 className="text-sm font-semibold">Piezas de contenido</h2>
-                <span className="text-xs text-muted-foreground">
-                  {piecesQ.data?.length ?? 0}
-                </span>
+                <span className="text-xs text-muted-foreground">{piecesQ.data?.length ?? 0}</span>
               </div>
               <Button size="sm" className="h-8 text-xs" onClick={() => setCreatingPiece(true)}>
                 <Plus className="w-3.5 h-3.5 mr-1" /> Nueva pieza
@@ -305,9 +288,7 @@ function CampaignDetail() {
                       <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                         {col.label}
                       </span>
-                      <span className="text-[11px] text-muted-foreground">
-                        {rows.length}
-                      </span>
+                      <span className="text-[11px] text-muted-foreground">{rows.length}</span>
                     </div>
                     <div className="flex-1 space-y-1.5">
                       {rows.map((p) => (
@@ -399,10 +380,7 @@ function KpiEditor({
         </div>
         {target && (
           <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full"
-              style={{ width: `${pct}%`, background: color }}
-            />
+            <div className="h-full rounded-full" style={{ width: `${pct}%`, background: color }} />
           </div>
         )}
         {dirty && (
@@ -410,11 +388,7 @@ function KpiEditor({
             size="sm"
             className="h-7 text-xs w-full"
             onClick={() =>
-              onSave(
-                l,
-                t.trim() === "" ? null : Number(t),
-                a.trim() === "" ? null : Number(a),
-              )
+              onSave(l, t.trim() === "" ? null : Number(t), a.trim() === "" ? null : Number(a))
             }
           >
             <Save className="w-3 h-3 mr-1" /> Guardar

@@ -43,7 +43,9 @@ export function GenerateDialog({
   const mut = useMutation({
     mutationFn: genFn,
     onSuccess: (res) => {
-      toast.success(`Generación: ${res.created} creadas, ${res.skipped} omitidas, ${res.replaced} reemplazadas`);
+      toast.success(
+        `Generación: ${res.created} creadas, ${res.skipped} omitidas, ${res.replaced} reemplazadas`,
+      );
       onDone();
       onClose();
     },
@@ -54,7 +56,9 @@ export function GenerateDialog({
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Generar {MONTH_NAMES[month - 1]} {year}</DialogTitle>
+          <DialogTitle>
+            Generar {MONTH_NAMES[month - 1]} {year}
+          </DialogTitle>
         </DialogHeader>
         <div className="space-y-3">
           {templates.length === 0 ? (
@@ -66,11 +70,14 @@ export function GenerateDialog({
               <div>
                 <label className="text-xs text-muted-foreground">Plantilla</label>
                 <Select value={templateId} onValueChange={setTemplateId}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     {templates.map((t) => (
                       <SelectItem key={t.id} value={t.id}>
-                        {t.name}{t.is_default ? " (por defecto)" : ""}
+                        {t.name}
+                        {t.is_default ? " (por defecto)" : ""}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -79,10 +86,14 @@ export function GenerateDialog({
               <div>
                 <label className="text-xs text-muted-foreground">Modo</label>
                 <Select value={mode} onValueChange={(v) => setMode(v as typeof mode)}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="additive">Aditivo (solo rellena huecos)</SelectItem>
-                    <SelectItem value="replace_drafts">Reemplazar borradores (Idea/Copy)</SelectItem>
+                    <SelectItem value="replace_drafts">
+                      Reemplazar borradores (Idea/Copy)
+                    </SelectItem>
                     <SelectItem value="block_if_exists">Bloquear si ya hay piezas</SelectItem>
                   </SelectContent>
                 </Select>
@@ -91,7 +102,9 @@ export function GenerateDialog({
           )}
         </div>
         <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>Cancelar</Button>
+          <Button variant="ghost" onClick={onClose}>
+            Cancelar
+          </Button>
           <Button
             disabled={!templateId || mut.isPending}
             onClick={() => mut.mutate({ data: { workspaceId, year, month, templateId, mode } })}

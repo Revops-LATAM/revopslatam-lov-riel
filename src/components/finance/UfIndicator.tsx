@@ -39,7 +39,6 @@ export function UfIndicator({ workspaceId }: { workspaceId: string }) {
         qc.invalidateQueries({ queryKey: ["ws-payments", workspaceId] });
         qc.invalidateQueries({ queryKey: ["finance-dashboard", workspaceId] });
         qc.invalidateQueries({ queryKey: ["invoices", workspaceId] });
-
       } else {
         toast.error(res.error ?? "No se pudo actualizar la UF");
       }

@@ -3,10 +3,16 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
 
-
 // ============ Constants ============
 export const PIECE_FORMATS = ["carrusel", "reel", "post", "encuesta", "demo", "video"] as const;
-export const PIECE_STATUSES = ["idea", "copy", "diseno", "revision", "programada", "publicada"] as const;
+export const PIECE_STATUSES = [
+  "idea",
+  "copy",
+  "diseno",
+  "revision",
+  "programada",
+  "publicada",
+] as const;
 export const PIECE_CHANNELS = ["instagram", "tiktok", "linkedin", "youtube"] as const;
 
 const FormatSchema = z.enum(PIECE_FORMATS);
@@ -16,7 +22,9 @@ const ChannelSchema = z.enum(PIECE_CHANNELS);
 // ============ Pillars ============
 export const listPillars = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ workspaceId: z.string().uuid(), onlyActive: z.boolean().optional() }).parse(i))
+  .inputValidator((i) =>
+    z.object({ workspaceId: z.string().uuid(), onlyActive: z.boolean().optional() }).parse(i),
+  )
   .handler(async ({ data, context }) => {
     let q = context.supabase
       .from("content_pillars")
@@ -54,7 +62,10 @@ export const upsertPillar = createServerFn({ method: "POST" })
       is_active: data.isActive ?? true,
     };
     if (data.id) {
-      const { error } = await context.supabase.from("content_pillars").update(patch).eq("id", data.id);
+      const { error } = await context.supabase
+        .from("content_pillars")
+        .update(patch)
+        .eq("id", data.id);
       if (error) throw new Error(error.message);
       return { id: data.id };
     }
@@ -201,7 +212,10 @@ export const deleteCadenceTemplate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i) => z.object({ templateId: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase.from("cadence_templates").delete().eq("id", data.templateId);
+    const { error } = await context.supabase
+      .from("cadence_templates")
+      .delete()
+      .eq("id", data.templateId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -263,7 +277,11 @@ export const getPieceDetails = createServerFn({ method: "GET" })
     const { supabase } = context;
     const [pieceR, slidesR, sectionsR, pollR, copiesR] = await Promise.all([
       supabase.from("content_pieces_v2").select("*").eq("id", data.pieceId).single(),
-      supabase.from("piece_carousel_slides").select("*").eq("piece_id", data.pieceId).order("slide_index"),
+      supabase
+        .from("piece_carousel_slides")
+        .select("*")
+        .eq("piece_id", data.pieceId)
+        .order("slide_index"),
       supabase.from("piece_video_sections").select("*").eq("piece_id", data.pieceId),
       supabase.from("piece_poll").select("*").eq("piece_id", data.pieceId).maybeSingle(),
       supabase.from("piece_channel_copies").select("*").eq("piece_id", data.pieceId),
@@ -304,7 +322,8 @@ export const generateMonthlyGrid = createServerFn({ method: "POST" })
       .eq("id", data.templateId)
       .single();
     if (tErr) throw new Error(tErr.message);
-    if (tpl.workspace_id !== data.workspaceId) throw new Error("Template does not belong to workspace");
+    if (tpl.workspace_id !== data.workspaceId)
+      throw new Error("Template does not belong to workspace");
 
     const { data: slots, error: sErr } = await supabase
       .from("cadence_template_slots")
@@ -329,7 +348,9 @@ export const generateMonthlyGrid = createServerFn({ method: "POST" })
 
     let replaced = 0;
     if (data.mode === "replace_drafts" && existing && existing.length > 0) {
-      const toDelete = existing.filter((p) => p.status === "idea" || p.status === "copy").map((p) => p.id);
+      const toDelete = existing
+        .filter((p) => p.status === "idea" || p.status === "copy")
+        .map((p) => p.id);
       if (toDelete.length > 0) {
         await supabase.from("content_pieces_v2").delete().in("id", toDelete);
         replaced = toDelete.length;
@@ -344,9 +365,7 @@ export const generateMonthlyGrid = createServerFn({ method: "POST" })
       .gte("publish_at", start)
       .lt("publish_at", end);
 
-    const existingKeys = new Set(
-      (stillExisting ?? []).map((p) => `${p.publish_at}|${p.format}`),
-    );
+    const existingKeys = new Set((stillExisting ?? []).map((p) => `${p.publish_at}|${p.format}`));
 
     // Upsert/create grid
     let gridId: string;
@@ -361,7 +380,11 @@ export const generateMonthlyGrid = createServerFn({ method: "POST" })
       gridId = gridExisting.id;
       await supabase
         .from("content_grids")
-        .update({ template_id: data.templateId, generated_at: new Date().toISOString(), generated_by: userId })
+        .update({
+          template_id: data.templateId,
+          generated_at: new Date().toISOString(),
+          generated_by: userId,
+        })
         .eq("id", gridId);
     } else {
       const { data: g, error: gErr } = await supabase
@@ -402,7 +425,9 @@ export const generateMonthlyGrid = createServerFn({ method: "POST" })
       const daySlots = slots.filter((s) => s.weekday === weekday);
       for (const slot of daySlots) {
         // Compose publish_at (local time_of_day, fallback 09:00)
-        const [hh, mm] = (slot.time_of_day ?? "09:00").split(":").map((x: string) => parseInt(x, 10));
+        const [hh, mm] = (slot.time_of_day ?? "09:00")
+          .split(":")
+          .map((x: string) => parseInt(x, 10));
         const publish = new Date(data.year, data.month - 1, day, hh || 9, mm || 0, 0, 0);
         const iso = publish.toISOString();
         const key = `${iso}|${slot.format}`;
@@ -509,9 +534,8 @@ export const updatePiece = createServerFn({ method: "POST" })
         .select("channel_assets")
         .eq("id", data.pieceId)
         .single();
-      const current =
-        ((existing as { channel_assets?: Record<string, string | null> } | null)?.channel_assets ??
-          {}) as Record<string, string | null>;
+      const current = ((existing as { channel_assets?: Record<string, string | null> } | null)
+        ?.channel_assets ?? {}) as Record<string, string | null>;
       const merged: Record<string, string> = { ...current } as Record<string, string>;
       for (const [k, v] of Object.entries(data.channelAssets)) {
         if (v === null) delete merged[k];
@@ -522,10 +546,11 @@ export const updatePiece = createServerFn({ method: "POST" })
     if (data.cta !== undefined) patch.cta = data.cta;
     if (data.content !== undefined) patch.content = data.content;
 
-
-    const { error } = await context.supabase.from("content_pieces_v2").update(patch).eq("id", data.pieceId);
+    const { error } = await context.supabase
+      .from("content_pieces_v2")
+      .update(patch)
+      .eq("id", data.pieceId);
     if (error) throw new Error(error.message);
-
 
     // When channels change, add missing copy rows for newly-added channels.
     // (We do NOT delete copies for removed channels to preserve user data.)
@@ -550,7 +575,10 @@ export const deletePiece = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i) => z.object({ pieceId: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase.from("content_pieces_v2").delete().eq("id", data.pieceId);
+    const { error } = await context.supabase
+      .from("content_pieces_v2")
+      .delete()
+      .eq("id", data.pieceId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -558,9 +586,7 @@ export const deletePiece = createServerFn({ method: "POST" })
 // ============ Sub-structure ============
 export const upsertCarouselSlide = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) =>
-    z.object({ slideId: z.string().uuid(), text: z.string() }).parse(i),
-  )
+  .inputValidator((i) => z.object({ slideId: z.string().uuid(), text: z.string() }).parse(i))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("piece_carousel_slides")
@@ -637,17 +663,15 @@ export const upsertChannelCopy = createServerFn({ method: "POST" })
       .parse(i),
   )
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase
-      .from("piece_channel_copies")
-      .upsert(
-        {
-          piece_id: data.pieceId,
-          channel: data.channel,
-          body: data.body,
-          hashtags: data.hashtags,
-        },
-        { onConflict: "piece_id,channel" },
-      );
+    const { error } = await context.supabase.from("piece_channel_copies").upsert(
+      {
+        piece_id: data.pieceId,
+        channel: data.channel,
+        body: data.body,
+        hashtags: data.hashtags,
+      },
+      { onConflict: "piece_id,channel" },
+    );
     if (error) throw new Error(error.message);
     return { ok: true };
   });

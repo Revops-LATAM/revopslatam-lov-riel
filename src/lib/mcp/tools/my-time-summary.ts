@@ -27,7 +27,12 @@ export default defineTool({
     const startUtc = utcFromTzWall(from, "00:00:00", tz);
     const endUtc = utcFromTzWall(to, "23:59:59.999", tz);
 
-    const entries: Array<{ task_id: string | null; duration_minutes: number | null; started_at: string; is_billable: boolean }> = [];
+    const entries: Array<{
+      task_id: string | null;
+      duration_minutes: number | null;
+      started_at: string;
+      is_billable: boolean;
+    }> = [];
     for (let page = 0; ; page += 1) {
       const { data: rows, error } = await sb
         .from("time_entries")
@@ -41,7 +46,6 @@ export default defineTool({
       entries.push(...list);
       if (list.length < 1000) break;
     }
-
 
     const taskIds = [...new Set(entries.map((e) => e.task_id).filter(Boolean) as string[])];
     const taskProject = new Map<string, string | null>();

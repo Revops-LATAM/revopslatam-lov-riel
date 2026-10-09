@@ -32,14 +32,21 @@ function LoginPage() {
   const handleGoogle = async () => {
     setLoading(true);
     // Preserve the intended post-login path across the Google round-trip.
-    const nextParam = search.redirect && search.redirect !== "/" ? `?redirect=${encodeURIComponent(search.redirect)}` : "";
+    const nextParam =
+      search.redirect && search.redirect !== "/"
+        ? `?redirect=${encodeURIComponent(search.redirect)}`
+        : "";
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: `${window.location.origin}/login${nextParam}`,
     });
     if (result.error) {
       setLoading(false);
       const msg = result.error.message || "";
-      if (msg.includes("no está autorizado") || msg.toLowerCase().includes("not allowed") || msg.includes("insufficient_privilege")) {
+      if (
+        msg.includes("no está autorizado") ||
+        msg.toLowerCase().includes("not allowed") ||
+        msg.includes("insufficient_privilege")
+      ) {
         toast.error("Acceso restringido", {
           description: "Tu correo no está autorizado. Pide a un administrador que te invite.",
         });
@@ -79,7 +86,8 @@ function LoginPage() {
         </Button>
 
         <p className="text-center text-xs text-muted-foreground">
-          Riel es una aplicación privada. Solo los correos invitados por un administrador pueden iniciar sesión.
+          Riel es una aplicación privada. Solo los correos invitados por un administrador pueden
+          iniciar sesión.
         </p>
       </div>
     </div>

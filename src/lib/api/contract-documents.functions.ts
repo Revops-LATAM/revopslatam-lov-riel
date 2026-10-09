@@ -50,14 +50,11 @@ export const getContractDocumentUrl = createServerFn({ method: "POST" })
     return { url: signed.signedUrl };
   });
 
-
 export const deleteContractDocument = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ path: z.string().min(1) }).parse(input))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase.storage
-      .from("contract-documents")
-      .remove([data.path]);
+    const { error } = await context.supabase.storage.from("contract-documents").remove([data.path]);
     if (error) throw new Error(error.message);
     return { ok: true };
   });

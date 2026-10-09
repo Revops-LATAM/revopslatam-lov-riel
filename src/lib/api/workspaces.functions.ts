@@ -77,7 +77,10 @@ export const updateWorkspaceTimeConfig = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
-    const patch: { timezone?: string; allocation_strategy?: "due_date" | "spread" | "fit_capacity" } = {};
+    const patch: {
+      timezone?: string;
+      allocation_strategy?: "due_date" | "spread" | "fit_capacity";
+    } = {};
     if (data.timezone) patch.timezone = data.timezone;
     if (data.allocationStrategy) patch.allocation_strategy = data.allocationStrategy;
     const { error } = await supabase.from("workspaces").update(patch).eq("id", data.workspaceId);
@@ -87,7 +90,6 @@ export const updateWorkspaceTimeConfig = createServerFn({ method: "POST" })
 
 // `ensureDefaultWorkspace` fue removido: Riel es una app privada por invitación.
 // Los nuevos usuarios reciben acceso vía workspace_invitations + accept_pending_invitations trigger.
-
 
 export const getMyProfile = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -114,9 +116,7 @@ export const searchWorkspace = createServerFn({ method: "GET" })
     // Allow "#abcd1234" or bare "abcd1234" prefix references and full UUIDs.
     const idish = raw.replace(/^#/, "").trim().toLowerCase();
     const isHexRef = /^[0-9a-f-]{4,36}$/.test(idish);
-    const isFullUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(
-      idish,
-    );
+    const isFullUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(idish);
 
     // Build task query. For hex prefixes we use a UUID range (works on uuid columns),
     // for full UUIDs an exact match, otherwise a title search.

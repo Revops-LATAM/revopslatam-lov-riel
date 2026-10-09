@@ -3,7 +3,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -62,7 +68,9 @@ export function CreateMarketingProjectDialog({
 
         <div className="space-y-3">
           <div>
-            <Label htmlFor="proj-name" className="text-xs">Nombre</Label>
+            <Label htmlFor="proj-name" className="text-xs">
+              Nombre
+            </Label>
             <Input
               id="proj-name"
               value={name}
@@ -72,7 +80,9 @@ export function CreateMarketingProjectDialog({
             />
           </div>
           <div>
-            <Label htmlFor="proj-desc" className="text-xs">Descripción (opcional)</Label>
+            <Label htmlFor="proj-desc" className="text-xs">
+              Descripción (opcional)
+            </Label>
             <Textarea
               id="proj-desc"
               value={description}
@@ -100,7 +110,9 @@ export function CreateMarketingProjectDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>Cancelar</Button>
+          <Button variant="ghost" onClick={onClose}>
+            Cancelar
+          </Button>
           <Button onClick={() => createMut.mutate()} disabled={!name.trim() || createMut.isPending}>
             {createMut.isPending ? "Creando…" : "Crear proyecto"}
           </Button>

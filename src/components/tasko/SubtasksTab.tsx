@@ -39,14 +39,12 @@ export function SubtasksTab({
     if (focusNewSignal && newInputRef.current) newInputRef.current.focus();
   }, [focusNewSignal]);
   const createSubMut = useMutation({
-    mutationFn: (title: string) =>
-      createSub({ data: { projectId, title, parentTaskId: taskId } }),
+    mutationFn: (title: string) => createSub({ data: { projectId, title, parentTaskId: taskId } }),
     onSuccess: () => {
       setSubTitle("");
       invalidate();
     },
-    onError: (e: Error) =>
-      toast.error("No se pudo crear subtarea", { description: e.message }),
+    onError: (e: Error) => toast.error("No se pudo crear subtarea", { description: e.message }),
   });
 
   const toggleMut = useMutation({
@@ -59,8 +57,7 @@ export function SubtasksTab({
         },
       }),
     onSuccess: invalidate,
-    onError: (e: Error) =>
-      toast.error("No se pudo actualizar", { description: e.message }),
+    onError: (e: Error) => toast.error("No se pudo actualizar", { description: e.message }),
   });
 
   const subtasks = tasksQuery.data ?? [];
@@ -100,30 +97,26 @@ export function SubtasksTab({
         {subtasks.map((s) => {
           const done = isCompleted(s);
           return (
-          <div key={s.id} className="py-2 flex items-center gap-2 group">
-            <button
-              type="button"
-              onClick={() =>
-                toggleMut.mutate({ id: s.id, status: done ? "planificada" : "completada" })
-              }
-              aria-label={done ? "Marcar como pendiente" : "Marcar como hecha"}
-              className="w-4 h-4 rounded border border-border flex items-center justify-center hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            >
-              {done && <Check className="w-3 h-3 text-primary" />}
-            </button>
-            <div
-              className={`flex-1 text-sm ${
-                done ? "line-through text-muted-foreground" : ""
-              }`}
-            >
-              <InlineEditableText
-                value={s.title}
-                onSave={(v) => toggleMut.mutate({ id: s.id, title: v })}
-                ariaLabel="Editar título de subtarea"
-                as="span"
-              />
+            <div key={s.id} className="py-2 flex items-center gap-2 group">
+              <button
+                type="button"
+                onClick={() =>
+                  toggleMut.mutate({ id: s.id, status: done ? "planificada" : "completada" })
+                }
+                aria-label={done ? "Marcar como pendiente" : "Marcar como hecha"}
+                className="w-4 h-4 rounded border border-border flex items-center justify-center hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                {done && <Check className="w-3 h-3 text-primary" />}
+              </button>
+              <div className={`flex-1 text-sm ${done ? "line-through text-muted-foreground" : ""}`}>
+                <InlineEditableText
+                  value={s.title}
+                  onSave={(v) => toggleMut.mutate({ id: s.id, title: v })}
+                  ariaLabel="Editar título de subtarea"
+                  as="span"
+                />
+              </div>
             </div>
-          </div>
           );
         })}
         {subtasks.length === 0 && (

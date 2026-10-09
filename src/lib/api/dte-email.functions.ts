@@ -34,23 +34,33 @@ export const getInvoiceEmailData = createServerFn({ method: "GET" })
       secondary_contacts?: unknown;
     } | null;
 
-    const be = (inv as unknown as {
-      billing_entity?: { razon_social?: string | null; email_facturacion?: string | null; cc_emails?: string[] | null } | null;
-    }).billing_entity;
+    const be = (
+      inv as unknown as {
+        billing_entity?: {
+          razon_social?: string | null;
+          email_facturacion?: string | null;
+          cc_emails?: string[] | null;
+        } | null;
+      }
+    ).billing_entity;
     const principal = ((be ? be.email_facturacion : account?.billing_email) ?? "").trim();
     const secondary = be
       ? (be.cc_emails ?? []).map((x) => String(x ?? "").trim())
       : Array.isArray(account?.secondary_contacts)
-      ? (account!.secondary_contacts as Array<{ email?: string | null }>).map((c) =>
-          String(c?.email ?? "").trim(),
-        )
-      : [];
+        ? (account!.secondary_contacts as Array<{ email?: string | null }>).map((c) =>
+            String(c?.email ?? "").trim(),
+          )
+        : [];
     const emisorCc = ((e.cobranza_cc_emails as unknown as string[] | null) ?? []) as string[];
 
     const seen = new Set<string>();
     if (principal) seen.add(principal.toLowerCase());
     const defaultCc: string[] = [];
-    for (const raw of [be ? "" : (account?.primary_contact_email ?? ""), ...secondary, ...emisorCc]) {
+    for (const raw of [
+      be ? "" : (account?.primary_contact_email ?? ""),
+      ...secondary,
+      ...emisorCc,
+    ]) {
       const email = String(raw ?? "").trim();
       if (!email || !email.includes("@")) continue;
       const key = email.toLowerCase();

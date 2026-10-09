@@ -2,18 +2,28 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { createPiece } from "@/lib/api/marketing-pieces.functions";
 import { listMarketingChannels } from "@/lib/api/marketing-channels.functions";
 import { listCampaigns } from "@/lib/api/marketing-campaigns.functions";
 
-const FORMATS = [
-  "post", "articulo", "video", "reel", "email", "landing", "ad", "live", "otro",
-];
+const FORMATS = ["post", "articulo", "video", "reel", "email", "landing", "ad", "live", "otro"];
 
 export function CreatePieceDialog({
   workspaceId,
@@ -83,7 +93,9 @@ export function CreatePieceDialog({
 
         <div className="space-y-3">
           <div>
-            <Label htmlFor="piece-title" className="text-xs">Título</Label>
+            <Label htmlFor="piece-title" className="text-xs">
+              Título
+            </Label>
             <Input
               id="piece-title"
               value={title}
@@ -96,7 +108,9 @@ export function CreatePieceDialog({
             <div>
               <Label className="text-xs">Canal</Label>
               <Select value={channel} onValueChange={setChannel}>
-                <SelectTrigger><SelectValue placeholder="Elegir canal" /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue placeholder="Elegir canal" />
+                </SelectTrigger>
                 <SelectContent>
                   {(channelsQ.data ?? []).map((c) => (
                     <SelectItem key={c.id} value={c.key}>
@@ -112,10 +126,14 @@ export function CreatePieceDialog({
             <div>
               <Label className="text-xs">Formato</Label>
               <Select value={format} onValueChange={setFormat}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   {FORMATS.map((f) => (
-                    <SelectItem key={f} value={f}>{f}</SelectItem>
+                    <SelectItem key={f} value={f}>
+                      {f}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -124,21 +142,33 @@ export function CreatePieceDialog({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label className="text-xs">Fecha publicación</Label>
-              <Input type="date" value={publishDate} onChange={(e) => setPublishDate(e.target.value)} />
+              <Input
+                type="date"
+                value={publishDate}
+                onChange={(e) => setPublishDate(e.target.value)}
+              />
             </div>
             <div>
               <Label className="text-xs">Hora</Label>
-              <Input type="time" value={publishTime} onChange={(e) => setPublishTime(e.target.value)} />
+              <Input
+                type="time"
+                value={publishTime}
+                onChange={(e) => setPublishTime(e.target.value)}
+              />
             </div>
           </div>
           <div>
             <Label className="text-xs">Campaña (opcional)</Label>
             <Select value={campaignId} onValueChange={setCampaignId}>
-              <SelectTrigger><SelectValue placeholder="Sin campaña" /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue placeholder="Sin campaña" />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="__none__">Sin campaña</SelectItem>
                 {(campaignsQ.data ?? []).map((c) => (
-                  <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                  <SelectItem key={c.id} value={c.id}>
+                    {c.name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -146,7 +176,9 @@ export function CreatePieceDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>Cancelar</Button>
+          <Button variant="ghost" onClick={onClose}>
+            Cancelar
+          </Button>
           <Button
             onClick={() => createMut.mutate()}
             disabled={!title.trim() || !channel || createMut.isPending}

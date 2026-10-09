@@ -12,9 +12,7 @@ import { Input } from "@/components/ui/input";
 import { RouteError } from "@/components/tasko/RouteError";
 import { toast } from "sonner";
 
-export const Route = createFileRoute(
-  "/_authenticated/w/$workspaceSlug/internal/categories/$key",
-)({
+export const Route = createFileRoute("/_authenticated/w/$workspaceSlug/internal/categories/$key")({
   ssr: false,
   head: () => ({ meta: [{ title: "Categoría interna · Riel" }] }),
   errorComponent: RouteError,
@@ -129,7 +127,9 @@ function InternalCategoryPage() {
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium truncate">{p.name}</div>
                     {p.description && (
-                      <div className="text-[11px] text-muted-foreground truncate">{p.description}</div>
+                      <div className="text-[11px] text-muted-foreground truncate">
+                        {p.description}
+                      </div>
                     )}
                   </div>
                 </Link>

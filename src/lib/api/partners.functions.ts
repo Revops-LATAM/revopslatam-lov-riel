@@ -9,7 +9,9 @@ export const listPartners = createServerFn({ method: "GET" })
     const { supabase } = context;
     const { data: rows, error } = await supabase
       .from("partners")
-      .select("id, name, country, billing_entity, external_billing_system, notes, created_at, updated_at")
+      .select(
+        "id, name, country, billing_entity, external_billing_system, notes, created_at, updated_at",
+      )
       .eq("workspace_id", data.workspaceId)
       .order("name", { ascending: true });
     if (error) throw new Error(error.message);

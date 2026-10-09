@@ -35,7 +35,7 @@ export const Route = createFileRoute("/api/public/portal/$slug/tickets/$ticketId
             .select("id, title, project_id, assignee_id, submitter_email")
             .eq("id", params.ticketId)
             .eq("project_id", form.project_id)
-          .not("submitter_email", "is", null);
+            .not("submitter_email", "is", null);
           if (session.role !== "leader") {
             taskQuery = taskQuery.eq("submitter_email", session.email);
           }
@@ -55,7 +55,10 @@ export const Route = createFileRoute("/api/public/portal/$slug/tickets/$ticketId
           } as never);
           if (error) {
             console.error("[portal-comment] insert failed", error);
-            return Response.json({ error: "comment_insert_failed", detail: error.message }, { status: 500 });
+            return Response.json(
+              { error: "comment_insert_failed", detail: error.message },
+              { status: 500 },
+            );
           }
 
           // Best-effort: notify assignee via email
@@ -102,7 +105,6 @@ export const Route = createFileRoute("/api/public/portal/$slug/tickets/$ticketId
                 message: parsed.data.body,
                 ticketUrl: `${appBase}/tasks/${task.id}`,
               });
-
             } catch (e) {
               console.error("[portal-comment] slack reply notify failed", e);
             }

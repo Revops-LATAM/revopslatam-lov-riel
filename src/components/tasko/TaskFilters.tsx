@@ -66,10 +66,7 @@ export function TaskFilters({
         />
       </div>
 
-      <Select
-        value={value.priority}
-        onValueChange={(v) => onChange({ ...value, priority: v })}
-      >
+      <Select value={value.priority} onValueChange={(v) => onChange({ ...value, priority: v })}>
         <SelectTrigger className="h-7 w-auto gap-1.5 text-xs" aria-label="Filtrar por prioridad">
           <SelectValue placeholder="Prioridad" />
         </SelectTrigger>
@@ -85,10 +82,7 @@ export function TaskFilters({
         </SelectContent>
       </Select>
 
-      <Select
-        value={value.assignee}
-        onValueChange={(v) => onChange({ ...value, assignee: v })}
-      >
+      <Select value={value.assignee} onValueChange={(v) => onChange({ ...value, assignee: v })}>
         <SelectTrigger className="h-7 w-auto gap-1.5 text-xs" aria-label="Filtrar por asignado">
           <SelectValue placeholder="Asignado" />
         </SelectTrigger>
@@ -109,10 +103,7 @@ export function TaskFilters({
       </Select>
 
       {meta.types.length > 0 && (
-        <Select
-          value={value.taskType}
-          onValueChange={(v) => onChange({ ...value, taskType: v })}
-        >
+        <Select value={value.taskType} onValueChange={(v) => onChange({ ...value, taskType: v })}>
           <SelectTrigger className="h-7 w-auto gap-1.5 text-xs" aria-label="Filtrar por tipo">
             <SelectValue placeholder="Tipo" />
           </SelectTrigger>
@@ -169,7 +160,8 @@ export function applyFilters<
         f.assignee !== "unassigned" &&
         !assigneeIds.includes(f.assignee) &&
         t.assignee_id !== f.assignee
-      ) return false;
+      )
+        return false;
     }
     if (f.taskType !== "all" && t.task_type_id !== f.taskType) return false;
     return true;

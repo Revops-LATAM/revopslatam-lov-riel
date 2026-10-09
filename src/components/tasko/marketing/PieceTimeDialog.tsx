@@ -3,21 +3,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Clock, Plus, Trash2 } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  listTimeEntries,
-  createTimeEntry,
-  deleteTimeEntry,
-} from "@/lib/api/time.functions";
+import { listTimeEntries, createTimeEntry, deleteTimeEntry } from "@/lib/api/time.functions";
 
 function fmtDurationMin(mins: number) {
   const h = Math.floor(mins / 60);
@@ -86,10 +77,7 @@ export function PieceTimeDialog({
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const totalMin = (entriesQ.data ?? []).reduce(
-    (a, r) => a + (r.duration_minutes ?? 0),
-    0,
-  );
+  const totalMin = (entriesQ.data ?? []).reduce((a, r) => a + (r.duration_minutes ?? 0), 0);
 
   return (
     <Dialog open onOpenChange={onClose}>
@@ -106,12 +94,8 @@ export function PieceTimeDialog({
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
               Total registrado
             </div>
-            <div className="text-lg font-semibold tabular-nums">
-              {fmtDurationMin(totalMin)}
-            </div>
-            <div className="text-[10px] text-muted-foreground mt-0.5">
-              Interno · no facturable
-            </div>
+            <div className="text-lg font-semibold tabular-nums">{fmtDurationMin(totalMin)}</div>
+            <div className="text-[10px] text-muted-foreground mt-0.5">Interno · no facturable</div>
           </div>
 
           <div className="rounded-md border border-border p-3 space-y-2">
@@ -177,9 +161,7 @@ export function PieceTimeDialog({
                       </span>
                     </div>
                     {e.note && (
-                      <div className="text-[10px] text-muted-foreground truncate">
-                        {e.note}
-                      </div>
+                      <div className="text-[10px] text-muted-foreground truncate">{e.note}</div>
                     )}
                   </div>
                   <Button

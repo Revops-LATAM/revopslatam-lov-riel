@@ -7,7 +7,13 @@ import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Users } from "lucide
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { buildWindow, ZOOMS, type Zoom } from "./workloadWindow";
-import { packTasks, ganttRowHeight, WorkloadGanttBar, STATUS_LEGEND, type ColorMode } from "./WorkloadGanttBar";
+import {
+  packTasks,
+  ganttRowHeight,
+  WorkloadGanttBar,
+  STATUS_LEGEND,
+  type ColorMode,
+} from "./WorkloadGanttBar";
 
 import { MemberAvatar } from "./MemberAvatar";
 import { TaskDetailDrawer } from "./TaskDetailDrawer";
@@ -32,7 +38,6 @@ export function MyTeamView({ workspaceId }: Props) {
       return next;
     });
 
-
   const win = useMemo(() => buildWindow(anchor, zoom), [anchor, zoom]);
   const rangeStart = format(win.start, "yyyy-MM-dd");
   const rangeEnd = format(win.end, "yyyy-MM-dd");
@@ -56,7 +61,6 @@ export function MyTeamView({ workspaceId }: Props) {
 
   const members = teamQ.data?.members ?? [];
 
-
   return (
     <div className="flex flex-col border-t border-border">
       <header className="h-12 border-b border-border px-6 flex items-center justify-between">
@@ -64,17 +68,27 @@ export function MyTeamView({ workspaceId }: Props) {
           <Users className="w-4 h-4" /> Mi equipo
         </h2>
         <div className="flex items-center gap-2">
-          <Button size="icon" variant="ghost" className="w-7 h-7" onClick={() => setAnchor(addDays(anchor, -navStep))}>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="w-7 h-7"
+            onClick={() => setAnchor(addDays(anchor, -navStep))}
+          >
             <ChevronLeft className="w-4 h-4" />
           </Button>
           <span className="text-xs text-muted-foreground tabular-nums min-w-[200px] text-center">
-            {format(win.start, "dd/MM", { locale: es })} – {format(win.end, "dd/MM/yyyy", { locale: es })}
+            {format(win.start, "dd/MM", { locale: es })} –{" "}
+            {format(win.end, "dd/MM/yyyy", { locale: es })}
           </span>
-          <Button size="icon" variant="ghost" className="w-7 h-7" onClick={() => setAnchor(addDays(anchor, navStep))}>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="w-7 h-7"
+            onClick={() => setAnchor(addDays(anchor, navStep))}
+          >
             <ChevronRight className="w-4 h-4" />
           </Button>
           {/* botón Hoy eliminado */}
-
 
           <div className="inline-flex rounded-md border border-border overflow-hidden">
             {ZOOMS.map((z, i) => (
@@ -85,7 +99,9 @@ export function MyTeamView({ workspaceId }: Props) {
                 className={cn(
                   "px-2 h-7 text-xs capitalize",
                   i > 0 && "border-l border-border",
-                  zoom === z ? "bg-accent text-foreground" : "text-muted-foreground hover:bg-accent/50",
+                  zoom === z
+                    ? "bg-accent text-foreground"
+                    : "text-muted-foreground hover:bg-accent/50",
                 )}
                 aria-pressed={zoom === z}
               >
@@ -122,9 +138,13 @@ export function MyTeamView({ workspaceId }: Props) {
 
           {/* Member rows */}
           {teamQ.isLoading ? (
-            <div className="p-6 text-center text-xs text-muted-foreground italic">Cargando equipo…</div>
+            <div className="p-6 text-center text-xs text-muted-foreground italic">
+              Cargando equipo…
+            </div>
           ) : members.length === 0 ? (
-            <div className="p-6 text-center text-xs text-muted-foreground italic">Sin miembros en el espacio.</div>
+            <div className="p-6 text-center text-xs text-muted-foreground italic">
+              Sin miembros en el espacio.
+            </div>
           ) : (
             members.map((m) => {
               const { positioned, lanesUsed, overflowCount } = packTasks(
@@ -143,12 +163,16 @@ export function MyTeamView({ workspaceId }: Props) {
                 rangeEnd,
               );
               const isCollapsed = collapsed.has(m.user_id);
-              const rowH = isCollapsed ? STRIP_H + 8 : STRIP_H + Math.max(ganttRowHeight(lanesUsed), 44);
+              const rowH = isCollapsed
+                ? STRIP_H + 8
+                : STRIP_H + Math.max(ganttRowHeight(lanesUsed), 44);
               const delta = m.loggedMin - m.estimateMin;
               const deltaCls =
-                delta > 0 ? "text-emerald-600 dark:text-emerald-400"
-                : delta < 0 ? "text-destructive"
-                : "text-muted-foreground/70";
+                delta > 0
+                  ? "text-emerald-600 dark:text-emerald-400"
+                  : delta < 0
+                    ? "text-destructive"
+                    : "text-muted-foreground/70";
               return (
                 <div
                   key={m.user_id}
@@ -163,24 +187,39 @@ export function MyTeamView({ workspaceId }: Props) {
                       aria-label={isCollapsed ? "Expandir" : "Colapsar"}
                       aria-expanded={!isCollapsed}
                     >
-                      {isCollapsed ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
+                      {isCollapsed ? (
+                        <ChevronDown className="w-3 h-3" />
+                      ) : (
+                        <ChevronUp className="w-3 h-3" />
+                      )}
                     </button>
-                    <MemberAvatar profile={{ id: m.user_id, full_name: m.name, avatar_url: m.avatar_url }} size={24} shape="circle" />
+                    <MemberAvatar
+                      profile={{ id: m.user_id, full_name: m.name, avatar_url: m.avatar_url }}
+                      size={24}
+                      shape="circle"
+                    />
                     <div className="min-w-0 flex-1">
                       <div className="text-xs font-medium truncate">{m.name}</div>
                       <div className="text-[10px] text-muted-foreground">
                         {m.tasks.length} tarea{m.tasks.length === 1 ? "" : "s"}
-                        {overflowCount > 0 && !isCollapsed && <span className="ml-1 text-status-in-progress">+{overflowCount} más</span>}
+                        {overflowCount > 0 && !isCollapsed && (
+                          <span className="ml-1 text-status-in-progress">+{overflowCount} más</span>
+                        )}
                       </div>
                       {!isCollapsed && (m.estimateMin > 0 || m.loggedMin > 0) && (
                         <div className="mt-1 space-y-0.5 text-[10px] tabular-nums">
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="text-foreground font-semibold">{fmt(m.loggedMin)}</span>
+                            <span className="text-foreground font-semibold">
+                              {fmt(m.loggedMin)}
+                            </span>
                             {m.estimateMin > 0 && (
                               <>
-                                <span className="text-muted-foreground/60">/ est {fmt(m.estimateMin)}</span>
+                                <span className="text-muted-foreground/60">
+                                  / est {fmt(m.estimateMin)}
+                                </span>
                                 <span className={cn("font-semibold", deltaCls)}>
-                                  ({delta >= 0 ? "+" : ""}{fmt(Math.abs(delta))})
+                                  ({delta >= 0 ? "+" : ""}
+                                  {fmt(Math.abs(delta))})
                                 </span>
                               </>
                             )}
@@ -188,10 +227,14 @@ export function MyTeamView({ workspaceId }: Props) {
                           {(m.loggedClientMin > 0 || m.loggedInternalMin > 0) && (
                             <div className="flex items-center gap-1.5 text-[9px]">
                               {m.loggedClientMin > 0 && (
-                                <span className="text-emerald-700 dark:text-emerald-400">Cliente {fmt(m.loggedClientMin)}</span>
+                                <span className="text-emerald-700 dark:text-emerald-400">
+                                  Cliente {fmt(m.loggedClientMin)}
+                                </span>
                               )}
                               {m.loggedInternalMin > 0 && (
-                                <span className="text-blue-700 dark:text-blue-400">Interno {fmt(m.loggedInternalMin)}</span>
+                                <span className="text-blue-700 dark:text-blue-400">
+                                  Interno {fmt(m.loggedInternalMin)}
+                                </span>
                               )}
                             </div>
                           )}
@@ -203,7 +246,9 @@ export function MyTeamView({ workspaceId }: Props) {
                     {/* Weekend / today background */}
                     <div
                       className="absolute inset-0 grid pointer-events-none"
-                      style={{ gridTemplateColumns: `repeat(${win.columns.length}, minmax(0, 1fr))` }}
+                      style={{
+                        gridTemplateColumns: `repeat(${win.columns.length}, minmax(0, 1fr))`,
+                      }}
                     >
                       {win.columns.map((c) => {
                         const isWeekendCol = c.days.every((d) => {
@@ -225,7 +270,10 @@ export function MyTeamView({ workspaceId }: Props) {
                     {/* Daily hour cells strip — always visible */}
                     <div
                       className="absolute inset-x-0 top-0 grid"
-                      style={{ gridTemplateColumns: `repeat(${win.columns.length}, minmax(0, 1fr))`, height: STRIP_H }}
+                      style={{
+                        gridTemplateColumns: `repeat(${win.columns.length}, minmax(0, 1fr))`,
+                        height: STRIP_H,
+                      }}
                     >
                       {win.columns.map((c) => {
                         const workdays = c.days.filter((d) => {
@@ -248,7 +296,10 @@ export function MyTeamView({ workspaceId }: Props) {
                         const delta = colMin - planMin;
                         const hasBoth = showLogged && showPlan;
                         return (
-                          <div key={c.key} className="flex flex-col items-stretch justify-center gap-0.5 px-1 py-1">
+                          <div
+                            key={c.key}
+                            className="flex flex-col items-stretch justify-center gap-0.5 px-1 py-1"
+                          >
                             {showLogged && (
                               <div
                                 className={cn(
@@ -279,14 +330,18 @@ export function MyTeamView({ workspaceId }: Props) {
                             )}
                           </div>
                         );
-
                       })}
                     </div>
                     {/* Gantt bars area — expanded only */}
                     {!isCollapsed && (
                       <div className="absolute inset-x-0" style={{ top: STRIP_H, bottom: 0 }}>
                         {positioned.map((t) => (
-                          <WorkloadGanttBar key={t.id} task={t} colorMode={colorMode} onClick={(id) => setSel({ id, ws: workspaceId })} />
+                          <WorkloadGanttBar
+                            key={t.id}
+                            task={t}
+                            colorMode={colorMode}
+                            onClick={(id) => setSel({ id, ws: workspaceId })}
+                          />
                         ))}
                       </div>
                     )}

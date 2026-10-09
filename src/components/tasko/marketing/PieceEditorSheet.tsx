@@ -98,9 +98,7 @@ export function PieceEditorSheet({
     <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
       <SheetContent className="w-full sm:max-w-2xl overflow-y-auto">
         <SheetHeader>
-          <SheetTitle className="truncate">
-            {data?.piece.title || "Sin título"}
-          </SheetTitle>
+          <SheetTitle className="truncate">{data?.piece.title || "Sin título"}</SheetTitle>
         </SheetHeader>
 
         {detailsQ.isLoading && (
@@ -126,14 +124,18 @@ export function PieceEditorSheet({
                 <label className="text-xs text-muted-foreground">CTA</label>
                 <TextField
                   initial={data.piece.cta ?? ""}
-                  onSave={(v) => pieceMut.mutate({ data: { pieceId: data.piece.id, cta: v || null } })}
+                  onSave={(v) =>
+                    pieceMut.mutate({ data: { pieceId: data.piece.id, cta: v || null } })
+                  }
                 />
               </div>
               <div>
                 <label className="text-xs text-muted-foreground">Link asset (Canva / Drive)</label>
                 <TextField
                   initial={data.piece.asset_url ?? ""}
-                  onSave={(v) => pieceMut.mutate({ data: { pieceId: data.piece.id, assetUrl: v || null } })}
+                  onSave={(v) =>
+                    pieceMut.mutate({ data: { pieceId: data.piece.id, assetUrl: v || null } })
+                  }
                 />
               </div>
             </TabsContent>
@@ -176,7 +178,8 @@ export function PieceEditorSheet({
               )}
               {(data.piece.format === "post" || data.piece.format === "demo") && (
                 <div className="text-sm text-muted-foreground">
-                  Formato "{data.piece.format}" — el contenido va directamente en los copies por canal.
+                  Formato "{data.piece.format}" — el contenido va directamente en los copies por
+                  canal.
                 </div>
               )}
             </TabsContent>
@@ -228,7 +231,11 @@ function TitleInput({ initial, onSave }: { initial: string; onSave: (v: string) 
     <div>
       <label className="text-xs text-muted-foreground">Título</label>
       <div className="flex gap-2">
-        <Input value={v} onChange={(e) => setV(e.target.value)} onBlur={() => v !== initial && onSave(v)} />
+        <Input
+          value={v}
+          onChange={(e) => setV(e.target.value)}
+          onBlur={() => v !== initial && onSave(v)}
+        />
       </div>
     </div>
   );
@@ -237,7 +244,13 @@ function TitleInput({ initial, onSave }: { initial: string; onSave: (v: string) 
 function TextField({ initial, onSave }: { initial: string; onSave: (v: string) => void }) {
   const [v, setV] = useState(initial);
   useEffect(() => setV(initial), [initial]);
-  return <Input value={v} onChange={(e) => setV(e.target.value)} onBlur={() => v !== initial && onSave(v)} />;
+  return (
+    <Input
+      value={v}
+      onChange={(e) => setV(e.target.value)}
+      onBlur={() => v !== initial && onSave(v)}
+    />
+  );
 }
 
 function SlideEditor({
@@ -266,7 +279,12 @@ function SlideEditor({
           </Button>
         )}
       </div>
-      <Textarea value={v} onChange={(e) => setV(e.target.value)} rows={3} placeholder="Texto de la slide…" />
+      <Textarea
+        value={v}
+        onChange={(e) => setV(e.target.value)}
+        rows={3}
+        placeholder="Texto de la slide…"
+      />
     </div>
   );
 }
@@ -283,7 +301,12 @@ function SectionEditor({
     script: string;
     recording_notes: string | null;
   };
-  onSave: (patch: { script?: string; startTs?: string | null; endTs?: string | null; recordingNotes?: string | null }) => void;
+  onSave: (patch: {
+    script?: string;
+    startTs?: string | null;
+    endTs?: string | null;
+    recordingNotes?: string | null;
+  }) => void;
 }) {
   const [start, setStart] = useState(section.start_ts ?? "");
   const [end, setEnd] = useState(section.end_ts ?? "");
@@ -297,24 +320,53 @@ function SectionEditor({
   return (
     <div className="border border-border rounded-md p-3 space-y-2 bg-card">
       <div className="flex items-center justify-between">
-        <div className="text-xs font-semibold">{SECTION_LABEL[section.section] ?? section.section}</div>
+        <div className="text-xs font-semibold">
+          {SECTION_LABEL[section.section] ?? section.section}
+        </div>
         {dirty && (
           <Button
             size="sm"
             variant="ghost"
             className="h-7 text-xs"
-            onClick={() => onSave({ startTs: start || null, endTs: end || null, script, recordingNotes: notes || null })}
+            onClick={() =>
+              onSave({
+                startTs: start || null,
+                endTs: end || null,
+                script,
+                recordingNotes: notes || null,
+              })
+            }
           >
             <Save className="w-3 h-3 mr-1" /> Guardar
           </Button>
         )}
       </div>
       <div className="grid grid-cols-2 gap-2">
-        <Input value={start} onChange={(e) => setStart(e.target.value)} placeholder="Inicio 0:00" className="h-8 text-xs" />
-        <Input value={end} onChange={(e) => setEnd(e.target.value)} placeholder="Fin 0:15" className="h-8 text-xs" />
+        <Input
+          value={start}
+          onChange={(e) => setStart(e.target.value)}
+          placeholder="Inicio 0:00"
+          className="h-8 text-xs"
+        />
+        <Input
+          value={end}
+          onChange={(e) => setEnd(e.target.value)}
+          placeholder="Fin 0:15"
+          className="h-8 text-xs"
+        />
       </div>
-      <Textarea value={script} onChange={(e) => setScript(e.target.value)} rows={3} placeholder="Guion / voz en off…" />
-      <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} placeholder="Notas de grabación…" />
+      <Textarea
+        value={script}
+        onChange={(e) => setScript(e.target.value)}
+        rows={3}
+        placeholder="Guion / voz en off…"
+      />
+      <Textarea
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+        rows={2}
+        placeholder="Notas de grabación…"
+      />
     </div>
   );
 }
@@ -334,18 +386,30 @@ function PollEditor({
     setQ(initial?.question ?? "");
     setOpts(initial?.options ?? ["", ""]);
   }, [initial, pieceId]);
-  const dirty = q !== (initial?.question ?? "") || JSON.stringify(opts) !== JSON.stringify(initial?.options ?? ["", ""]);
+  const dirty =
+    q !== (initial?.question ?? "") ||
+    JSON.stringify(opts) !== JSON.stringify(initial?.options ?? ["", ""]);
   return (
     <div className="border border-border rounded-md p-3 space-y-2 bg-card">
       <div className="flex items-center justify-between">
         <div className="text-xs font-semibold">Encuesta</div>
         {dirty && (
-          <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => onSave(q, opts.filter(Boolean))}>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-7 text-xs"
+            onClick={() => onSave(q, opts.filter(Boolean))}
+          >
             <Save className="w-3 h-3 mr-1" /> Guardar
           </Button>
         )}
       </div>
-      <Textarea value={q} onChange={(e) => setQ(e.target.value)} placeholder="¿Cuál es tu pregunta?" rows={2} />
+      <Textarea
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder="¿Cuál es tu pregunta?"
+        rows={2}
+      />
       <div className="space-y-1.5">
         {opts.map((o, i) => (
           <div key={i} className="flex gap-1">
@@ -355,12 +419,22 @@ function PollEditor({
               placeholder={`Opción ${i + 1}`}
               className="h-8"
             />
-            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setOpts((arr) => arr.filter((_, j) => j !== i))}>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-8 w-8"
+              onClick={() => setOpts((arr) => arr.filter((_, j) => j !== i))}
+            >
               <X className="w-3.5 h-3.5" />
             </Button>
           </div>
         ))}
-        <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setOpts((arr) => [...arr, ""])}>
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-7 text-xs"
+          onClick={() => setOpts((arr) => [...arr, ""])}
+        >
           <Plus className="w-3 h-3 mr-1" /> Agregar opción
         </Button>
       </div>
@@ -391,9 +465,18 @@ function CopyEditor({
   return (
     <div className="space-y-2">
       <label className="text-xs text-muted-foreground">Texto</label>
-      <Textarea value={body} onChange={(e) => setBody(e.target.value)} rows={8} placeholder="Copy del post…" />
+      <Textarea
+        value={body}
+        onChange={(e) => setBody(e.target.value)}
+        rows={8}
+        placeholder="Copy del post…"
+      />
       <label className="text-xs text-muted-foreground">Hashtags (separados por espacio)</label>
-      <Input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="#IA #RevOps #Ventas" />
+      <Input
+        value={tags}
+        onChange={(e) => setTags(e.target.value)}
+        placeholder="#IA #RevOps #Ventas"
+      />
       {dirty && (
         <Button size="sm" onClick={() => onSave(body, parsedTags)}>
           <Save className="w-3.5 h-3.5 mr-1" /> Guardar

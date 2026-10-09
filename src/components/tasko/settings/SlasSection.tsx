@@ -12,7 +12,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ChevronDown, ChevronRight, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -172,9 +178,7 @@ export function SlasSection({ workspaceId }: { workspaceId: string }) {
                   <label className="text-xs flex items-center gap-1.5">
                     <Switch
                       checked={sla.active}
-                      onCheckedChange={(v) =>
-                        updateMut.mutate({ slaId: sla.id, active: v })
-                      }
+                      onCheckedChange={(v) => updateMut.mutate({ slaId: sla.id, active: v })}
                     />
                     Activo
                   </label>
@@ -183,8 +187,7 @@ export function SlasSection({ workspaceId }: { workspaceId: string }) {
                       size="icon"
                       variant="ghost"
                       onClick={() => {
-                        if (confirm(`¿Eliminar SLA "${sla.name}"?`))
-                          deleteMut.mutate(sla.id);
+                        if (confirm(`¿Eliminar SLA "${sla.name}"?`)) deleteMut.mutate(sla.id);
                       }}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -207,7 +210,9 @@ export function SlasSection({ workspaceId }: { workspaceId: string }) {
                     const t = sla.sla_targets.find(
                       (x) => x.ticket_type === row.tt && x.level === row.lv,
                     );
-                    const init = t ? minutesTo(t.target_minutes) : { qty: 8, unit: "hours" as Unit };
+                    const init = t
+                      ? minutesTo(t.target_minutes)
+                      : { qty: 8, unit: "hours" as Unit };
                     const respInit = t?.response_target_minutes
                       ? minutesTo(t.response_target_minutes)
                       : { qty: Math.max(1, Math.round(init.qty / 4)), unit: init.unit };
@@ -238,9 +243,7 @@ export function SlasSection({ workspaceId }: { workspaceId: string }) {
           );
         })}
         {!slas.isLoading && (slas.data?.length ?? 0) === 0 && (
-          <div className="p-4 text-sm text-muted-foreground">
-            Aún no hay SLAs. Crea uno arriba.
-          </div>
+          <div className="p-4 text-sm text-muted-foreground">Aún no hay SLAs. Crea uno arriba.</div>
         )}
       </div>
     </section>
@@ -266,8 +269,7 @@ function TargetRow({
   const [qty, setQty] = useState(initQty);
   const [unit, setUnit] = useState<Unit>(initUnit);
   const [bh, setBh] = useState(initBh);
-  const dirty =
-    respQty !== initRespQty || qty !== initQty || unit !== initUnit || bh !== initBh;
+  const dirty = respQty !== initRespQty || qty !== initQty || unit !== initUnit || bh !== initBh;
 
   return (
     <div className="grid grid-cols-[1fr_auto_auto_auto_auto_auto] items-center gap-2 px-1">

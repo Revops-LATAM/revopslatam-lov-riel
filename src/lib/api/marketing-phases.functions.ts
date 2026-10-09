@@ -24,8 +24,16 @@ export const createMarketingPhase = createServerFn({ method: "POST" })
         projectId: z.string().uuid(),
         name: z.string().min(1).max(120),
         color: z.string().max(20).nullable().optional(),
-        startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
-        endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+        startDate: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .nullable()
+          .optional(),
+        endDate: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .nullable()
+          .optional(),
         ownerId: z.string().uuid().nullable().optional(),
       })
       .parse(input),
@@ -65,8 +73,16 @@ export const updateMarketingPhase = createServerFn({ method: "POST" })
         id: z.string().uuid(),
         name: z.string().min(1).max(120).optional(),
         color: z.string().max(20).nullable().optional(),
-        startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
-        endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+        startDate: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .nullable()
+          .optional(),
+        endDate: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .nullable()
+          .optional(),
         ownerId: z.string().uuid().nullable().optional(),
       })
       .parse(input),
@@ -79,7 +95,10 @@ export const updateMarketingPhase = createServerFn({ method: "POST" })
     if (data.startDate !== undefined) patch.start_date = data.startDate;
     if (data.endDate !== undefined) patch.end_date = data.endDate;
     if (data.ownerId !== undefined) patch.owner_id = data.ownerId;
-    const { error } = await supabase.from("phases").update(patch as never).eq("id", data.id);
+    const { error } = await supabase
+      .from("phases")
+      .update(patch as never)
+      .eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -90,7 +109,10 @@ export const deleteMarketingPhase = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     // Unassign tasks first so the DELETE succeeds regardless of FK behavior.
-    await supabase.from("tasks").update({ phase_id: null } as never).eq("phase_id", data.id);
+    await supabase
+      .from("tasks")
+      .update({ phase_id: null } as never)
+      .eq("phase_id", data.id);
     const { error } = await supabase.from("phases").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -110,7 +132,10 @@ export const reorderMarketingPhases = createServerFn({ method: "POST" })
     const { supabase } = context;
     await Promise.all(
       data.orderedIds.map((id, idx) =>
-        supabase.from("phases").update({ order_index: idx } as never).eq("id", id),
+        supabase
+          .from("phases")
+          .update({ order_index: idx } as never)
+          .eq("id", id),
       ),
     );
     return { ok: true };

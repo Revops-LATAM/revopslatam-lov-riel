@@ -101,8 +101,8 @@ function FinanceContractsPage() {
     <div className="p-6 space-y-3">
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <p className="text-xs text-muted-foreground">
-          Vista financiera de contratos. Los contratos nuevos parten en{" "}
-          <strong>Proyectado</strong> y pasan a Operaciones al activarlos.
+          Vista financiera de contratos. Los contratos nuevos parten en <strong>Proyectado</strong>{" "}
+          y pasan a Operaciones al activarlos.
         </p>
         <div className="flex items-center gap-2">
           <Select value={statusFilter} onValueChange={setStatusFilter}>

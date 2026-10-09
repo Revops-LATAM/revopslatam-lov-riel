@@ -136,15 +136,11 @@ export function CommentsTab({
       });
       composerRef.current?.focus();
     },
-    onError: (e: Error) =>
-      toast.error("No se pudo adjuntar", { description: e.message }),
+    onError: (e: Error) => toast.error("No se pudo adjuntar", { description: e.message }),
     onSettled: () => {
       if (fileInputRef.current) fileInputRef.current.value = "";
     },
   });
-
-
-
 
   const addMut = useMutation({
     mutationFn: (body: string) =>
@@ -154,8 +150,7 @@ export function CommentsTab({
       setClientVisible(false);
       invalidate();
     },
-    onError: (e: Error) =>
-      toast.error("No se pudo enviar comentario", { description: e.message }),
+    onError: (e: Error) => toast.error("No se pudo enviar comentario", { description: e.message }),
   });
 
   const deleteMut = useMutation({
@@ -164,8 +159,7 @@ export function CommentsTab({
       toast.success("Comentario eliminado");
       invalidate();
     },
-    onError: (e: Error) =>
-      toast.error("No se pudo eliminar", { description: e.message }),
+    onError: (e: Error) => toast.error("No se pudo eliminar", { description: e.message }),
   });
 
   const [filter, setFilter] = useState<Filter>("all");
@@ -206,8 +200,7 @@ export function CommentsTab({
       .filter((m) => {
         const p = m.profile!;
         return (
-          (p.full_name ?? "").toLowerCase().includes(q) ||
-          (p.email ?? "").toLowerCase().includes(q)
+          (p.full_name ?? "").toLowerCase().includes(q) || (p.email ?? "").toLowerCase().includes(q)
         );
       })
       .slice(0, 6);
@@ -271,7 +264,7 @@ export function CommentsTab({
     ta.focus();
     const caret = ta.selectionStart ?? commentBody.length;
     const needsSpace = caret > 0 && !/\s/.test(commentBody[caret - 1] ?? "");
-    const insert = (needsSpace ? " @" : "@");
+    const insert = needsSpace ? " @" : "@";
     const next = commentBody.slice(0, caret) + insert + commentBody.slice(caret);
     setCommentBody(next);
     const newCaret = caret + insert.length;
@@ -399,9 +392,7 @@ export function CommentsTab({
                             e.preventDefault();
                             insertMention(m);
                           }}
-                          onMouseEnter={() =>
-                            setMention((s) => ({ ...s, selected: idx }))
-                          }
+                          onMouseEnter={() => setMention((s) => ({ ...s, selected: idx }))}
                           className={`w-full flex items-center gap-2 px-2.5 py-1.5 text-left text-sm transition-colors ${
                             active ? "bg-accent text-accent-foreground" : "hover:bg-muted/60"
                           }`}
@@ -589,11 +580,7 @@ function renderBodyWithMentions(
   while ((match = re.exec(body)) !== null) {
     if (match.index > lastIdx) {
       parts.push(
-        ...renderTextWithAttachments(
-          body.slice(lastIdx, match.index),
-          attachmentLinks,
-          `t${key}`,
-        ),
+        ...renderTextWithAttachments(body.slice(lastIdx, match.index), attachmentLinks, `t${key}`),
       );
     }
     const name = match[1];
@@ -603,9 +590,7 @@ function renderBodyWithMentions(
       <span
         key={`m-${key++}`}
         className={`inline-flex items-baseline rounded px-1 -mx-0.5 font-medium ${
-          isMe
-            ? "bg-primary/15 text-primary"
-            : "bg-accent/60 text-accent-foreground"
+          isMe ? "bg-primary/15 text-primary" : "bg-accent/60 text-accent-foreground"
         }`}
       >
         @{name}
@@ -614,9 +599,7 @@ function renderBodyWithMentions(
     lastIdx = match.index + match[0].length;
   }
   if (lastIdx < body.length)
-    parts.push(
-      ...renderTextWithAttachments(body.slice(lastIdx), attachmentLinks, "tz"),
-    );
+    parts.push(...renderTextWithAttachments(body.slice(lastIdx), attachmentLinks, "tz"));
   return parts;
 }
 
@@ -664,9 +647,7 @@ function CommentItem({
         </div>
         <div
           className={`mt-1 rounded-lg px-3 py-2 text-sm leading-relaxed whitespace-pre-wrap break-words ${
-            item.is_client_visible
-              ? "bg-amber-500/10 border border-amber-500/30"
-              : "bg-muted/40"
+            item.is_client_visible ? "bg-amber-500/10 border border-amber-500/30" : "bg-muted/40"
           }`}
         >
           {renderBodyWithMentions(item.body, currentUserId, attachmentLinks)}
@@ -693,8 +674,7 @@ function EventItem({
         </div>
       </div>
       <div className="flex-1 min-w-0">
-        <span className="font-medium text-foreground/80">{actorName}</span>{" "}
-        <span>{sentence}</span>
+        <span className="font-medium text-foreground/80">{actorName}</span> <span>{sentence}</span>
         <span className="mx-1">·</span>
         <span>
           {formatDistanceToNow(parseISO(item.created_at), { addSuffix: true, locale: es })}
@@ -726,8 +706,7 @@ function describeEvent(
     case "status": {
       const from =
         STATUS_OPTIONS.find((o) => o.value === e.from_value)?.label ?? humanize(e.from_value);
-      const to =
-        STATUS_OPTIONS.find((o) => o.value === e.to_value)?.label ?? humanize(e.to_value);
+      const to = STATUS_OPTIONS.find((o) => o.value === e.to_value)?.label ?? humanize(e.to_value);
       return {
         icon: <CircleDot className="w-3 h-3" />,
         sentence: (
@@ -768,9 +747,13 @@ function describeEvent(
     case "due_date":
       return {
         icon: <CalendarDays className="w-3 h-3" />,
-        sentence: e.to_value
-          ? <>cambió la fecha límite a <strong className="text-foreground">{e.to_value}</strong></>
-          : <>eliminó la fecha límite</>,
+        sentence: e.to_value ? (
+          <>
+            cambió la fecha límite a <strong className="text-foreground">{e.to_value}</strong>
+          </>
+        ) : (
+          <>eliminó la fecha límite</>
+        ),
       };
     case "title":
       return {
@@ -791,7 +774,9 @@ function describeEvent(
       return {
         icon: <CircleDot className="w-3 h-3" />,
         sentence: e.to_value ? (
-          <>detuvo el timer (<strong className="text-foreground">{e.to_value} min</strong>)</>
+          <>
+            detuvo el timer (<strong className="text-foreground">{e.to_value} min</strong>)
+          </>
         ) : (
           <>detuvo el timer</>
         ),
@@ -803,8 +788,6 @@ function describeEvent(
       };
   }
 }
-
-
 
 export function useCommentsCount(taskId: string) {
   const fetchComments = useServerFn(listTaskComments);

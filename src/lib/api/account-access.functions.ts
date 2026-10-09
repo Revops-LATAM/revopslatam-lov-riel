@@ -24,7 +24,12 @@ export const getAccountAccess = createServerFn({ method: "GET" })
     if (gErr) throw new Error(gErr.message);
 
     const userIds = Array.from(new Set((grants ?? []).map((g) => g.user_id)));
-    let profiles: { id: string; full_name: string | null; email: string | null; avatar_url: string | null }[] = [];
+    let profiles: {
+      id: string;
+      full_name: string | null;
+      email: string | null;
+      avatar_url: string | null;
+    }[] = [];
     if (userIds.length) {
       const { data: profs, error: pErr } = await supabase
         .from("profiles")
@@ -54,10 +59,12 @@ export const getAccountAccess = createServerFn({ method: "GET" })
 export const setAccountAccessMode = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
-    z.object({
-      accountId: z.string().uuid(),
-      mode: z.enum(["open", "restricted"]),
-    }).parse(input),
+    z
+      .object({
+        accountId: z.string().uuid(),
+        mode: z.enum(["open", "restricted"]),
+      })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
@@ -72,10 +79,12 @@ export const setAccountAccessMode = createServerFn({ method: "POST" })
 export const grantAccountAccess = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
-    z.object({
-      accountId: z.string().uuid(),
-      userIds: z.array(z.string().uuid()).min(1),
-    }).parse(input),
+    z
+      .object({
+        accountId: z.string().uuid(),
+        userIds: z.array(z.string().uuid()).min(1),
+      })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
@@ -94,10 +103,12 @@ export const grantAccountAccess = createServerFn({ method: "POST" })
 export const revokeAccountAccess = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
-    z.object({
-      accountId: z.string().uuid(),
-      userId: z.string().uuid(),
-    }).parse(input),
+    z
+      .object({
+        accountId: z.string().uuid(),
+        userId: z.string().uuid(),
+      })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;

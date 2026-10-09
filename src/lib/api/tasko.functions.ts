@@ -25,6 +25,3 @@ export * from "./dte.functions";
 export * from "./slas.functions";
 export * from "./client-tickets.functions";
 export * from "./dependencies.functions";
-
-
-

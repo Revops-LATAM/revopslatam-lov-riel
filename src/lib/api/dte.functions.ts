@@ -104,7 +104,12 @@ async function findIssuedOpenFacturaDuplicate(params: {
         const total = Number(row.MntTotal ?? row.mntTotal ?? row.monto_total ?? 0);
         const folio = pickProviderString(row, "Folio", "FOLIO", "folio");
         const token = pickProviderString(row, "Token", "TOKEN", "token");
-        return !!folio && !!token && Math.abs(neto - params.neto) <= 1 && Math.abs(total - params.total) <= 1;
+        return (
+          !!folio &&
+          !!token &&
+          Math.abs(neto - params.neto) <= 1 &&
+          Math.abs(total - params.total) <= 1
+        );
       }) ?? null
     );
   } catch {
@@ -206,7 +211,6 @@ async function resolveClpAmount(
   return Math.round(amount * Number(latest?.rate_to_base ?? 38500));
 }
 
-
 // ============ DTE CONFIG ============
 
 export const getDteConfig = createServerFn({ method: "GET" })
@@ -215,7 +219,9 @@ export const getDteConfig = createServerFn({ method: "GET" })
   .handler(async ({ data, context }) => {
     const { data: row, error } = await context.supabase
       .from("workspace_dte_config")
-      .select("workspace_id, provider, ambiente, rut_emisor, resolucion_sii, fecha_resolucion, activo, updated_at")
+      .select(
+        "workspace_id, provider, ambiente, rut_emisor, resolucion_sii, fecha_resolucion, activo, updated_at",
+      )
       .eq("workspace_id", data.workspaceId)
       .maybeSingle();
     if (error) throw new Error(error.message);
@@ -275,9 +281,7 @@ export const upsertDteConfig = createServerFn({ method: "POST" })
         .eq("workspace_id", workspaceId);
       if (error) throw new Error(error.message);
     } else {
-      const { error } = await context.supabase
-        .from("workspace_dte_config")
-        .insert(patch);
+      const { error } = await context.supabase.from("workspace_dte_config").insert(patch);
       if (error) throw new Error(error.message);
     }
 
@@ -336,21 +340,25 @@ export const getInvoice = createServerFn({ method: "GET" })
       .single();
     if (error) throw new Error(error.message);
     if (inv.estado === "draft") {
-      const existingLines = ((inv.invoice_lines as Array<{
-        id: string;
-        invoice_id: string;
-        descripcion: string;
-        cantidad: number;
-        monto_unitario: number;
-        monto: number;
-        currency: string;
-        contract_payment_id: string | null;
-        orden: number;
-        created_at: string;
-      }> | null) ?? []).sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0));
+      const existingLines = (
+        (inv.invoice_lines as Array<{
+          id: string;
+          invoice_id: string;
+          descripcion: string;
+          cantidad: number;
+          monto_unitario: number;
+          monto: number;
+          currency: string;
+          contract_payment_id: string | null;
+          orden: number;
+          created_at: string;
+        }> | null) ?? []
+      ).sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0));
       const { data: linkedPayment } = await context.supabase
         .from("contract_payments")
-        .select("id, amount, currency, notes, period_label, kind, contracts(name, descripcion_factura)")
+        .select(
+          "id, amount, currency, notes, period_label, kind, contracts(name, descripcion_factura)",
+        )
         .eq("invoice_id", data.invoiceId)
         .limit(1)
         .maybeSingle();
@@ -373,7 +381,9 @@ export const getInvoice = createServerFn({ method: "GET" })
         contract?.descripcion_factura ??
         contract?.name ??
         linkedPayment?.notes ??
-        (linkedPayment?.period_label ? `${linkedPayment.kind} · ${linkedPayment.period_label}` : "Servicio");
+        (linkedPayment?.period_label
+          ? `${linkedPayment.kind} · ${linkedPayment.period_label}`
+          : "Servicio");
 
       if (fallbackAmount > 0) {
         const iva = inv.tipo_dte === 33 ? Math.round(fallbackAmount * 0.19) : 0;
@@ -385,26 +395,29 @@ export const getInvoice = createServerFn({ method: "GET" })
           monto_total: fallbackAmount + iva,
           monto_clp: fallbackAmount,
           invoice_lines: [
-            existingLines.length > 0 ? {
-              ...existingLines[0],
-              descripcion: fallbackDescription,
-              cantidad: 1,
-              monto_unitario: fallbackAmount,
-              monto: fallbackAmount,
-              currency: "CLP",
-              contract_payment_id: existingLines[0].contract_payment_id ?? linkedPayment?.id ?? null,
-            } : {
-              id: "fallback-line",
-              invoice_id: inv.id,
-              descripcion: fallbackDescription,
-              cantidad: 1,
-              monto_unitario: fallbackAmount,
-              monto: fallbackAmount,
-              currency: "CLP",
-              contract_payment_id: linkedPayment?.id ?? null,
-              orden: 0,
-              created_at: inv.created_at,
-            },
+            existingLines.length > 0
+              ? {
+                  ...existingLines[0],
+                  descripcion: fallbackDescription,
+                  cantidad: 1,
+                  monto_unitario: fallbackAmount,
+                  monto: fallbackAmount,
+                  currency: "CLP",
+                  contract_payment_id:
+                    existingLines[0].contract_payment_id ?? linkedPayment?.id ?? null,
+                }
+              : {
+                  id: "fallback-line",
+                  invoice_id: inv.id,
+                  descripcion: fallbackDescription,
+                  cantidad: 1,
+                  monto_unitario: fallbackAmount,
+                  monto: fallbackAmount,
+                  currency: "CLP",
+                  contract_payment_id: linkedPayment?.id ?? null,
+                  orden: 0,
+                  created_at: inv.created_at,
+                },
           ],
         };
       }
@@ -531,7 +544,6 @@ export const emitDte = createServerFn({ method: "POST" })
       ov = { ...ov, fecha_emision: hoyCL };
     }
 
-
     const { data: initialInv, error: initialErr } = await context.supabase
       .from("invoices")
       .select("id, estado, folio_sii, workspace_id")
@@ -554,7 +566,9 @@ export const emitDte = createServerFn({ method: "POST" })
       }),
     ]);
     if (!canInvoice && !canManage) {
-      throw new Error("No tienes permiso para emitir facturas (requiere finance_invoice o finance_manage).");
+      throw new Error(
+        "No tienes permiso para emitir facturas (requiere finance_invoice o finance_manage).",
+      );
     }
 
     if (initialInv.estado === "emitted" || initialInv.estado === "paid") {
@@ -568,7 +582,6 @@ export const emitDte = createServerFn({ method: "POST" })
       // reenviamos el DTE. Sólo intentaremos recuperar/conciliar el folio.
       ov = {};
     }
-
 
     // If overrides include new lines, replace invoice_lines and recompute totals first.
     if (ov.lineas && ov.lineas.length > 0) {
@@ -624,9 +637,7 @@ export const emitDte = createServerFn({ method: "POST" })
         // Solo la primera línea conserva el vínculo a la cuota original.
         contract_payment_id: idx === 0 ? linkedPaymentId : null,
       }));
-      const { error: insErr } = await context.supabase
-        .from("invoice_lines")
-        .insert(rows);
+      const { error: insErr } = await context.supabase.from("invoice_lines").insert(rows);
       if (insErr) throw new Error(insErr.message);
 
       const invoicePatch: Record<string, unknown> = {
@@ -669,7 +680,9 @@ export const emitDte = createServerFn({ method: "POST" })
 
     const { data: inv, error } = await context.supabase
       .from("invoices")
-      .select("*, invoice_lines(*), accounts(tax_id, legal_name, name, business_activity, address, commune, billing_email)")
+      .select(
+        "*, invoice_lines(*), accounts(tax_id, legal_name, name, business_activity, address, commune, billing_email)",
+      )
       .eq("id", data.invoiceId)
       .single();
     if (error) throw new Error(error.message);
@@ -678,14 +691,16 @@ export const emitDte = createServerFn({ method: "POST" })
     if (inv.estado === "cancelled")
       throw new Error("La factura está cancelada y no puede emitirse");
 
-    const detailLines = ([...(inv.invoice_lines as Array<{
-      orden: number;
-      descripcion: string;
-      cantidad: number;
-      monto_unitario: number;
-      monto: number;
-      contract_payment_id?: string | null;
-    }> ?? [])]).sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0));
+    const detailLines = [
+      ...((inv.invoice_lines as Array<{
+        orden: number;
+        descripcion: string;
+        cantidad: number;
+        monto_unitario: number;
+        monto: number;
+        contract_payment_id?: string | null;
+      }>) ?? []),
+    ].sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0));
     const detailNeto = detailLines.reduce((sum, l) => sum + Math.round(Number(l.monto)), 0);
     if (detailLines.length === 0 || detailNeto <= 0) {
       throw new Error("La factura no tiene líneas de detalle o monto para emitir.");
@@ -711,12 +726,20 @@ export const emitDte = createServerFn({ method: "POST" })
 
     const { data: emisor, error: eerr } = await supabaseAdmin
       .from("workspace_emisor")
-      .select("direccion, comuna, razon_social, giro, acteco, email_contacto, email_finanzas, telefono")
+      .select(
+        "direccion, comuna, razon_social, giro, acteco, email_contacto, email_finanzas, telefono",
+      )
       .eq("workspace_id", inv.workspace_id)
       .maybeSingle();
     if (eerr) throw new Error(eerr.message);
     const acteco = emisor?.acteco ?? Number((emisor?.giro ?? "").match(/^\s*(\d{5,6})\b/)?.[1]);
-    if (!emisor?.razon_social || !emisor?.giro || !emisor?.direccion || !emisor?.comuna || !Number.isFinite(acteco)) {
+    if (
+      !emisor?.razon_social ||
+      !emisor?.giro ||
+      !emisor?.direccion ||
+      !emisor?.comuna ||
+      !Number.isFinite(acteco)
+    ) {
       const missingEmisor: string[] = [];
       if (!emisor?.razon_social) missingEmisor.push("razón social");
       if (!emisor?.giro) missingEmisor.push("giro");
@@ -727,7 +750,6 @@ export const emitDte = createServerFn({ method: "POST" })
         `Faltan datos del emisor: ${missingEmisor.join(", ")}. Complétalos en Ajustes → Emisor.`,
       );
     }
-
 
     const endpoint =
       cfg.ambiente === "production"
@@ -796,9 +818,7 @@ export const emitDte = createServerFn({ method: "POST" })
     if (!recDir) missing.push("dirección");
     if (!recCmna) missing.push("comuna");
     if (missing.length > 0) {
-      throw new Error(
-        `Faltan datos del receptor: ${missing.join(", ")}.`,
-      );
+      throw new Error(`Faltan datos del receptor: ${missing.join(", ")}.`);
     }
 
     // Última barrera: nunca enviar una fecha de emisión futura al SII.
@@ -870,14 +890,18 @@ export const emitDte = createServerFn({ method: "POST" })
         TpoTranCompra: "1",
         TpoTranVenta: "1",
         FmaPago: "2",
-        ...((inv as { fecha_vencimiento?: string | null }).fecha_vencimiento ? { FchVenc: (inv as { fecha_vencimiento?: string | null }).fecha_vencimiento } : {}),
+        ...((inv as { fecha_vencimiento?: string | null }).fecha_vencimiento
+          ? { FchVenc: (inv as { fecha_vencimiento?: string | null }).fecha_vencimiento }
+          : {}),
       },
       Emisor: {
         RUTEmisor: normalizeRut(cfg.rut_emisor),
         RznSoc: emisor.razon_social,
         GiroEmis: emisor.giro,
         ...(emisor.telefono ? { Telefono: emisor.telefono } : {}),
-        ...((emisor.email_contacto ?? emisor.email_finanzas) ? { CorreoEmisor: emisor.email_contacto ?? emisor.email_finanzas } : {}),
+        ...((emisor.email_contacto ?? emisor.email_finanzas)
+          ? { CorreoEmisor: emisor.email_contacto ?? emisor.email_finanzas }
+          : {}),
         Acteco: acteco,
         DirOrigen: emisor.direccion,
         CmnaOrigen: emisor.comuna,
@@ -931,7 +955,11 @@ export const emitDte = createServerFn({ method: "POST" })
       .from("invoices")
       .update({
         estado: "scheduled",
-        notas: `${(inv.notas ?? "").trim()}${inv.notas ? "\n" : ""}Emisión DTE iniciada ${new Date().toISOString()}; bloqueada contra reenvíos automáticos.`.slice(0, 2000),
+        notas:
+          `${(inv.notas ?? "").trim()}${inv.notas ? "\n" : ""}Emisión DTE iniciada ${new Date().toISOString()}; bloqueada contra reenvíos automáticos.`.slice(
+            0,
+            2000,
+          ),
       })
       .eq("id", data.invoiceId)
       .eq("estado", "draft")
@@ -981,7 +1009,9 @@ export const emitDte = createServerFn({ method: "POST" })
           // Haulmer/OpenFactura V2 puede devolver campos en varias formas.
           folio = pickProviderFolio(json);
           token = pickProviderString(json, "TOKEN", "token", "Token");
-          pdfUrl = pickProviderString(json, "urlPdf", "UrlPdf", "url_pdf", "pdfUrl") ?? providerPdfUrl(endpoint, token);
+          pdfUrl =
+            pickProviderString(json, "urlPdf", "UrlPdf", "url_pdf", "pdfUrl") ??
+            providerPdfUrl(endpoint, token);
           if (!folio && token) {
             const lookup = await fetchOpenFacturaJson(endpoint, token, cfg.api_key);
             if (lookup.ok) {
@@ -1027,7 +1057,6 @@ export const emitDte = createServerFn({ method: "POST" })
       return { ok: true, folio: null, pdfUrl, pending: true };
     }
 
-
     // CRÍTICO: usamos supabaseAdmin para el update post-emisión.
     // Si esta escritura falla (RLS, error transitorio), el DTE ya fue aceptado
     // por el SII y quedaría como "ghost invoice" (emitida en SII, sin folio
@@ -1055,7 +1084,6 @@ export const emitDte = createServerFn({ method: "POST" })
         .in("id", paymentIds);
     }
 
-
     return { ok: true, folio, pdfUrl };
   });
 
@@ -1079,7 +1107,9 @@ export const getInvoicePdf = createServerFn({ method: "GET" })
       .eq("id", invMeta.id)
       .single();
     if (error) throw new Error(error.message);
-    const clientName = ((inv as unknown as { accounts?: { name?: string } | null }).accounts?.name ?? "").trim();
+    const clientName = (
+      (inv as unknown as { accounts?: { name?: string } | null }).accounts?.name ?? ""
+    ).trim();
 
     const token = inv.token_sii ?? extractOpenFacturaToken(inv.pdf_url);
     if (!token) throw new Error("Esta factura no tiene token para recuperar el PDF.");
@@ -1095,14 +1125,17 @@ export const getInvoicePdf = createServerFn({ method: "GET" })
     const envAmbiente = process.env.OPENFACTURA_AMBIENTE;
     const apiKey = (cfg?.activo ? cfg.api_key : null) ?? envApiKey;
     if (!apiKey) {
-      throw new Error("Configuración DTE inactiva. Configura el API key en Ajustes → Facturación electrónica.");
+      throw new Error(
+        "Configuración DTE inactiva. Configura el API key en Ajustes → Facturación electrónica.",
+      );
     }
     const ambiente = (cfg?.activo ? cfg.ambiente : null) ?? envAmbiente ?? "production";
 
     const isLegacyPdf = !!inv.pdf_url && /\/functions\/v1\/get-dte-pdf/i.test(inv.pdf_url);
-    const baseUrl = ambiente === "production" || isLegacyPdf
-      ? "https://api.haulmer.com/v2/dte/document"
-      : "https://dev-api.haulmer.com/v2/dte/document";
+    const baseUrl =
+      ambiente === "production" || isLegacyPdf
+        ? "https://api.haulmer.com/v2/dte/document"
+        : "https://dev-api.haulmer.com/v2/dte/document";
     const response = await fetch(`${baseUrl}/${token}/pdf`, { headers: { apikey: apiKey } });
     if (!response.ok) {
       const text = await response.text().catch(() => "");
@@ -1112,15 +1145,24 @@ export const getInvoicePdf = createServerFn({ method: "GET" })
     const bytes = new Uint8Array(await response.arrayBuffer());
     let pdfBytes = bytes;
     if (String.fromCharCode(bytes[0] ?? 0) === "{") {
-      const json = JSON.parse(new TextDecoder().decode(bytes)) as Record<string, string | undefined>;
-      const pdfBase64 = json.PDF ?? json.pdf ?? json.DATA ?? json.data ?? json.content ?? json.Content;
+      const json = JSON.parse(new TextDecoder().decode(bytes)) as Record<
+        string,
+        string | undefined
+      >;
+      const pdfBase64 =
+        json.PDF ?? json.pdf ?? json.DATA ?? json.data ?? json.content ?? json.Content;
       if (!pdfBase64) throw new Error("PDF no encontrado en la respuesta del proveedor.");
       const binary = atob(pdfBase64);
       pdfBytes = new Uint8Array(binary.length);
       for (let i = 0; i < binary.length; i += 1) pdfBytes[i] = binary.charCodeAt(i);
     }
 
-    const magic = String.fromCharCode(pdfBytes[0] ?? 0, pdfBytes[1] ?? 0, pdfBytes[2] ?? 0, pdfBytes[3] ?? 0);
+    const magic = String.fromCharCode(
+      pdfBytes[0] ?? 0,
+      pdfBytes[1] ?? 0,
+      pdfBytes[2] ?? 0,
+      pdfBytes[3] ?? 0,
+    );
     if (magic !== "%PDF") throw new Error("La respuesta del proveedor no es un PDF válido.");
 
     return {
@@ -1138,7 +1180,7 @@ export const markInvoicePaid = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("invoices")
-      .update({ estado: "paid", pagada_at: (data.fechaPago ?? new Date().toISOString()) })
+      .update({ estado: "paid", pagada_at: data.fechaPago ?? new Date().toISOString() })
       .eq("id", data.invoiceId);
     if (error) throw new Error(error.message);
 
@@ -1151,7 +1193,10 @@ export const markInvoicePaid = createServerFn({ method: "POST" })
     if (ids.length > 0) {
       await context.supabase
         .from("contract_payments")
-        .update({ status: "paid", paid_at: data.fechaPago ?? new Date().toISOString().slice(0, 10) })
+        .update({
+          status: "paid",
+          paid_at: data.fechaPago ?? new Date().toISOString().slice(0, 10),
+        })
         .in("id", ids);
     }
     return { ok: true };
@@ -1218,7 +1263,13 @@ async function buildInvoiceFromPayment(
   const currency = p.currency ?? c.currency ?? "CLP";
   const amount = Number(p.amount ?? 0);
   if (amount <= 0) throw new Error("El pago no tiene monto");
-  const neto = await resolveClpAmount(supabase, c.workspace_id, currency, amount, new Date().toLocaleDateString("en-CA", { timeZone: "America/Santiago" }));
+  const neto = await resolveClpAmount(
+    supabase,
+    c.workspace_id,
+    currency,
+    amount,
+    new Date().toLocaleDateString("en-CA", { timeZone: "America/Santiago" }),
+  );
   const iva = Math.round(neto * 0.19);
   const total = neto + iva;
   // fecha_emision = HOY (America/Santiago) para que la UF usada sea la del día
@@ -1241,14 +1292,22 @@ async function buildInvoiceFromPayment(
       .select("id", { count: "exact", head: true })
       .eq("contract_id", p.contract_id)
       .eq("kind", "monthly")
-      .filter("billing_entity_id", p.billing_entity_id ? "eq" : "is", p.billing_entity_id ?? "null");
+      .filter(
+        "billing_entity_id",
+        p.billing_entity_id ? "eq" : "is",
+        p.billing_entity_id ?? "null",
+      );
     if ((total_cuotas ?? 0) > 1) {
       const { count: numero_cuota } = await supabase
         .from("contract_payments")
         .select("id", { count: "exact", head: true })
         .eq("contract_id", p.contract_id)
         .eq("kind", "monthly")
-        .filter("billing_entity_id", p.billing_entity_id ? "eq" : "is", p.billing_entity_id ?? "null")
+        .filter(
+          "billing_entity_id",
+          p.billing_entity_id ? "eq" : "is",
+          p.billing_entity_id ?? "null",
+        )
         .lte("due_date", p.due_date);
       suffix = ` - ${numero_cuota ?? 1}/${total_cuotas}`;
     }

@@ -16,11 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { membersQO } from "@/lib/api/tasko.queries";
 import {
   getAccountAccess,
@@ -116,8 +112,8 @@ export function AccountShareDialog({ open, onOpenChange, accountId, workspaceId 
             Compartir acceso · {accessQ.data?.account.name ?? ""}
           </DialogTitle>
           <DialogDescription>
-            Controla quién puede ver este cliente y todos sus contratos, proyectos y tareas.
-            Los administradores del workspace siempre tienen acceso.
+            Controla quién puede ver este cliente y todos sus contratos, proyectos y tareas. Los
+            administradores del workspace siempre tienen acceso.
           </DialogDescription>
         </DialogHeader>
 
@@ -179,7 +175,9 @@ export function AccountShareDialog({ open, onOpenChange, accountId, workspaceId 
                         <Avatar className="h-6 w-6">
                           <AvatarImage src={m.profile?.avatar_url ?? undefined} />
                           <AvatarFallback className="text-[10px]">
-                            {(m.profile?.full_name ?? m.profile?.email ?? "?").slice(0, 2).toUpperCase()}
+                            {(m.profile?.full_name ?? m.profile?.email ?? "?")
+                              .slice(0, 2)
+                              .toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">

@@ -49,8 +49,7 @@ function CampaignsList() {
   });
   const listQ = useQuery({
     queryKey: ["campaigns", wsQ.data?.id, showArchived],
-    queryFn: () =>
-      listFn({ data: { workspaceId: wsQ.data!.id, includeArchived: showArchived } }),
+    queryFn: () => listFn({ data: { workspaceId: wsQ.data!.id, includeArchived: showArchived } }),
     enabled: !!wsQ.data?.id,
   });
 
@@ -71,9 +70,7 @@ function CampaignsList() {
         <div className="flex items-center gap-2 min-w-0">
           <Megaphone className="w-4 h-4 text-pink-400 shrink-0" />
           <h1 className="text-sm font-semibold truncate">Campañas</h1>
-          <span className="text-xs text-muted-foreground shrink-0">
-            {listQ.data?.length ?? 0}
-          </span>
+          <span className="text-xs text-muted-foreground shrink-0">{listQ.data?.length ?? 0}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="relative w-64 max-w-full">
@@ -133,11 +130,7 @@ function CampaignsList() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   {rows.map((c) => (
-                    <CampaignCard
-                      key={c.id}
-                      workspaceSlug={workspaceSlug}
-                      c={c}
-                    />
+                    <CampaignCard key={c.id} workspaceSlug={workspaceSlug} c={c} />
                   ))}
                 </div>
               </section>

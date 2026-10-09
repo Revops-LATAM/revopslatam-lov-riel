@@ -73,8 +73,7 @@ export async function syncProjectFromAsana(
     .maybeSingle();
   if (pErr) throw new Error(pErr.message);
   if (!project) throw new Error("Proyecto no encontrado");
-  if (!project.asana_project_gid)
-    throw new Error("Este proyecto no tiene Asana GID vinculado");
+  if (!project.asana_project_gid) throw new Error("Este proyecto no tiene Asana GID vinculado");
 
   const { data: ttype } = await supabase
     .from("task_types")
@@ -92,10 +91,7 @@ export async function syncProjectFromAsana(
     const target = completed ? "completada" : "abierta";
     const list = (statuses ?? [])
       .filter((s) => s.category === target)
-      .sort(
-        (a, b) =>
-          Number(b.is_default) - Number(a.is_default) || a.sort_order - b.sort_order,
-      );
+      .sort((a, b) => Number(b.is_default) - Number(a.is_default) || a.sort_order - b.sort_order);
     return list[0]?.id;
   };
 
@@ -113,7 +109,10 @@ export async function syncProjectFromAsana(
     .eq("workspace_id", project.workspace_id)
     .eq("asana_project_gid", project.asana_project_gid);
   const statusByAsanaValue = new Map(
-    (statusMaps ?? []).map((m) => [(m as { asana_value: string }).asana_value, (m as { status_id: string }).status_id]),
+    (statusMaps ?? []).map((m) => [
+      (m as { asana_value: string }).asana_value,
+      (m as { status_id: string }).status_id,
+    ]),
   );
 
   const pickStatus = (t: AsanaTask): string | undefined => {
@@ -124,8 +123,7 @@ export async function syncProjectFromAsana(
     } else if (statusMode === "custom_field") {
       const fieldGid = (cfg as { asana_status_field_gid?: string } | null)?.asana_status_field_gid;
       const enumGid = t.custom_fields?.find((f) => f.gid === fieldGid)?.enum_value?.gid;
-      if (enumGid && statusByAsanaValue.has(enumGid))
-        return statusByAsanaValue.get(enumGid);
+      if (enumGid && statusByAsanaValue.has(enumGid)) return statusByAsanaValue.get(enumGid);
     }
     return pickDefaultStatus(t.completed);
   };
@@ -136,7 +134,10 @@ export async function syncProjectFromAsana(
     .select("asana_user_gid, user_id")
     .eq("workspace_id", project.workspace_id);
   const userByAsanaGid = new Map(
-    (userMaps ?? []).map((u) => [(u as { asana_user_gid: string }).asana_user_gid, (u as { user_id: string }).user_id]),
+    (userMaps ?? []).map((u) => [
+      (u as { asana_user_gid: string }).asana_user_gid,
+      (u as { user_id: string }).user_id,
+    ]),
   );
 
   const opt =
@@ -224,7 +225,10 @@ export async function syncProjectFromAsana(
         assignee_id: assigneeId,
       };
       if (sprintId) patch.sprint_id = sprintId;
-      const { error } = await supabase.from("tasks").update(patch as never).eq("id", existingRow.task_id);
+      const { error } = await supabase
+        .from("tasks")
+        .update(patch as never)
+        .eq("id", existingRow.task_id);
       if (!error) {
         await syncTaskAssigneesFromAsana(supabase, existingRow.task_id, assigneeId);
         await supabase
@@ -272,7 +276,13 @@ export async function syncProjectFromAsana(
         created++;
 
         // Pull comments for new tasks
-        await pullCommentsForTask(supabase, project.workspace_id, t.gid, (newTask as { id: string }).id, userByAsanaGid);
+        await pullCommentsForTask(
+          supabase,
+          project.workspace_id,
+          t.gid,
+          (newTask as { id: string }).id,
+          userByAsanaGid,
+        );
       }
     }
   }
@@ -298,10 +308,11 @@ async function syncTaskAssigneesFromAsana(
     return;
   }
   // Ensure the Asana assignee row exists and is primary.
-  const { error: upErr } = await supabase.from("task_assignees").upsert(
-    { task_id: taskId, user_id: assigneeId, is_primary: true } as never,
-    { onConflict: "task_id,user_id" },
-  );
+  const { error: upErr } = await supabase
+    .from("task_assignees")
+    .upsert({ task_id: taskId, user_id: assigneeId, is_primary: true } as never, {
+      onConflict: "task_id,user_id",
+    });
   if (upErr) throw new Error(upErr.message);
   // Demote any other rows so exactly one primary remains.
   const { error: demErr } = await supabase
@@ -383,8 +394,10 @@ export async function pushTaskToAsana(
       .maybeSingle();
     const sm = stMap as { asana_value?: string; kind?: string } | null;
     if (sm) {
-      if (statusMode === "sections" && sm.kind === "section") targetSectionGid = sm.asana_value ?? null;
-      if (statusMode === "custom_field" && sm.kind === "custom_field_enum") customFieldEnumGid = sm.asana_value ?? null;
+      if (statusMode === "sections" && sm.kind === "section")
+        targetSectionGid = sm.asana_value ?? null;
+      if (statusMode === "custom_field" && sm.kind === "custom_field_enum")
+        customFieldEnumGid = sm.asana_value ?? null;
     }
   }
 
@@ -411,7 +424,11 @@ export async function pushTaskToAsana(
     body.custom_fields = { [fieldGid]: customFieldEnumGid };
   }
 
-  const updated = await asanaApi<AsanaTask>("PUT", `/tasks/${m.asana_task_gid}?opt_fields=modified_at`, body);
+  const updated = await asanaApi<AsanaTask>(
+    "PUT",
+    `/tasks/${m.asana_task_gid}?opt_fields=modified_at`,
+    body,
+  );
 
   if (targetSectionGid) {
     await asanaApi("POST", `/sections/${targetSectionGid}/addTask`, { task: m.asana_task_gid });
@@ -510,7 +527,9 @@ export async function pullCommentsForTask(
       "asana_story_gid",
       comments.map((c) => c.gid),
     );
-  const known = new Set((existingMaps ?? []).map((r) => (r as { asana_story_gid: string }).asana_story_gid));
+  const known = new Set(
+    (existingMaps ?? []).map((r) => (r as { asana_story_gid: string }).asana_story_gid),
+  );
 
   let created = 0;
   for (const s of comments) {
@@ -621,7 +640,10 @@ export async function handleAsanaWebhookEvent(
   if (!resource) return;
 
   // task changed
-  if (resource.resource_type === "task" && (event.action === "changed" || event.action === "added")) {
+  if (
+    resource.resource_type === "task" &&
+    (event.action === "changed" || event.action === "added")
+  ) {
     const { data: map } = await supabase
       .from("asana_task_map")
       .select("task_id, workspace_id, asana_project_gid")
@@ -654,8 +676,17 @@ export async function handleAsanaWebhookEvent(
       .select("asana_user_gid, user_id")
       .eq("workspace_id", m.workspace_id);
     const userByAsanaGid = new Map(
-      (userMaps ?? []).map((u) => [(u as { asana_user_gid: string }).asana_user_gid, (u as { user_id: string }).user_id]),
+      (userMaps ?? []).map((u) => [
+        (u as { asana_user_gid: string }).asana_user_gid,
+        (u as { user_id: string }).user_id,
+      ]),
     );
-    await pullCommentsForTask(supabase, m.workspace_id, event.parent.gid, m.task_id, userByAsanaGid);
+    await pullCommentsForTask(
+      supabase,
+      m.workspace_id,
+      event.parent.gid,
+      m.task_id,
+      userByAsanaGid,
+    );
   }
 }

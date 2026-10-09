@@ -11,10 +11,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import {
-  searchWorkspace,
-  listProjects,
-} from "@/lib/api/tasko.functions";
+import { searchWorkspace, listProjects } from "@/lib/api/tasko.functions";
 import { Folder, CheckSquare, Inbox, Users, Settings, Home, Building2 } from "lucide-react";
 
 export function CommandPalette({
@@ -105,9 +102,7 @@ export function CommandPalette({
               >
                 <Folder className="w-4 h-4 mr-2" /> Proyectos
               </CommandItem>
-              <CommandItem
-                onSelect={() => go(() => navigate({ to: "/admin/users" }))}
-              >
+              <CommandItem onSelect={() => go(() => navigate({ to: "/admin/users" }))}>
                 <Users className="w-4 h-4 mr-2" /> Usuarios y permisos
               </CommandItem>
               <CommandItem
@@ -217,9 +212,7 @@ export function CommandPalette({
                       <CheckSquare className="w-4 h-4 mr-2 text-muted-foreground" />
                       <span className="flex-1 truncate">{t.title}</span>
                       {proj && (
-                        <span className="text-[11px] text-muted-foreground ml-2">
-                          {proj.name}
-                        </span>
+                        <span className="text-[11px] text-muted-foreground ml-2">{proj.name}</span>
                       )}
                     </CommandItem>
                   );

@@ -73,7 +73,6 @@ export function useDerivedArea(pathname: string, workspaceId: string | undefined
   return area;
 }
 
-
 export type AreaMeta = {
   id: Area;
   label: string;
@@ -150,10 +149,7 @@ export function useActiveSpace(workspaceId: string | undefined) {
 }
 
 /** Áreas disponibles según permisos del workspace actual. */
-export function useAvailableAreas(opts: {
-  pathname: string;
-  workspaceId: string | undefined;
-}) {
+export function useAvailableAreas(opts: { pathname: string; workspaceId: string | undefined }) {
   const { pathname, workspaceId } = opts;
   const perms = usePermissions(workspaceId);
 

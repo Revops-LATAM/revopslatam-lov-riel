@@ -14,10 +14,10 @@ const AVATAR_PALETTE = [
   "oklch(0.44 0.13 245)", // blue
   "oklch(0.44 0.09 183)", // teal
   "oklch(0.44 0.17 355)", // magenta
-  "oklch(0.50 0.15 45)",  // orange
-  "oklch(0.51 0.12 75)",  // amber-text
-  "oklch(0.48 0.18 25)",  // red
-  "oklch(0.46 0.04 80)",  // stone
+  "oklch(0.50 0.15 45)", // orange
+  "oklch(0.51 0.12 75)", // amber-text
+  "oklch(0.48 0.18 25)", // red
+  "oklch(0.46 0.04 80)", // stone
 ];
 
 function colorFor(seed: string): string {
@@ -25,7 +25,6 @@ function colorFor(seed: string): string {
   for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
   return AVATAR_PALETTE[hash % AVATAR_PALETTE.length];
 }
-
 
 export function MemberAvatar({
   profile,

@@ -105,9 +105,7 @@ export const syncMonthToHubspot = createServerFn({ method: "POST" })
 
     const targets = (pieces ?? []).filter(
       (p) =>
-        p.status !== "publicada" &&
-        p.publish_at &&
-        new Date(p.publish_at).getTime() > Date.now(),
+        p.status !== "publicada" && p.publish_at && new Date(p.publish_at).getTime() > Date.now(),
     );
 
     let ok = 0;

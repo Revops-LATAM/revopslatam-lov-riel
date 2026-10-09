@@ -2,17 +2,50 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Fragment as FragmentRow, useEffect, useState } from "react";
-import { wsBySlugQO, partnersQO, partnerProjectsQO, asanaWorkspacesQO, asanaProjectsQO } from "@/lib/api/tasko.queries";
+import {
+  wsBySlugQO,
+  partnersQO,
+  partnerProjectsQO,
+  asanaWorkspacesQO,
+  asanaProjectsQO,
+} from "@/lib/api/tasko.queries";
 import { upsertPartner, deletePartner } from "@/lib/api/partners.functions";
-import { createProject, deleteProject, updateProject, getProjectHoursSummary } from "@/lib/api/projects.functions";
+import {
+  createProject,
+  deleteProject,
+  updateProject,
+  getProjectHoursSummary,
+} from "@/lib/api/projects.functions";
 import { syncAsanaProjectTasks } from "@/lib/api/asana.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Plus, Trash2, Pencil, Building2, ChevronDown, ChevronRight, FolderPlus, ExternalLink, RefreshCw } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Plus,
+  Trash2,
+  Pencil,
+  Building2,
+  ChevronDown,
+  ChevronRight,
+  FolderPlus,
+  ExternalLink,
+  RefreshCw,
+} from "lucide-react";
 import { toast } from "sonner";
 import { RouteError } from "@/components/tasko/RouteError";
 import { AsanaSyncControls } from "@/components/tasko/AsanaSyncControls";
@@ -146,7 +179,9 @@ function PartnersPage() {
                       <td className="px-3 py-2 font-medium">{r.name}</td>
                       <td className="px-3 py-2 text-muted-foreground">{r.country ?? "—"}</td>
                       <td className="px-3 py-2 text-muted-foreground">{r.billing_entity ?? "—"}</td>
-                      <td className="px-3 py-2 text-muted-foreground">{r.external_billing_system ?? "—"}</td>
+                      <td className="px-3 py-2 text-muted-foreground">
+                        {r.external_billing_system ?? "—"}
+                      </td>
                       <td className="px-3 py-2 text-right">
                         <Button variant="ghost" size="icon" onClick={() => openEdit(r)}>
                           <Pencil className="w-3.5 h-3.5" />
@@ -224,16 +259,18 @@ function PartnerProjects({
   const [firstSprintStart, setFirstSprintStart] = useState<string>(
     new Date().toISOString().slice(0, 10),
   );
-  const sprintDurationDays =
-    sprintCadence === "monthly" ? 30 : sprintCadence === "weekly" ? 7 : 15;
-  const sprintWeeks =
-    sprintCadence === "monthly" ? 4 : sprintCadence === "weekly" ? 1 : 2;
+  const sprintDurationDays = sprintCadence === "monthly" ? 30 : sprintCadence === "weekly" ? 7 : 15;
+  const sprintWeeks = sprintCadence === "monthly" ? 4 : sprintCadence === "weekly" ? 1 : 2;
   const effectiveSprintCount =
     durationMode === "weeks"
       ? Math.max(1, Math.ceil((Number.isFinite(weeksCount) ? weeksCount : 0) / sprintWeeks))
       : sprintCount;
   const effectiveWeeks =
-    durationMode === "weeks" ? (Number.isFinite(weeksCount) ? weeksCount : 0) : sprintCount * sprintWeeks;
+    durationMode === "weeks"
+      ? Number.isFinite(weeksCount)
+        ? weeksCount
+        : 0
+      : sprintCount * sprintWeeks;
   const safeHours = Number.isFinite(hoursValue) ? hoursValue : 0;
   const totalHours =
     hoursMode === "total"
@@ -244,7 +281,11 @@ function PartnerProjects({
   const hoursPerSprint =
     effectiveSprintCount > 0 ? Math.round((totalHours / effectiveSprintCount) * 100) / 100 : 0;
 
-  const { data: asanaWorkspaces, isLoading: loadingWs, error: wsError } = useQuery({
+  const {
+    data: asanaWorkspaces,
+    isLoading: loadingWs,
+    error: wsError,
+  } = useQuery({
     ...asanaWorkspacesQO(),
     enabled: open,
   });
@@ -359,7 +400,6 @@ function PartnerProjects({
           contractedHoursTotal: numOrUndef(v.contractedHoursTotal) ?? null,
         },
       });
-
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["partner-projects", partnerId] });
@@ -402,9 +442,7 @@ function PartnerProjects({
                 ) : null}
               </div>
               <div className="flex items-center gap-2">
-                {p.asana_project_gid ? (
-                  <AsanaSyncControls projectId={p.id} />
-                ) : null}
+                {p.asana_project_gid ? <AsanaSyncControls projectId={p.id} /> : null}
                 <Link
                   to="/w/$workspaceSlug/projects/$projectId"
                   params={{ workspaceSlug, projectId: p.id }}
@@ -421,7 +459,10 @@ function PartnerProjects({
                       delivery_type: "proyecto" | "raas" | null;
                       first_sprint_start_date: string | null;
                       fecha_inicio_delivery: string | null;
-                      contract: { sprint_cadence: "weekly" | "biweekly" | "monthly" | null; hours_per_sprint: number | null } | null;
+                      contract: {
+                        sprint_cadence: "weekly" | "biweekly" | "monthly" | null;
+                        hours_per_sprint: number | null;
+                      } | null;
                     };
                     // open with placeholders, then hydrate hours
                     setEditProject({
@@ -434,7 +475,9 @@ function PartnerProjects({
                           : anyP.fecha_inicio_delivery) ?? "",
                       sprintCadence: anyP.contract?.sprint_cadence ?? null,
                       hoursPerSprint:
-                        anyP.contract?.hours_per_sprint != null ? String(anyP.contract.hours_per_sprint) : "",
+                        anyP.contract?.hours_per_sprint != null
+                          ? String(anyP.contract.hours_per_sprint)
+                          : "",
                       contractedHoursTotal: "",
                       estimatedHoursTotal: "",
                       hourBudgetRowCount: 0,
@@ -449,15 +492,18 @@ function PartnerProjects({
                           ? {
                               ...prev,
                               hoursPerSprint:
-                                s.hoursPerSprint != null ? String(s.hoursPerSprint) : prev.hoursPerSprint,
+                                s.hoursPerSprint != null
+                                  ? String(s.hoursPerSprint)
+                                  : prev.hoursPerSprint,
                               contractedHoursTotal:
-                                s.contractedHoursTotal != null ? String(s.contractedHoursTotal) : "",
+                                s.contractedHoursTotal != null
+                                  ? String(s.contractedHoursTotal)
+                                  : "",
                               estimatedHoursTotal:
                                 s.estimatedHoursTotal > 0 ? String(s.estimatedHoursTotal) : "",
                               hourBudgetRowCount: s.hourBudgetRowCount,
                               sprintCount: s.sprintCount > 0 ? String(s.sprintCount) : "",
                               currentSprintCount: s.sprintCount,
-
                             }
                           : prev,
                       );
@@ -474,7 +520,11 @@ function PartnerProjects({
                   className="h-7 px-2 text-xs text-destructive hover:text-destructive"
                   disabled={del.isPending}
                   onClick={() => {
-                    if (confirm(`¿Eliminar el proyecto "${p.name}"? Esta acción no se puede deshacer.`)) {
+                    if (
+                      confirm(
+                        `¿Eliminar el proyecto "${p.name}"? Esta acción no se puede deshacer.`,
+                      )
+                    ) {
                       del.mutate(p.id);
                     }
                   }}
@@ -512,7 +562,9 @@ function PartnerProjects({
                   className={`text-left rounded border p-2 text-xs ${deliveryType === "proyecto" ? "border-primary bg-primary/5" : "border-border"}`}
                 >
                   <div className="font-semibold">Por fases</div>
-                  <div className="text-[11px] text-muted-foreground">Implementación con kanban y fases</div>
+                  <div className="text-[11px] text-muted-foreground">
+                    Implementación con kanban y fases
+                  </div>
                 </button>
                 <button
                   type="button"
@@ -520,7 +572,9 @@ function PartnerProjects({
                   className={`text-left rounded border p-2 text-xs ${deliveryType === "raas" ? "border-primary bg-primary/5" : "border-border"}`}
                 >
                   <div className="font-semibold">Por sprints</div>
-                  <div className="text-[11px] text-muted-foreground">Trabajo recurrente por sprints</div>
+                  <div className="text-[11px] text-muted-foreground">
+                    Trabajo recurrente por sprints
+                  </div>
                 </button>
               </div>
             </div>
@@ -531,7 +585,12 @@ function PartnerProjects({
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <Label className="text-[11px]">Cadencia</Label>
-                    <Select value={sprintCadence} onValueChange={(v) => setSprintCadence(v as "weekly" | "biweekly" | "monthly")}>
+                    <Select
+                      value={sprintCadence}
+                      onValueChange={(v) =>
+                        setSprintCadence(v as "weekly" | "biweekly" | "monthly")
+                      }
+                    >
                       <SelectTrigger className="h-9 text-xs">
                         <SelectValue />
                       </SelectTrigger>
@@ -544,7 +603,10 @@ function PartnerProjects({
                   </div>
                   <div>
                     <Label className="text-[11px]">Horas por</Label>
-                    <Select value={hoursMode} onValueChange={(v) => setHoursMode(v as "per_sprint" | "per_week" | "total")}>
+                    <Select
+                      value={hoursMode}
+                      onValueChange={(v) => setHoursMode(v as "per_sprint" | "per_week" | "total")}
+                    >
                       <SelectTrigger className="h-9 text-xs">
                         <SelectValue />
                       </SelectTrigger>
@@ -557,7 +619,11 @@ function PartnerProjects({
                   </div>
                   <div>
                     <Label className="text-[11px]">
-                      {hoursMode === "total" ? "Horas totales" : hoursMode === "per_week" ? "Horas por semana" : "Horas por sprint"}
+                      {hoursMode === "total"
+                        ? "Horas totales"
+                        : hoursMode === "per_week"
+                          ? "Horas por semana"
+                          : "Horas por sprint"}
                     </Label>
                     <Input
                       type="number"
@@ -572,7 +638,10 @@ function PartnerProjects({
                   </div>
                   <div>
                     <Label className="text-[11px]">Duración por</Label>
-                    <Select value={durationMode} onValueChange={(v) => setDurationMode(v as "sprints" | "weeks")}>
+                    <Select
+                      value={durationMode}
+                      onValueChange={(v) => setDurationMode(v as "sprints" | "weeks")}
+                    >
                       <SelectTrigger className="h-9 text-xs">
                         <SelectValue />
                       </SelectTrigger>
@@ -621,10 +690,13 @@ function PartnerProjects({
                   </div>
                 </div>
                 <p className="text-[11px] text-muted-foreground">
-                  Se generarán {effectiveSprintCount} sprint(s) de {sprintDurationDays} días · presupuesto total{" "}
-                  <span className="font-semibold text-foreground">{totalHours} h</span>
-                  {" "}(≈ {hoursPerSprint} h/sprint, {effectiveWeeks > 0 ? Math.round((totalHours / effectiveWeeks) * 10) / 10 : 0} h/semana).
-                  Los sprints quedan sin horas fijas y el sistema controlará que no se exceda el total.
+                  Se generarán {effectiveSprintCount} sprint(s) de {sprintDurationDays} días ·
+                  presupuesto total{" "}
+                  <span className="font-semibold text-foreground">{totalHours} h</span> (≈{" "}
+                  {hoursPerSprint} h/sprint,{" "}
+                  {effectiveWeeks > 0 ? Math.round((totalHours / effectiveWeeks) * 10) / 10 : 0}{" "}
+                  h/semana). Los sprints quedan sin horas fijas y el sistema controlará que no se
+                  exceda el total.
                 </p>
               </div>
             ) : (
@@ -641,12 +713,6 @@ function PartnerProjects({
               </div>
             )}
 
-
-
-
-
-
-
             <div className="space-y-2 rounded border border-border p-3 bg-muted/20">
               <Label className="text-xs font-semibold">Vincular a Asana (opcional)</Label>
               {wsError ? (
@@ -656,25 +722,45 @@ function PartnerProjects({
               ) : (
                 <>
                   {asanaWorkspaces && asanaWorkspaces.length > 1 ? (
-                    <Select value={asanaWsGid} onValueChange={(v) => { setAsanaWsGid(v); setAsanaGid(""); }}>
+                    <Select
+                      value={asanaWsGid}
+                      onValueChange={(v) => {
+                        setAsanaWsGid(v);
+                        setAsanaGid("");
+                      }}
+                    >
                       <SelectTrigger className="h-8 text-xs">
                         <SelectValue placeholder="Workspace de Asana" />
                       </SelectTrigger>
                       <SelectContent>
                         {asanaWorkspaces.map((w) => (
-                          <SelectItem key={w.gid} value={w.gid}>{w.name}</SelectItem>
+                          <SelectItem key={w.gid} value={w.gid}>
+                            {w.name}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   ) : null}
 
-                  <Select value={asanaGid} onValueChange={setAsanaGid} disabled={loadingWs || loadingAsanaProjects || !asanaWsGid}>
+                  <Select
+                    value={asanaGid}
+                    onValueChange={setAsanaGid}
+                    disabled={loadingWs || loadingAsanaProjects || !asanaWsGid}
+                  >
                     <SelectTrigger className="h-8 text-xs">
-                      <SelectValue placeholder={loadingWs || loadingAsanaProjects ? "Cargando proyectos…" : "Seleccionar proyecto de Asana"} />
+                      <SelectValue
+                        placeholder={
+                          loadingWs || loadingAsanaProjects
+                            ? "Cargando proyectos…"
+                            : "Seleccionar proyecto de Asana"
+                        }
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {(asanaProjects ?? []).map((p) => (
-                        <SelectItem key={p.gid} value={p.gid}>{p.name}</SelectItem>
+                        <SelectItem key={p.gid} value={p.gid}>
+                          {p.name}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -686,8 +772,8 @@ function PartnerProjects({
             </div>
 
             <div className="rounded border border-border bg-muted/30 px-3 py-2 text-[11px] text-muted-foreground">
-              Este proyecto no tendrá contrato en Riel ni generará facturas — la facturación se
-              hace desde {partnerName === "" ? "el partner" : `tu acuerdo con ${partnerName}`}.
+              Este proyecto no tendrá contrato en Riel ni generará facturas — la facturación se hace
+              desde {partnerName === "" ? "el partner" : `tu acuerdo con ${partnerName}`}.
             </div>
           </div>
           <DialogFooter>
@@ -731,7 +817,10 @@ function PartnerProjects({
                   <Select
                     value={editProject.sprintCadence ?? "biweekly"}
                     onValueChange={(v) =>
-                      setEditProject({ ...editProject, sprintCadence: v as "weekly" | "biweekly" | "monthly" })
+                      setEditProject({
+                        ...editProject,
+                        sprintCadence: v as "weekly" | "biweekly" | "monthly",
+                      })
                     }
                   >
                     <SelectTrigger className="h-9 text-xs">
@@ -765,12 +854,17 @@ function PartnerProjects({
                         Number.isFinite(total) && total > 0 && Number.isFinite(n) && n > 0
                           ? String(Math.round((total / n) * 100) / 100)
                           : editProject.hoursPerSprint;
-                      setEditProject({ ...editProject, sprintCount: nextCount, hoursPerSprint: nextHps });
+                      setEditProject({
+                        ...editProject,
+                        sprintCount: nextCount,
+                        hoursPerSprint: nextHps,
+                      });
                     }}
                     placeholder="0"
                   />
                   <p className="text-[11px] text-muted-foreground mt-1">
-                    Actualmente: {editProject.currentSprintCount}. Los cambios se aplican a todos los sprints.
+                    Actualmente: {editProject.currentSprintCount}. Los cambios se aplican a todos
+                    los sprints.
                   </p>
                 </div>
               )}
@@ -788,12 +882,11 @@ function PartnerProjects({
                     placeholder="0"
                   />
                   <p className="text-[11px] text-muted-foreground mt-1">
-                    Se calcula automáticamente: horas totales ÷ cantidad de sprints. Se aplica a todos los sprints.
+                    Se calcula automáticamente: horas totales ÷ cantidad de sprints. Se aplica a
+                    todos los sprints.
                   </p>
                 </div>
               )}
-
-
 
               <div>
                 <Label className="text-xs">Horas totales del contrato</Label>
@@ -810,7 +903,11 @@ function PartnerProjects({
                       Number.isFinite(t) && t > 0 && Number.isFinite(n) && n > 0
                         ? String(Math.round((t / n) * 100) / 100)
                         : editProject.hoursPerSprint;
-                    setEditProject({ ...editProject, contractedHoursTotal: nextTotal, hoursPerSprint: nextHps });
+                    setEditProject({
+                      ...editProject,
+                      contractedHoursTotal: nextTotal,
+                      hoursPerSprint: nextHps,
+                    });
                   }}
                   placeholder="0"
                 />
@@ -832,14 +929,16 @@ function PartnerProjects({
                   <p className="text-[11px] text-muted-foreground mt-1">
                     {editProject.hourBudgetRowCount > 1
                       ? `Reemplaza el desglose actual por rol (${editProject.hourBudgetRowCount} filas) con una sola fila "Total".`
-                      : "Se guarda como una única fila \"Total\" en el presupuesto de horas."}
+                      : 'Se guarda como una única fila "Total" en el presupuesto de horas.'}
                   </p>
                 </div>
               )}
             </div>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditProject(null)}>Cancelar</Button>
+            <Button variant="outline" onClick={() => setEditProject(null)}>
+              Cancelar
+            </Button>
             <Button
               disabled={updateMut.isPending || !editProject?.name.trim()}
               onClick={() => editProject && updateMut.mutate(editProject)}
@@ -887,12 +986,20 @@ function PartnerDialog({
         <div className="space-y-3">
           <div>
             <Label className="text-xs">Nombre *</Label>
-            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Ej: Cortado Group" />
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Ej: Cortado Group"
+            />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label className="text-xs">País</Label>
-              <Input value={country} onChange={(e) => setCountry(e.target.value)} placeholder="Ej: USA" />
+              <Input
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                placeholder="Ej: USA"
+              />
             </div>
             <div>
               <Label className="text-xs">Sistema de facturación externo</Label>

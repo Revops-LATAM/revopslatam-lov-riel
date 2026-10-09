@@ -14,13 +14,7 @@ const POS_KEY = "tasko:timer-pill-pos";
 
 type Pos = { x: number; y: number };
 
-function DraggablePill({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
+function DraggablePill({ children, className }: { children: ReactNode; className?: string }) {
   const [pos, setPos] = useState<Pos | null>(null);
   const dragState = useRef<{ dx: number; dy: number } | null>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -185,52 +179,50 @@ export function TimerPill({
     return (
       <DraggablePill>
         <div className="flex items-center gap-1 rounded-full border border-border bg-muted/40 pl-2 pr-1 py-1 shadow-sm backdrop-blur">
-
-        <Pause className="w-3.5 h-3.5 text-muted-foreground" />
-        {paused.projectId ? (
-          <Link
-            to="/w/$workspaceSlug/projects/$projectId"
-            params={{ workspaceSlug, projectId: paused.projectId }}
-            search={{ task: paused.taskId }}
-            className="text-xs font-medium hover:underline max-w-[180px] truncate text-muted-foreground"
-            title={paused.title}
-          >
-            {paused.title}
-          </Link>
-        ) : (
-          <span className="text-xs font-medium max-w-[180px] truncate text-muted-foreground">
-            {paused.title}
+          <Pause className="w-3.5 h-3.5 text-muted-foreground" />
+          {paused.projectId ? (
+            <Link
+              to="/w/$workspaceSlug/projects/$projectId"
+              params={{ workspaceSlug, projectId: paused.projectId }}
+              search={{ task: paused.taskId }}
+              className="text-xs font-medium hover:underline max-w-[180px] truncate text-muted-foreground"
+              title={paused.title}
+            >
+              {paused.title}
+            </Link>
+          ) : (
+            <span className="text-xs font-medium max-w-[180px] truncate text-muted-foreground">
+              {paused.title}
+            </span>
+          )}
+          <span className="text-[10px] text-muted-foreground uppercase tracking-wider ml-1">
+            pausada
           </span>
-        )}
-        <span className="text-[10px] text-muted-foreground uppercase tracking-wider ml-1">
-          pausada
-        </span>
-        <Button
-          size="icon"
-          variant="ghost"
-          className="w-6 h-6 rounded-full"
-          onClick={handleResume}
-          disabled={isMutating}
-          aria-label="Reanudar"
-          title="Reanudar"
-        >
-          <Play className="w-3 h-3" />
-        </Button>
-        <Button
-          size="icon"
-          variant="ghost"
-          className="w-6 h-6 rounded-full"
-          onClick={handleDiscardPaused}
-          aria-label="Descartar"
-          title="Descartar"
-        >
-          <Square className="w-3 h-3" />
-        </Button>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="w-6 h-6 rounded-full"
+            onClick={handleResume}
+            disabled={isMutating}
+            aria-label="Reanudar"
+            title="Reanudar"
+          >
+            <Play className="w-3 h-3" />
+          </Button>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="w-6 h-6 rounded-full"
+            onClick={handleDiscardPaused}
+            aria-label="Descartar"
+            title="Descartar"
+          >
+            <Square className="w-3 h-3" />
+          </Button>
         </div>
       </DraggablePill>
     );
   }
-
 
   const projectId = entry.task?.project_id;
   const title = entry.task?.title ?? "Tarea";
@@ -238,85 +230,83 @@ export function TimerPill({
   return (
     <DraggablePill>
       <div className="flex items-center gap-1 rounded-full border border-status-in-progress/40 bg-status-in-progress/10 pl-2 pr-1 py-1 shadow-sm backdrop-blur">
-
-      {projectId ? (
-        <Link
-          to="/w/$workspaceSlug/projects/$projectId"
-          params={{ workspaceSlug, projectId }}
-          search={{ task: entry.task_id ?? undefined }}
-          className="flex items-center gap-1 hover:opacity-80 transition-opacity"
-          title={`Ir a: ${title}`}
-        >
-          <Timer className="w-3.5 h-3.5 text-status-in-progress animate-pulse" />
-          <span className="text-xs font-medium max-w-[180px] truncate hover:underline">
-            {title}
-          </span>
-          <span className="text-xs tabular-nums font-semibold text-status-in-progress ml-1">
-            {fmt(elapsedSecs)}
-          </span>
-        </Link>
-      ) : (
-        <>
-          <Timer className="w-3.5 h-3.5 text-status-in-progress animate-pulse" />
-          <span className="text-xs font-medium max-w-[180px] truncate">{title}</span>
-          <span className="text-xs tabular-nums font-semibold text-status-in-progress ml-1">
-            {fmt(elapsedSecs)}
-          </span>
-        </>
-      )}
-
-      <Popover open={switchOpen} onOpenChange={setSwitchOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="w-6 h-6 rounded-full"
-            aria-label="Cambiar tarea"
-            title="Cambiar tarea"
+        {projectId ? (
+          <Link
+            to="/w/$workspaceSlug/projects/$projectId"
+            params={{ workspaceSlug, projectId }}
+            search={{ task: entry.task_id ?? undefined }}
+            className="flex items-center gap-1 hover:opacity-80 transition-opacity"
+            title={`Ir a: ${title}`}
           >
-            <Repeat2 className="w-3 h-3" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-72 p-0" align="end">
-          <SwitchList
-            workspaceId={workspaceId}
-            currentTaskId={entry.task_id ?? ""}
-            onPick={(taskId) => {
-              setSwitchOpen(false);
-              switchTask(taskId);
-            }}
-          />
-        </PopoverContent>
-      </Popover>
+            <Timer className="w-3.5 h-3.5 text-status-in-progress animate-pulse" />
+            <span className="text-xs font-medium max-w-[180px] truncate hover:underline">
+              {title}
+            </span>
+            <span className="text-xs tabular-nums font-semibold text-status-in-progress ml-1">
+              {fmt(elapsedSecs)}
+            </span>
+          </Link>
+        ) : (
+          <>
+            <Timer className="w-3.5 h-3.5 text-status-in-progress animate-pulse" />
+            <span className="text-xs font-medium max-w-[180px] truncate">{title}</span>
+            <span className="text-xs tabular-nums font-semibold text-status-in-progress ml-1">
+              {fmt(elapsedSecs)}
+            </span>
+          </>
+        )}
 
-      <Button
-        size="icon"
-        variant="ghost"
-        className="w-6 h-6 rounded-full"
-        onClick={handlePause}
-        disabled={isMutating}
-        aria-label="Pausar"
-        title="Pausar (reanudar luego)"
-      >
-        <Pause className="w-3 h-3" />
-      </Button>
+        <Popover open={switchOpen} onOpenChange={setSwitchOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="w-6 h-6 rounded-full"
+              aria-label="Cambiar tarea"
+              title="Cambiar tarea"
+            >
+              <Repeat2 className="w-3 h-3" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-72 p-0" align="end">
+            <SwitchList
+              workspaceId={workspaceId}
+              currentTaskId={entry.task_id ?? ""}
+              onPick={(taskId) => {
+                setSwitchOpen(false);
+                switchTask(taskId);
+              }}
+            />
+          </PopoverContent>
+        </Popover>
 
-      <Button
-        size="icon"
-        variant="ghost"
-        className="w-6 h-6 rounded-full"
-        onClick={() => stop()}
-        disabled={isMutating}
-        aria-label="Detener timer"
-        title="Detener"
-      >
-        <Square className="w-3 h-3" />
-      </Button>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="w-6 h-6 rounded-full"
+          onClick={handlePause}
+          disabled={isMutating}
+          aria-label="Pausar"
+          title="Pausar (reanudar luego)"
+        >
+          <Pause className="w-3 h-3" />
+        </Button>
+
+        <Button
+          size="icon"
+          variant="ghost"
+          className="w-6 h-6 rounded-full"
+          onClick={() => stop()}
+          disabled={isMutating}
+          aria-label="Detener timer"
+          title="Detener"
+        >
+          <Square className="w-3 h-3" />
+        </Button>
       </div>
     </DraggablePill>
   );
 }
-
 
 function SwitchList({
   workspaceId,

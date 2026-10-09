@@ -47,7 +47,10 @@ export const upsertBillingEntity = createServerFn({ method: "POST" })
       is_primary: data.is_primary,
     };
     if (data.id) {
-      const { error } = await context.supabase.from("account_billing_entities").update(payload).eq("id", data.id);
+      const { error } = await context.supabase
+        .from("account_billing_entities")
+        .update(payload)
+        .eq("id", data.id);
       if (error) throw new Error(error.message);
       return { id: data.id };
     }
@@ -91,22 +94,34 @@ export const saveContractSplits = createServerFn({ method: "POST" })
     z
       .object({
         contractId: z.string().uuid(),
-        splits: z.array(z.object({ billingEntityId: z.string().uuid(), monto: z.number().min(0) })).max(50),
+        splits: z
+          .array(z.object({ billingEntityId: z.string().uuid(), monto: z.number().min(0) }))
+          .max(50),
       })
       .parse(i),
   )
   .handler(async ({ data, context }) => {
     const sb = context.supabase;
-    const { error: derr } = await sb.from("contract_billing_splits").delete().eq("contract_id", data.contractId);
+    const { error: derr } = await sb
+      .from("contract_billing_splits")
+      .delete()
+      .eq("contract_id", data.contractId);
     if (derr) throw new Error(derr.message);
     const rows = data.splits
       .filter((s) => s.monto > 0)
-      .map((s, i) => ({ contract_id: data.contractId, billing_entity_id: s.billingEntityId, monto: s.monto, orden: i }));
+      .map((s, i) => ({
+        contract_id: data.contractId,
+        billing_entity_id: s.billingEntityId,
+        monto: s.monto,
+        orden: i,
+      }));
     if (rows.length > 0) {
       const { error } = await sb.from("contract_billing_splits").insert(rows);
       if (error) throw new Error(error.message);
     }
-    const { data: n, error: rerr } = await sb.rpc("apply_contract_billing_splits", { _contract_id: data.contractId });
+    const { data: n, error: rerr } = await sb.rpc("apply_contract_billing_splits", {
+      _contract_id: data.contractId,
+    });
     if (rerr) throw new Error(rerr.message);
     return { splitPayments: n ?? 0 };
   });

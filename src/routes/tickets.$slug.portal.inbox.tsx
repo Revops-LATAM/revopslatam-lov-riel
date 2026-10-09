@@ -9,10 +9,7 @@ import { Loader2, Ticket, LogOut, Clock, AlertTriangle, CheckCircle2 } from "luc
 export const Route = createFileRoute("/tickets/$slug/portal/inbox")({
   ssr: false,
   head: () => ({
-    meta: [
-      { title: "Mis tickets" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Mis tickets" }, { name: "robots", content: "noindex" }],
   }),
   component: PortalInbox,
 });
@@ -29,15 +26,35 @@ type TicketRow = {
   submitter_email: string | null;
   sprint_id: string | null;
   task_statuses: { name: string; category: string; color: string | null } | null;
-  sprints: { id: string; sprint_number: number | null; start_date: string | null; end_date: string | null } | null;
+  sprints: {
+    id: string;
+    sprint_number: number | null;
+    start_date: string | null;
+    end_date: string | null;
+  } | null;
 };
 
 const STATUS_LABEL: Record<string, { label: string; tone: string }> = {
-  abierta: { label: "Recibido", tone: "bg-sky-500/10 text-sky-700 border-sky-500/30 dark:text-sky-400" },
-  en_progreso: { label: "En progreso", tone: "bg-amber-500/10 text-amber-700 border-amber-500/30 dark:text-amber-400" },
-  esperando_cliente: { label: "Esperando tu respuesta", tone: "bg-violet-500/10 text-violet-700 border-violet-500/30 dark:text-violet-400" },
-  bloqueada: { label: "Bloqueado", tone: "bg-rose-500/10 text-rose-700 border-rose-500/30 dark:text-rose-400" },
-  cerrada: { label: "Resuelto", tone: "bg-emerald-500/10 text-emerald-700 border-emerald-500/30 dark:text-emerald-400" },
+  abierta: {
+    label: "Recibido",
+    tone: "bg-sky-500/10 text-sky-700 border-sky-500/30 dark:text-sky-400",
+  },
+  en_progreso: {
+    label: "En progreso",
+    tone: "bg-amber-500/10 text-amber-700 border-amber-500/30 dark:text-amber-400",
+  },
+  esperando_cliente: {
+    label: "Esperando tu respuesta",
+    tone: "bg-violet-500/10 text-violet-700 border-violet-500/30 dark:text-violet-400",
+  },
+  bloqueada: {
+    label: "Bloqueado",
+    tone: "bg-rose-500/10 text-rose-700 border-rose-500/30 dark:text-rose-400",
+  },
+  cerrada: {
+    label: "Resuelto",
+    tone: "bg-emerald-500/10 text-emerald-700 border-emerald-500/30 dark:text-emerald-400",
+  },
 };
 
 function statusMeta(category: string | undefined | null, name: string | undefined | null) {
@@ -57,7 +74,12 @@ function slaTone(target: string | null): "ok" | "warn" | "late" | null {
 function PortalInbox() {
   const { slug } = Route.useParams();
   const navigate = useNavigate();
-  const [data, setData] = useState<{ email: string; role?: "member" | "leader"; project: { name: string | null; account: string | null }; tickets: TicketRow[] } | null>(null);
+  const [data, setData] = useState<{
+    email: string;
+    role?: "member" | "leader";
+    project: { name: string | null; account: string | null };
+    tickets: TicketRow[];
+  } | null>(null);
   const [scope, setScope] = useState<"all" | "mine">("all");
   const [error, setError] = useState<string | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -99,17 +121,24 @@ function PortalInbox() {
   }
 
   const isLeader = data.role === "leader";
-  const visible = isLeader && scope === "mine"
-    ? data.tickets.filter((t) => (t.submitter_email ?? "").toLowerCase() === data.email.toLowerCase())
-    : data.tickets;
+  const visible =
+    isLeader && scope === "mine"
+      ? data.tickets.filter(
+          (t) => (t.submitter_email ?? "").toLowerCase() === data.email.toLowerCase(),
+        )
+      : data.tickets;
 
   // Agrupación por sprint (sólo relevante para el líder).
   const groups = (() => {
     if (!isLeader) return [{ key: "all", label: "", tickets: visible }];
-    const map = new Map<string, { key: string; label: string; order: string; tickets: TicketRow[] }>();
+    const map = new Map<
+      string,
+      { key: string; label: string; order: string; tickets: TicketRow[] }
+    >();
     for (const t of visible) {
       const key = t.sprint_id ?? "sin-sprint";
-      const label = t.sprints?.sprint_number != null ? `Sprint ${t.sprints.sprint_number}` : "Sin sprint";
+      const label =
+        t.sprints?.sprint_number != null ? `Sprint ${t.sprints.sprint_number}` : "Sin sprint";
       const order = t.sprints?.start_date ?? "0000-00-00";
       const g = map.get(key) ?? { key, label, order, tickets: [] };
       g.tickets.push(t);
@@ -145,7 +174,8 @@ function PortalInbox() {
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <h2 className="text-base font-medium">
-              {isLeader && scope === "all" ? "Tickets de tu equipo" : "Mis tickets"} ({visible.length})
+              {isLeader && scope === "all" ? "Tickets de tu equipo" : "Mis tickets"} (
+              {visible.length})
             </h2>
             {isLeader && (
               <Badge variant="secondary" className="h-5 text-[10px]">
@@ -213,7 +243,11 @@ function PortalInbox() {
                               {t.request_type && (
                                 <>
                                   <span>·</span>
-                                  <span>{t.request_type === "incidencia" ? "Incidencia" : "Requerimiento"}</span>
+                                  <span>
+                                    {t.request_type === "incidencia"
+                                      ? "Incidencia"
+                                      : "Requerimiento"}
+                                  </span>
                                 </>
                               )}
                               {t.severity === "urgente_critico" && (
@@ -231,21 +265,36 @@ function PortalInbox() {
                                 </>
                               )}
                               Actualizado{" "}
-                              {formatDistanceToNow(parseISO(t.updated_at), { addSuffix: true, locale: es })}
+                              {formatDistanceToNow(parseISO(t.updated_at), {
+                                addSuffix: true,
+                                locale: es,
+                              })}
                             </div>
                           </div>
                           <div className="flex flex-col items-end gap-1.5">
-                            <span className={`text-xs px-2 py-0.5 rounded-full border ${st.tone}`}>{st.label}</span>
+                            <span className={`text-xs px-2 py-0.5 rounded-full border ${st.tone}`}>
+                              {st.label}
+                            </span>
                             {resTone && (
-                              <span className={`inline-flex items-center gap-1 text-[11px] ${
-                                resTone === "late"
-                                  ? "text-destructive"
+                              <span
+                                className={`inline-flex items-center gap-1 text-[11px] ${
+                                  resTone === "late"
+                                    ? "text-destructive"
+                                    : resTone === "warn"
+                                      ? "text-amber-600 dark:text-amber-400"
+                                      : "text-muted-foreground"
+                                }`}
+                              >
+                                {resTone === "late" ? (
+                                  <AlertTriangle className="w-3 h-3" />
+                                ) : (
+                                  <Clock className="w-3 h-3" />
+                                )}
+                                {resTone === "late"
+                                  ? "SLA vencido"
                                   : resTone === "warn"
-                                    ? "text-amber-600 dark:text-amber-400"
-                                    : "text-muted-foreground"
-                              }`}>
-                                {resTone === "late" ? <AlertTriangle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
-                                {resTone === "late" ? "SLA vencido" : resTone === "warn" ? "SLA por vencer" : "SLA en plazo"}
+                                    ? "SLA por vencer"
+                                    : "SLA en plazo"}
                               </span>
                             )}
                           </div>

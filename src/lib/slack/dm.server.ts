@@ -51,9 +51,7 @@ export async function sendSlackDM(userId: string, text: string, url?: string | n
   const channel = im.channel?.id;
   if (!channel) throw new Error("No se pudo abrir DM en Slack");
 
-  const blocks: any[] = [
-    { type: "section", text: { type: "mrkdwn", text } },
-  ];
+  const blocks: any[] = [{ type: "section", text: { type: "mrkdwn", text } }];
   if (url) {
     blocks.push({
       type: "actions",

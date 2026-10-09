@@ -57,7 +57,6 @@ export const Route = createFileRoute("/api/public/report/$token")({
           hours_per_sprint: project.hours_per_sprint,
         };
 
-
         let sprintQ = supabaseAdmin
           .from("sprints")
           .select("id, sprint_number, start_date, end_date, status, contracted_hours")
@@ -108,7 +107,6 @@ export const Route = createFileRoute("/api/public/report/$token")({
           );
         }
 
-
         const taskIds = [...tasks, ...backlogTasks].map((t) => t.id);
         const actualByTask = new Map<string, number>();
         for (let i = 0; i < taskIds.length; i += 150) {
@@ -153,8 +151,7 @@ export const Route = createFileRoute("/api/public/report/$token")({
             startDate: s.start_date,
             endDate: s.end_date,
             status: s.status,
-            contractedHours:
-              s.contracted_hours ?? project.hours_per_sprint ?? null,
+            contractedHours: s.contracted_hours ?? project.hours_per_sprint ?? null,
             estimated: round(list.reduce((a, t) => a + t.estimated, 0)),
             actual: round(list.reduce((a, t) => a + t.actual, 0)),
             tasks: list,

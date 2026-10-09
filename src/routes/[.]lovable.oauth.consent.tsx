@@ -12,9 +12,21 @@ type AuthorizationDetails = {
 
 // Local typed wrapper for the beta `supabase.auth.oauth` namespace.
 type OAuthNS = {
-  getAuthorizationDetails: (id: string) => Promise<{ data: AuthorizationDetails | null; error: { message: string } | null }>;
-  approveAuthorization: (id: string) => Promise<{ data: { redirect_url?: string; redirect_to?: string } | null; error: { message: string } | null }>;
-  denyAuthorization: (id: string) => Promise<{ data: { redirect_url?: string; redirect_to?: string } | null; error: { message: string } | null }>;
+  getAuthorizationDetails: (
+    id: string,
+  ) => Promise<{ data: AuthorizationDetails | null; error: { message: string } | null }>;
+  approveAuthorization: (
+    id: string,
+  ) => Promise<{
+    data: { redirect_url?: string; redirect_to?: string } | null;
+    error: { message: string } | null;
+  }>;
+  denyAuthorization: (
+    id: string,
+  ) => Promise<{
+    data: { redirect_url?: string; redirect_to?: string } | null;
+    error: { message: string } | null;
+  }>;
 };
 function oauth(): OAuthNS {
   return (supabase.auth as unknown as { oauth: OAuthNS }).oauth;
@@ -42,7 +54,10 @@ export const Route = createFileRoute("/.lovable/oauth/consent")({
   component: Consent,
   errorComponent: ({ error }) => (
     <main className="min-h-screen flex items-center justify-center p-6 text-center">
-      <p>No se pudo cargar esta solicitud de autorización: {String((error as Error)?.message ?? error)}</p>
+      <p>
+        No se pudo cargar esta solicitud de autorización:{" "}
+        {String((error as Error)?.message ?? error)}
+      </p>
     </main>
   ),
 });
@@ -90,7 +105,12 @@ function Consent() {
           </p>
         )}
         <div className="flex gap-3">
-          <Button variant="outline" className="flex-1" disabled={busy} onClick={() => decide(false)}>
+          <Button
+            variant="outline"
+            className="flex-1"
+            disabled={busy}
+            onClick={() => decide(false)}
+          >
             Rechazar
           </Button>
           <Button className="flex-1" disabled={busy} onClick={() => decide(true)}>

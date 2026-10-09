@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -123,7 +129,10 @@ export function SendInvoiceEmailDialog({ open, onOpenChange, invoiceId }: Props)
     if (!invoiceId || !to || !data) return;
     setSending(true);
     try {
-      const ccList = cc.split(",").map((s) => s.trim()).filter(Boolean);
+      const ccList = cc
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
       await sendEmail({
         data: {
           invoiceId,

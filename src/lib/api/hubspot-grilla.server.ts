@@ -35,7 +35,7 @@ export async function hubspotFetch(path: string, init: RequestInit = {}): Promis
     : null;
   if (!res.ok) {
     const msg =
-      typeof body === "string" ? body : (body as { message?: string })?.message ?? res.statusText;
+      typeof body === "string" ? body : ((body as { message?: string })?.message ?? res.statusText);
     throw new Error(`HubSpot ${res.status}: ${msg}`);
   }
   return body;
@@ -79,9 +79,8 @@ export async function syncPieceCore(
   const errors: string[] = [];
   let ok = 0;
 
-  const channelAssets =
-    ((piece as unknown as { channel_assets?: Record<string, string | null> }).channel_assets ??
-      {}) as Record<string, string | null>;
+  const channelAssets = ((piece as unknown as { channel_assets?: Record<string, string | null> })
+    .channel_assets ?? {}) as Record<string, string | null>;
 
   const resolveAssetUrl = async (raw: string | null | undefined): Promise<string | null> => {
     if (!raw) return null;
@@ -117,7 +116,6 @@ export async function syncPieceCore(
     if (assetUrl) {
       (payload.content as Record<string, unknown>).photoUrl = assetUrl;
     }
-
 
     try {
       const existing = existingIds[key];

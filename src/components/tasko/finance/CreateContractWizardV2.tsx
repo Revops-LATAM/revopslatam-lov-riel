@@ -120,9 +120,7 @@ export function CreateContractWizardV2({
 
   const ufRate = useMemo(() => {
     // Find latest UF rate where base=CLP (or rate that converts UF→CLP)
-    const ufRow = currencyRates.find(
-      (r) => r.currency === "UF" && r.base_currency === "CLP",
-    );
+    const ufRow = currencyRates.find((r) => r.currency === "UF" && r.base_currency === "CLP");
     return ufRow?.rate_to_base ?? 0;
   }, [currencyRates]);
 
@@ -260,7 +258,7 @@ export function CreateContractWizardV2({
         serviceTypeId: l.serviceTypeId !== "__custom__" ? l.serviceTypeId : null,
         tipoServicio:
           l.serviceTypeId !== "__custom__"
-            ? serviceTypes.find((s) => s.id === l.serviceTypeId)?.name ?? l.tipoServicio.trim()
+            ? (serviceTypes.find((s) => s.id === l.serviceTypeId)?.name ?? l.tipoServicio.trim())
             : l.tipoServicio.trim(),
         descripcion: l.descripcion.trim() || null,
         frecuencia: l.frecuencia,
@@ -303,7 +301,8 @@ export function CreateContractWizardV2({
           duracionTipo,
           diaFacturacion: diaFacturacion ? Number(diaFacturacion) : null,
           fechaPrimeraFacturacion: fechaPrimeraFacturacion || null,
-          sprintDurationDays: type === "recurrente" ? (sprintCadence === "monthly" ? 30 : 15) : null,
+          sprintDurationDays:
+            type === "recurrente" ? (sprintCadence === "monthly" ? 30 : 15) : null,
           sprintCadence: type === "recurrente" ? sprintCadence : null,
           hoursPerSprint: type === "recurrente" ? Number(hoursPerSprint || 0) : null,
           vendedorId: vendedorId === "__none__" ? null : vendedorId,
@@ -335,8 +334,7 @@ export function CreateContractWizardV2({
     if (step === 2) {
       if (lines.length === 0) return false;
       return lines.every((l) => {
-        const hasName =
-          l.serviceTypeId !== "__custom__" || l.tipoServicio.trim().length > 0;
+        const hasName = l.serviceTypeId !== "__custom__" || l.tipoServicio.trim().length > 0;
         if (l.frecuencia === "hitos") {
           return hasName && l.hitos.length > 0 && l.hitos.every((h) => h.nombre.trim().length > 0);
         }
@@ -402,9 +400,7 @@ export function CreateContractWizardV2({
               >
                 {i < step ? <Check className="w-3 h-3" /> : i + 1}
               </div>
-              <span
-                className={`text-xs ${i === step ? "font-medium" : "text-muted-foreground"}`}
-              >
+              <span className={`text-xs ${i === step ? "font-medium" : "text-muted-foreground"}`}>
                 {label}
               </span>
               {i < totalSteps - 1 && <div className="flex-1 h-px bg-border" />}
@@ -487,9 +483,7 @@ export function CreateContractWizardV2({
                 }}
                 placeholder="Cliente - Servicio - Año"
               />
-              <p className="text-xs text-muted-foreground mt-1">
-                Se autogenera; puedes editarlo.
-              </p>
+              <p className="text-xs text-muted-foreground mt-1">Se autogenera; puedes editarlo.</p>
             </div>
           </div>
         )}
@@ -500,15 +494,20 @@ export function CreateContractWizardV2({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Label className="text-xs">Moneda base del contrato</Label>
-                <Select value={currency} onValueChange={(v) => {
-                  const next = v as Currency;
-                  setCurrency(next);
-                  setLines((arr) => arr.map((ln) => ({
-                    ...ln,
-                    moneda: next,
-                    hitos: ln.hitos.map((h) => ({ ...h, moneda: next })),
-                  })));
-                }}>
+                <Select
+                  value={currency}
+                  onValueChange={(v) => {
+                    const next = v as Currency;
+                    setCurrency(next);
+                    setLines((arr) =>
+                      arr.map((ln) => ({
+                        ...ln,
+                        moneda: next,
+                        hitos: ln.hitos.map((h) => ({ ...h, moneda: next })),
+                      })),
+                    );
+                  }}
+                >
                   <SelectTrigger className="h-8 w-24">
                     <SelectValue />
                   </SelectTrigger>
@@ -927,103 +926,105 @@ export function CreateContractWizardV2({
                   </div>
                 </div>
                 <p className="text-[10px] text-muted-foreground">
-                  Los sprints se generan automáticamente cuando Operaciones defina la fecha del primer sprint.
+                  Los sprints se generan automáticamente cuando Operaciones defina la fecha del
+                  primer sprint.
                 </p>
               </div>
             )}
 
-
-
             {/* Número de Cuotas + Montos (igual al sistema comercial) */}
-            {mode === "simple" && lines[0] && lines[0].frecuencia !== "hitos" && (() => {
-              const line = lines[0];
-              const cuotas =
-                line.frecuencia === "unica"
-                  ? 1
-                  : Number(line.numeroCuotas || durationMonths || 0) || 0;
-              const cuotaNum = Number(line.monto || 0);
-              const totalComputed = cuotas > 0 ? cuotaNum * cuotas : cuotaNum;
-              const totalDisplay =
-                totalInput !== ""
-                  ? totalInput
-                  : totalComputed
-                    ? String(Number(totalComputed.toFixed(2)))
-                    : "";
-              const handleTotalChange = (v: string) => {
-                setTotalInput(v);
-                const t = Number(v || 0);
-                if (cuotas > 0 && t > 0) {
-                  patchLine(0, { monto: String(Number((t / cuotas).toFixed(2))) });
-                } else if (!v) {
-                  patchLine(0, { monto: "" });
-                }
-              };
-              const handleCuotaChange = (v: string) => {
-                setTotalInput(""); // clear manual total so it recomputes from cuota
-                patchLine(0, { monto: v });
-              };
-              const handleCuotasChange = (v: string) => {
-                setTotalInput("");
-                patchLine(0, { numeroCuotas: v });
-              };
-              return (
-                <>
-                  <div>
-                    <Label>Número de Cuotas</Label>
-                    <Input
-                      type="number"
-                      min={1}
-                      max={120}
-                      disabled={line.frecuencia === "unica"}
-                      value={line.frecuencia === "unica" ? "1" : line.numeroCuotas}
-                      onChange={(e) => handleCuotasChange(e.target.value)}
-                      placeholder={String(durationMonths || "")}
-                    />
-                    <p className="text-[10px] text-muted-foreground mt-0.5">
-                      Calculado según fechas (puedes ajustarlo).
-                    </p>
-                  </div>
+            {mode === "simple" &&
+              lines[0] &&
+              lines[0].frecuencia !== "hitos" &&
+              (() => {
+                const line = lines[0];
+                const cuotas =
+                  line.frecuencia === "unica"
+                    ? 1
+                    : Number(line.numeroCuotas || durationMonths || 0) || 0;
+                const cuotaNum = Number(line.monto || 0);
+                const totalComputed = cuotas > 0 ? cuotaNum * cuotas : cuotaNum;
+                const totalDisplay =
+                  totalInput !== ""
+                    ? totalInput
+                    : totalComputed
+                      ? String(Number(totalComputed.toFixed(2)))
+                      : "";
+                const handleTotalChange = (v: string) => {
+                  setTotalInput(v);
+                  const t = Number(v || 0);
+                  if (cuotas > 0 && t > 0) {
+                    patchLine(0, { monto: String(Number((t / cuotas).toFixed(2))) });
+                  } else if (!v) {
+                    patchLine(0, { monto: "" });
+                  }
+                };
+                const handleCuotaChange = (v: string) => {
+                  setTotalInput(""); // clear manual total so it recomputes from cuota
+                  patchLine(0, { monto: v });
+                };
+                const handleCuotasChange = (v: string) => {
+                  setTotalInput("");
+                  patchLine(0, { numeroCuotas: v });
+                };
+                return (
+                  <>
+                    <div>
+                      <Label>Número de Cuotas</Label>
+                      <Input
+                        type="number"
+                        min={1}
+                        max={120}
+                        disabled={line.frecuencia === "unica"}
+                        value={line.frecuencia === "unica" ? "1" : line.numeroCuotas}
+                        onChange={(e) => handleCuotasChange(e.target.value)}
+                        placeholder={String(durationMonths || "")}
+                      />
+                      <p className="text-[10px] text-muted-foreground mt-0.5">
+                        Calculado según fechas (puedes ajustarlo).
+                      </p>
+                    </div>
 
-                  <div className="border-t border-border pt-3 space-y-2">
-                    <h4 className="text-sm font-semibold">Montos</h4>
-                    <div className="grid grid-cols-3 gap-2">
-                      <div>
-                        <Label className="text-xs">Monto Total *</Label>
-                        <CurrencyInput
-                          currency={line.moneda}
-                          value={totalDisplay}
-                          onValueChange={(v) => handleTotalChange(v)}
-                          placeholder="0"
-                        />
-                        {line.moneda === "UF" && ufRate > 0 && totalComputed > 0 && (
+                    <div className="border-t border-border pt-3 space-y-2">
+                      <h4 className="text-sm font-semibold">Montos</h4>
+                      <div className="grid grid-cols-3 gap-2">
+                        <div>
+                          <Label className="text-xs">Monto Total *</Label>
+                          <CurrencyInput
+                            currency={line.moneda}
+                            value={totalDisplay}
+                            onValueChange={(v) => handleTotalChange(v)}
+                            placeholder="0"
+                          />
+                          {line.moneda === "UF" && ufRate > 0 && totalComputed > 0 && (
+                            <p className="text-[10px] text-muted-foreground mt-0.5">
+                              ≈ ${fmtNum(totalComputed * ufRate)} CLP
+                            </p>
+                          )}
+                        </div>
+                        <div>
+                          <Label className="text-xs">Moneda</Label>
+                          <div className="h-10 flex items-center px-3 rounded-md border border-input bg-muted text-sm font-medium">
+                            {currency}
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="text-xs">Monto por Cuota</Label>
+                          <CurrencyInput
+                            currency={line.moneda}
+                            value={line.monto}
+                            onValueChange={(v) => handleCuotaChange(v)}
+                            placeholder="0"
+                          />
                           <p className="text-[10px] text-muted-foreground mt-0.5">
-                            ≈ ${fmtNum(totalComputed * ufRate)} CLP
+                            {cuotas > 0 ? `${cuotas} cuotas` : "Edita total o cuota"}
                           </p>
-                        )}
-                      </div>
-                      <div>
-                        <Label className="text-xs">Moneda</Label>
-                        <div className="h-10 flex items-center px-3 rounded-md border border-input bg-muted text-sm font-medium">
-                          {currency}
                         </div>
                       </div>
-                      <div>
-                        <Label className="text-xs">Monto por Cuota</Label>
-                        <CurrencyInput
-                          currency={line.moneda}
-                          value={line.monto}
-                          onValueChange={(v) => handleCuotaChange(v)}
-                          placeholder="0"
-                        />
-                        <p className="text-[10px] text-muted-foreground mt-0.5">
-                          {cuotas > 0 ? `${cuotas} cuotas` : "Edita total o cuota"}
-                        </p>
-                      </div>
                     </div>
-                  </div>
-                </>
-              );
-            })()}
+                  </>
+                );
+              })()}
 
             {mode === "multiservicio" && Object.keys(totalEstimado).length > 0 && (
               <div className="border-t border-border pt-3">
@@ -1171,10 +1172,7 @@ export function CreateContractWizardV2({
                 Siguiente
               </Button>
             ) : (
-              <Button
-                onClick={() => mutation.mutate()}
-                disabled={mutation.isPending || !canNext()}
-              >
+              <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !canNext()}>
                 {status === "activo" ? "Crear y activar" : "Crear contrato borrador"}
               </Button>
             )}

@@ -55,7 +55,6 @@ function containsSensitive(perms: readonly WorkspacePermission[] | null | undefi
   return SENSITIVE_PERMISSIONS.some((p) => set.has(p));
 }
 
-
 export const listMyPermissions = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
@@ -212,7 +211,6 @@ export const assignRoleTemplate = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-
 export const setMemberExtraPermissions = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
@@ -240,7 +238,6 @@ export const setMemberExtraPermissions = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
-
 
 export const listMembersWithRoles = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])

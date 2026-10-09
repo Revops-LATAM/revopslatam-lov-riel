@@ -61,7 +61,9 @@ function PlanVsActualPage() {
   const totalDelta = totals.loggedHours - totals.estimateHours;
 
   const exportCsv = () => {
-    const out: string[][] = [[GROUP_LABEL[groupBy], "Estimado (h)", "Registrado (h)", "Desviación (h)", "Desviación (%)"]];
+    const out: string[][] = [
+      [GROUP_LABEL[groupBy], "Estimado (h)", "Registrado (h)", "Desviación (h)", "Desviación (%)"],
+    ];
     for (const r of rows) {
       const d = r.loggedHours - r.estimateHours;
       out.push([
@@ -72,7 +74,9 @@ function PlanVsActualPage() {
         r.estimateHours > 0 ? ((d / r.estimateHours) * 100).toFixed(1) : "",
       ]);
     }
-    const csv = out.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const csv = out
+      .map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
     const a = document.createElement("a");
     a.href = url;
@@ -91,17 +95,37 @@ function PlanVsActualPage() {
       <div className="flex flex-wrap items-end gap-3 border border-border rounded-md p-3">
         <div>
           <Label className="text-xs">Desde</Label>
-          <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="h-8 text-sm w-40" />
+          <Input
+            type="date"
+            value={from}
+            onChange={(e) => setFrom(e.target.value)}
+            className="h-8 text-sm w-40"
+          />
         </div>
         <div>
           <Label className="text-xs">Hasta</Label>
-          <Input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="h-8 text-sm w-40" />
+          <Input
+            type="date"
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+            className="h-8 text-sm w-40"
+          />
         </div>
         <div className="flex items-center gap-2 pb-1">
-          <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setRange(subDays(today, 29), today)}>
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-7 text-xs"
+            onClick={() => setRange(subDays(today, 29), today)}
+          >
             30d
           </Button>
-          <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setRange(startOfMonth(today), today)}>
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-7 text-xs"
+            onClick={() => setRange(startOfMonth(today), today)}
+          >
             Mes actual
           </Button>
           <Button
@@ -117,10 +141,19 @@ function PlanVsActualPage() {
           </Button>
         </div>
         <label className="text-xs inline-flex items-center gap-1.5 pb-1.5">
-          <input type="checkbox" checked={excludeInternal} onChange={(e) => setExcludeInternal(e.target.checked)} />
+          <input
+            type="checkbox"
+            checked={excludeInternal}
+            onChange={(e) => setExcludeInternal(e.target.checked)}
+          />
           Excluir interno
         </label>
-        <Button size="sm" variant="outline" onClick={exportCsv} className="h-7 text-xs gap-1 ml-auto">
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={exportCsv}
+          className="h-7 text-xs gap-1 ml-auto"
+        >
           <Download className="w-3 h-3" /> CSV
         </Button>
       </div>
@@ -145,14 +178,20 @@ function PlanVsActualPage() {
           </span>
         </span>
         <span>
-          Estimado: <span className="text-foreground font-semibold">{totals.estimateHours.toFixed(1)}h</span>
+          Estimado:{" "}
+          <span className="text-foreground font-semibold">{totals.estimateHours.toFixed(1)}h</span>
         </span>
         <span>
-          Registrado: <span className="text-foreground font-semibold">{totals.loggedHours.toFixed(1)}h</span>
+          Registrado:{" "}
+          <span className="text-foreground font-semibold">{totals.loggedHours.toFixed(1)}h</span>
         </span>
         <span>
           Desviación:{" "}
-          <span className={totalDelta > 0 ? "text-destructive font-semibold" : "text-foreground font-semibold"}>
+          <span
+            className={
+              totalDelta > 0 ? "text-destructive font-semibold" : "text-foreground font-semibold"
+            }
+          >
             {totalDelta >= 0 ? "+" : ""}
             {totalDelta.toFixed(1)}h
           </span>
@@ -178,14 +217,27 @@ function PlanVsActualPage() {
                 <tr key={r.key} className="border-t border-border hover:bg-muted/20">
                   <td className="p-2">
                     <div className="flex items-center gap-2">
-                      {r.color && <div className="w-2 h-2 rounded-full shrink-0" style={{ background: r.color }} />}
+                      {r.color && (
+                        <div
+                          className="w-2 h-2 rounded-full shrink-0"
+                          style={{ background: r.color }}
+                        />
+                      )}
                       <span className="truncate">{r.label}</span>
-                      {r.sublabel && <span className="text-xs text-muted-foreground truncate">· {r.sublabel}</span>}
+                      {r.sublabel && (
+                        <span className="text-xs text-muted-foreground truncate">
+                          · {r.sublabel}
+                        </span>
+                      )}
                     </div>
                   </td>
-                  <td className="p-2 text-right tabular-nums text-muted-foreground">{r.estimateHours.toFixed(1)}h</td>
+                  <td className="p-2 text-right tabular-nums text-muted-foreground">
+                    {r.estimateHours.toFixed(1)}h
+                  </td>
                   <td className="p-2 text-right tabular-nums">{r.loggedHours.toFixed(1)}h</td>
-                  <td className={`p-2 text-right tabular-nums ${d > 0 ? "text-destructive" : "text-muted-foreground"}`}>
+                  <td
+                    className={`p-2 text-right tabular-nums ${d > 0 ? "text-destructive" : "text-muted-foreground"}`}
+                  >
                     {d >= 0 ? "+" : ""}
                     {d.toFixed(1)}h
                   </td>
@@ -206,8 +258,8 @@ function PlanVsActualPage() {
         </table>
       </div>
       <p className="text-[11px] text-muted-foreground">
-        El estimado se prorratea por días hábiles del rango de fechas de cada tarea y se divide en partes iguales
-        entre sus asignados. Se excluyen tareas canceladas.
+        El estimado se prorratea por días hábiles del rango de fechas de cada tarea y se divide en
+        partes iguales entre sus asignados. Se excluyen tareas canceladas.
       </p>
     </div>
   );

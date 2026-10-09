@@ -1,10 +1,5 @@
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -47,7 +42,10 @@ export function MarketingPhaseDialog({
 }: {
   open: boolean;
   initial: (Partial<MarketingPhaseFormValue> & { id?: string }) | null;
-  members: Array<{ user_id: string; profile: { id: string; full_name?: string | null; email?: string | null } | null }>;
+  members: Array<{
+    user_id: string;
+    profile: { id: string; full_name?: string | null; email?: string | null } | null;
+  }>;
   onClose: () => void;
   onSave: (v: MarketingPhaseFormValue) => void;
   onDelete?: () => void;
@@ -65,9 +63,7 @@ export function MarketingPhaseDialog({
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-sm">
-            {isEdit ? "Editar fase" : "Nueva fase"}
-          </DialogTitle>
+          <DialogTitle className="text-sm">{isEdit ? "Editar fase" : "Nueva fase"}</DialogTitle>
         </DialogHeader>
         <div className="space-y-3">
           <div>

@@ -30,7 +30,12 @@ export const Route = createFileRoute("/_authenticated/w/$workspaceSlug/finance/r
   component: RenewalsPage,
 });
 
-type Mode = null | { kind: "renew" | "cancel"; contractId: string; contractName: string; endDate: string | null };
+type Mode = null | {
+  kind: "renew" | "cancel";
+  contractId: string;
+  contractName: string;
+  endDate: string | null;
+};
 
 function RenewalsPage() {
   const { workspaceSlug } = Route.useParams();
@@ -174,7 +179,15 @@ function RenewalsPage() {
   );
 }
 
-function RenewDialog({ mode, onClose, onDone }: { mode: Exclude<Mode, null>; onClose: () => void; onDone: () => void }) {
+function RenewDialog({
+  mode,
+  onClose,
+  onDone,
+}: {
+  mode: Exclude<Mode, null>;
+  onClose: () => void;
+  onDone: () => void;
+}) {
   const renew = useServerFn(renewContract);
   const defaultStart = mode.endDate
     ? new Date(new Date(mode.endDate).getTime() + 86400000).toISOString().slice(0, 10)
@@ -242,7 +255,15 @@ function RenewDialog({ mode, onClose, onDone }: { mode: Exclude<Mode, null>; onC
   );
 }
 
-function CancelDialog({ mode, onClose, onDone }: { mode: Exclude<Mode, null>; onClose: () => void; onDone: () => void }) {
+function CancelDialog({
+  mode,
+  onClose,
+  onDone,
+}: {
+  mode: Exclude<Mode, null>;
+  onClose: () => void;
+  onDone: () => void;
+}) {
   const cancel = useServerFn(cancelContract);
   const [motivo, setMotivo] = useState("");
   const [fecha, setFecha] = useState(new Date().toISOString().slice(0, 10));

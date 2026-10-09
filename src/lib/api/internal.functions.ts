@@ -4,9 +4,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const listInternalCategories = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ workspaceId: z.string().uuid() }).parse(input),
-  )
+  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: cats, error } = await supabase
@@ -24,7 +22,11 @@ export const createInternalCategory = createServerFn({ method: "POST" })
     z
       .object({
         workspaceId: z.string().uuid(),
-        key: z.string().min(1).max(40).regex(/^[a-z0-9_-]+$/),
+        key: z
+          .string()
+          .min(1)
+          .max(40)
+          .regex(/^[a-z0-9_-]+$/),
         name: z.string().min(1).max(60),
         icon: z.string().max(40).optional(),
         color: z.string().max(20).optional(),
@@ -112,9 +114,7 @@ export const listInternalProjects = createServerFn({ method: "GET" })
     const { supabase } = context;
     let q = supabase
       .from("projects")
-      .select(
-        "id, name, description, color, icon, archived, created_at, internal_category_id",
-      )
+      .select("id, name, description, color, icon, archived, created_at, internal_category_id")
       .eq("workspace_id", data.workspaceId)
       .eq("area", "internal")
       .eq("archived", false)

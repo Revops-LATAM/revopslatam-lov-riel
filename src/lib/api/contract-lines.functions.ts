@@ -2,14 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const frequencyEnum = z.enum([
-  "mensual",
-  "trimestral",
-  "semestral",
-  "anual",
-  "unica",
-  "hitos",
-]);
+const frequencyEnum = z.enum(["mensual", "trimestral", "semestral", "anual", "unica", "hitos"]);
 const currencyEnum = z.enum(["USD", "CLP", "UF"]);
 
 const lineInput = z.object({

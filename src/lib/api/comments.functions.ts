@@ -22,7 +22,10 @@ export const listTaskComments = createServerFn({ method: "GET" })
       .select("id, full_name, email, avatar_url")
       .in("id", ids);
     const byId = new Map((profiles ?? []).map((p) => [p.id, p]));
-    return (comments ?? []).map((c) => ({ ...c, author: c.author_id ? byId.get(c.author_id) ?? null : null }));
+    return (comments ?? []).map((c) => ({
+      ...c,
+      author: c.author_id ? (byId.get(c.author_id) ?? null) : null,
+    }));
   });
 
 export const addTaskComment = createServerFn({ method: "POST" })

@@ -73,13 +73,7 @@ const FIELD_DEFAULTS: Record<FieldKey, FieldCfg> = {
   severity: { label: "Criticidad / Prioridad", required: true },
   description: { label: "Descripción", required: true },
 };
-const FIELD_ORDER: FieldKey[] = [
-  "title",
-  "request_type",
-  "area",
-  "severity",
-  "description",
-];
+const FIELD_ORDER: FieldKey[] = ["title", "request_type", "area", "severity", "description"];
 
 export function TicketPortalPanel({ projectId }: { projectId: string }) {
   const qc = useQueryClient();
@@ -146,8 +140,7 @@ export function TicketPortalPanel({ projectId }: { projectId: string }) {
     onError: (e: Error) => toast.error(e.message),
   });
   const slaMut = useMutation({
-    mutationFn: (slaId: string | null) =>
-      updateSlaFn({ data: { projectId, slaId } }),
+    mutationFn: (slaId: string | null) => updateSlaFn({ data: { projectId, slaId } }),
     onSuccess: () => {
       invalidate();
       toast.success("SLA del proyecto actualizado");
@@ -288,8 +281,8 @@ export function TicketPortalPanel({ projectId }: { projectId: string }) {
           <div className="flex-1">
             <h2 className="text-sm font-semibold">SLA del proyecto</h2>
             <p className="text-xs text-muted-foreground">
-              Sobrescribe el SLA del contrato para este proyecto. Útil cuando un proyecto
-              requiere un acuerdo distinto al estándar.
+              Sobrescribe el SLA del contrato para este proyecto. Útil cuando un proyecto requiere
+              un acuerdo distinto al estándar.
             </p>
           </div>
         </div>
@@ -414,8 +407,8 @@ export function TicketPortalPanel({ projectId }: { projectId: string }) {
           <div className="flex-1">
             <h2 className="text-sm font-semibold">Notificaciones en Slack</h2>
             <p className="text-xs text-muted-foreground">
-              Elige el canal de Slack donde llegará una notificación cada vez que se cree
-              un nuevo ticket desde este portal.
+              Elige el canal de Slack donde llegará una notificación cada vez que se cree un nuevo
+              ticket desde este portal.
             </p>
           </div>
         </div>
@@ -463,9 +456,7 @@ export function TicketPortalPanel({ projectId }: { projectId: string }) {
                 size="sm"
                 variant="outline"
                 disabled={!form.slack_channel_id || testSlackMut.isPending}
-                onClick={() =>
-                  form.slack_channel_id && testSlackMut.mutate(form.slack_channel_id)
-                }
+                onClick={() => form.slack_channel_id && testSlackMut.mutate(form.slack_channel_id)}
               >
                 <Send className="w-3.5 h-3.5 mr-1" /> Enviar prueba
               </Button>
@@ -473,10 +464,6 @@ export function TicketPortalPanel({ projectId }: { projectId: string }) {
           </>
         )}
       </section>
-
-
-
-
 
       <section className="border border-border rounded-md p-4 space-y-3">
         <div>
@@ -530,11 +517,7 @@ export function TicketPortalPanel({ projectId }: { projectId: string }) {
                   <SelectItem value="leader">Líder · ve todos los tickets</SelectItem>
                 </SelectContent>
               </Select>
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={() => removeMut.mutate(e.id)}
-              >
+              <Button size="icon" variant="ghost" onClick={() => removeMut.mutate(e.id)}>
                 <Trash2 className="w-3.5 h-3.5" />
               </Button>
             </li>

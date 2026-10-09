@@ -56,13 +56,16 @@ async function fetchInvoicePdfBase64(params: {
   const envAmbiente = process.env.OPENFACTURA_AMBIENTE;
   const apiKey = (cfg?.activo ? cfg.api_key : null) ?? envApiKey;
   if (!apiKey) {
-    throw new Error("Configuración DTE inactiva. Configura el API key en Ajustes → Facturación electrónica.");
+    throw new Error(
+      "Configuración DTE inactiva. Configura el API key en Ajustes → Facturación electrónica.",
+    );
   }
   const ambiente = (cfg?.activo ? cfg.ambiente : null) ?? envAmbiente ?? "production";
   const isLegacyPdf = !!params.pdfUrl && /\/functions\/v1\/get-dte-pdf/i.test(params.pdfUrl);
-  const baseUrl = ambiente === "production" || isLegacyPdf
-    ? "https://api.haulmer.com/v2/dte/document"
-    : "https://dev-api.haulmer.com/v2/dte/document";
+  const baseUrl =
+    ambiente === "production" || isLegacyPdf
+      ? "https://api.haulmer.com/v2/dte/document"
+      : "https://dev-api.haulmer.com/v2/dte/document";
 
   const response = await fetch(`${baseUrl}/${token}/pdf`, { headers: { apikey: apiKey } });
   if (!response.ok) {
@@ -73,17 +76,22 @@ async function fetchInvoicePdfBase64(params: {
   let pdfBytes = bytes;
   if (String.fromCharCode(bytes[0] ?? 0) === "{") {
     const json = JSON.parse(new TextDecoder().decode(bytes)) as Record<string, string | undefined>;
-    const pdfBase64 = json.PDF ?? json.pdf ?? json.DATA ?? json.data ?? json.content ?? json.Content;
+    const pdfBase64 =
+      json.PDF ?? json.pdf ?? json.DATA ?? json.data ?? json.content ?? json.Content;
     if (!pdfBase64) throw new Error("PDF no encontrado en la respuesta del proveedor.");
     const binary = atob(pdfBase64);
     pdfBytes = new Uint8Array(binary.length);
     for (let i = 0; i < binary.length; i += 1) pdfBytes[i] = binary.charCodeAt(i);
   }
-  const magic = String.fromCharCode(pdfBytes[0] ?? 0, pdfBytes[1] ?? 0, pdfBytes[2] ?? 0, pdfBytes[3] ?? 0);
+  const magic = String.fromCharCode(
+    pdfBytes[0] ?? 0,
+    pdfBytes[1] ?? 0,
+    pdfBytes[2] ?? 0,
+    pdfBytes[3] ?? 0,
+  );
   if (magic !== "%PDF") throw new Error("La respuesta del proveedor no es un PDF válido.");
   return bytesToBase64(pdfBytes);
 }
-
 
 export const sendInvoiceEmail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -116,7 +124,9 @@ export const sendInvoiceEmail = createServerFn({ method: "POST" })
     if (error || !inv) throw new Error(error?.message ?? "Factura no encontrada");
     if (!inv.pdf_url) throw new Error("La factura no tiene PDF disponible");
     if (!inv.folio_sii) throw new Error("La factura no tiene folio SII");
-    const clientName = ((inv as unknown as { accounts?: { name?: string } | null }).accounts?.name ?? "").trim();
+    const clientName = (
+      (inv as unknown as { accounts?: { name?: string } | null }).accounts?.name ?? ""
+    ).trim();
 
     const templateData = {
       folio: inv.folio_sii,
@@ -135,12 +145,11 @@ export const sendInvoiceEmail = createServerFn({ method: "POST" })
     const element = React.createElement(invoiceSentTemplate.component, templateData);
     const html = await render(element);
     const text = await render(element, { plainText: true });
-    const subject = data.subjectOverride?.trim() || (
-      typeof invoiceSentTemplate.subject === "function"
+    const subject =
+      data.subjectOverride?.trim() ||
+      (typeof invoiceSentTemplate.subject === "function"
         ? invoiceSentTemplate.subject(templateData)
-        : invoiceSentTemplate.subject
-    );
-
+        : invoiceSentTemplate.subject);
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: invSecure, error: secureErr } = await supabaseAdmin
@@ -165,9 +174,7 @@ export const sendInvoiceEmail = createServerFn({ method: "POST" })
       subject,
       html,
       text,
-      attachments: [
-        { filename, content: pdfBase64 },
-      ],
+      attachments: [{ filename, content: pdfBase64 }],
     };
 
     const resp = await fetch(`${RESEND_GATEWAY}/emails`, {
@@ -184,7 +191,11 @@ export const sendInvoiceEmail = createServerFn({ method: "POST" })
       throw new Error(`Resend error ${resp.status}: ${body.slice(0, 500)}`);
     }
     let parsed: { id?: string } = {};
-    try { parsed = JSON.parse(body); } catch { /* ignore */ }
+    try {
+      parsed = JSON.parse(body);
+    } catch {
+      /* ignore */
+    }
 
     // Log to email_send_log for record
     try {
@@ -194,7 +205,9 @@ export const sendInvoiceEmail = createServerFn({ method: "POST" })
         recipient_email: data.to,
         status: "sent",
       });
-    } catch { /* non-fatal */ }
+    } catch {
+      /* non-fatal */
+    }
 
     return { ok: true, id: parsed.id ?? null, recipients: [data.to, ...data.cc, BCC] };
   });

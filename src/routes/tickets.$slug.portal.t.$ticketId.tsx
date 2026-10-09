@@ -11,10 +11,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/tickets/$slug/portal/t/$ticketId")({
   ssr: false,
   head: () => ({
-    meta: [
-      { title: "Ticket" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Ticket" }, { name: "robots", content: "noindex" }],
   }),
   component: PortalTicketDetail,
 });
@@ -44,16 +41,35 @@ type Comment = {
 };
 
 const STATUS_LABEL: Record<string, { label: string; tone: string }> = {
-  abierta: { label: "Recibido", tone: "bg-sky-500/10 text-sky-700 border-sky-500/30 dark:text-sky-400" },
-  en_progreso: { label: "En progreso", tone: "bg-amber-500/10 text-amber-700 border-amber-500/30 dark:text-amber-400" },
-  esperando_cliente: { label: "Esperando tu respuesta", tone: "bg-violet-500/10 text-violet-700 border-violet-500/30 dark:text-violet-400" },
-  bloqueada: { label: "Bloqueado", tone: "bg-rose-500/10 text-rose-700 border-rose-500/30 dark:text-rose-400" },
-  cerrada: { label: "Resuelto", tone: "bg-emerald-500/10 text-emerald-700 border-emerald-500/30 dark:text-emerald-400" },
+  abierta: {
+    label: "Recibido",
+    tone: "bg-sky-500/10 text-sky-700 border-sky-500/30 dark:text-sky-400",
+  },
+  en_progreso: {
+    label: "En progreso",
+    tone: "bg-amber-500/10 text-amber-700 border-amber-500/30 dark:text-amber-400",
+  },
+  esperando_cliente: {
+    label: "Esperando tu respuesta",
+    tone: "bg-violet-500/10 text-violet-700 border-violet-500/30 dark:text-violet-400",
+  },
+  bloqueada: {
+    label: "Bloqueado",
+    tone: "bg-rose-500/10 text-rose-700 border-rose-500/30 dark:text-rose-400",
+  },
+  cerrada: {
+    label: "Resuelto",
+    tone: "bg-emerald-500/10 text-emerald-700 border-emerald-500/30 dark:text-emerald-400",
+  },
 };
 
 function PortalTicketDetail() {
   const { slug, ticketId } = Route.useParams();
-  const [data, setData] = useState<{ task: Task; comments: Comment[]; role?: "member" | "leader" } | null>(null);
+  const [data, setData] = useState<{
+    task: Task;
+    comments: Comment[];
+    role?: "member" | "leader";
+  } | null>(null);
   const [myEmail, setMyEmail] = useState<string | null>(null);
   const [reply, setReply] = useState("");
   const [sending, setSending] = useState(false);
@@ -142,7 +158,9 @@ function PortalTicketDetail() {
             {data.task.request_type && (
               <>
                 <span>·</span>
-                <span>{data.task.request_type === "incidencia" ? "Incidencia" : "Requerimiento"}</span>
+                <span>
+                  {data.task.request_type === "incidencia" ? "Incidencia" : "Requerimiento"}
+                </span>
               </>
             )}
             {data.task.severity === "urgente_critico" && (
@@ -152,10 +170,15 @@ function PortalTicketDetail() {
             )}
           </div>
           <h1 className="text-xl font-semibold">{data.task.title}</h1>
-          {(data.task.sprints?.sprint_number != null || (data.role === "leader" && data.task.submitter_email)) && (
+          {(data.task.sprints?.sprint_number != null ||
+            (data.role === "leader" && data.task.submitter_email)) && (
             <div className="text-xs text-muted-foreground">
-              {data.task.sprints?.sprint_number != null && <span>Sprint {data.task.sprints.sprint_number}</span>}
-              {data.task.sprints?.sprint_number != null && data.role === "leader" && data.task.submitter_email && <span> · </span>}
+              {data.task.sprints?.sprint_number != null && (
+                <span>Sprint {data.task.sprints.sprint_number}</span>
+              )}
+              {data.task.sprints?.sprint_number != null &&
+                data.role === "leader" &&
+                data.task.submitter_email && <span> · </span>}
               {data.role === "leader" && data.task.submitter_email && (
                 <span>Solicitado por {data.task.submitter_email}</span>
               )}
@@ -164,15 +187,22 @@ function PortalTicketDetail() {
           <div className="flex items-center gap-3 flex-wrap">
             <span className={`text-xs px-2 py-0.5 rounded-full border ${st.tone}`}>{st.label}</span>
             {resTarget && resDiff !== null && (
-              <span className={`inline-flex items-center gap-1 text-xs ${
-                resDiff < 0
-                  ? "text-destructive"
-                  : resDiff < 4 * 3600_000
-                    ? "text-amber-600 dark:text-amber-400"
-                    : "text-muted-foreground"
-              }`}>
-                {resDiff < 0 ? <AlertTriangle className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
-                Resolución {resDiff < 0 ? "vencida" : "esperada"}: {format(parseISO(resTarget), "dd/MM HH:mm", { locale: es })}
+              <span
+                className={`inline-flex items-center gap-1 text-xs ${
+                  resDiff < 0
+                    ? "text-destructive"
+                    : resDiff < 4 * 3600_000
+                      ? "text-amber-600 dark:text-amber-400"
+                      : "text-muted-foreground"
+                }`}
+              >
+                {resDiff < 0 ? (
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                ) : (
+                  <Clock className="w-3.5 h-3.5" />
+                )}
+                Resolución {resDiff < 0 ? "vencida" : "esperada"}:{" "}
+                {format(parseISO(resTarget), "dd/MM HH:mm", { locale: es })}
               </span>
             )}
           </div>
@@ -180,16 +210,21 @@ function PortalTicketDetail() {
 
         {data.task.description && (
           <div className="rounded-lg border bg-card p-4 space-y-2">
-            <div className="text-xs uppercase tracking-wide text-muted-foreground">Descripción original</div>
+            <div className="text-xs uppercase tracking-wide text-muted-foreground">
+              Descripción original
+            </div>
             <p className="text-sm whitespace-pre-wrap">{data.task.description}</p>
             <div className="text-xs text-muted-foreground pt-1">
-              Enviado {formatDistanceToNow(parseISO(data.task.created_at), { addSuffix: true, locale: es })}
+              Enviado{" "}
+              {formatDistanceToNow(parseISO(data.task.created_at), { addSuffix: true, locale: es })}
             </div>
           </div>
         )}
 
         <div className="space-y-3">
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Conversación</h2>
+          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            Conversación
+          </h2>
           {data.comments.length === 0 ? (
             <div className="rounded-lg border p-6 text-center text-sm text-muted-foreground">
               Aún no hay mensajes en este ticket.
@@ -200,17 +235,26 @@ function PortalTicketDetail() {
                 const mine = !!c.client_author_email;
                 const authorName = mine
                   ? c.client_author_email
-                  : c.profiles?.full_name ?? "Soporte";
+                  : (c.profiles?.full_name ?? "Soporte");
                 return (
                   <li
                     key={c.id}
                     className={`rounded-lg border p-3 ${mine ? "bg-primary/5 border-primary/20" : "bg-card"}`}
                   >
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1.5">
-                      {mine ? <User className="w-3.5 h-3.5" /> : <MessageSquare className="w-3.5 h-3.5" />}
+                      {mine ? (
+                        <User className="w-3.5 h-3.5" />
+                      ) : (
+                        <MessageSquare className="w-3.5 h-3.5" />
+                      )}
                       <span className="font-medium text-foreground">{authorName}</span>
                       <span>·</span>
-                      <span>{formatDistanceToNow(parseISO(c.created_at), { addSuffix: true, locale: es })}</span>
+                      <span>
+                        {formatDistanceToNow(parseISO(c.created_at), {
+                          addSuffix: true,
+                          locale: es,
+                        })}
+                      </span>
                     </div>
                     <p className="text-sm whitespace-pre-wrap">{c.body}</p>
                   </li>
@@ -233,9 +277,13 @@ function PortalTicketDetail() {
             <div className="text-xs text-muted-foreground">Como {myEmail}</div>
             <Button onClick={sendReply} disabled={!reply.trim() || sending}>
               {sending ? (
-                <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> Enviando…</>
+                <>
+                  <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> Enviando…
+                </>
               ) : (
-                <><Send className="w-4 h-4 mr-1.5" /> Enviar</>
+                <>
+                  <Send className="w-4 h-4 mr-1.5" /> Enviar
+                </>
               )}
             </Button>
           </div>

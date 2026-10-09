@@ -300,14 +300,14 @@ export const createProjectFromHandoff = createServerFn({ method: "POST" })
         .eq("id", handoff.contract_id)
         .maybeSingle();
       if (ctr?.type === "recurrente" && ctr.sprint_cadence) {
-        const startArg = data.project.firstSprintStartDate ?? data.project.fechaInicioDelivery ?? "";
+        const startArg =
+          data.project.firstSprintStartDate ?? data.project.fechaInicioDelivery ?? "";
         await context.supabase.rpc("generate_contract_sprints_from_cadence", {
           _contract_id: handoff.contract_id,
           _first_start: startArg || (null as unknown as string),
         });
       }
     }
-
 
     // Proyectos internos adicionales del contrato (líneas de negocio con su
     // propia grilla de sprints y fases).
@@ -362,7 +362,8 @@ export const createProjectFromHandoff = createServerFn({ method: "POST" })
     // Update contract with client-tickets settings and create form/inbox phase if needed
     if (data.requiresClientTickets !== undefined || data.slaId !== undefined) {
       const cPatch: { requires_client_tickets?: boolean; sla_id?: string | null } = {};
-      if (data.requiresClientTickets !== undefined) cPatch.requires_client_tickets = data.requiresClientTickets;
+      if (data.requiresClientTickets !== undefined)
+        cPatch.requires_client_tickets = data.requiresClientTickets;
       if (data.slaId !== undefined) cPatch.sla_id = data.slaId;
       await context.supabase.from("contracts").update(cPatch).eq("id", handoff.contract_id);
     }

@@ -1,10 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import {
-  listTaskAttachments,
-  registerTaskAttachment,
-} from "@/lib/api/tasko.functions";
+import { listTaskAttachments, registerTaskAttachment } from "@/lib/api/tasko.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Paperclip, Download, Eye } from "lucide-react";
@@ -21,15 +18,13 @@ export function AttachmentsTab({
   const qc = useQueryClient();
   const fetchAttachments = useServerFn(listTaskAttachments);
   const registerAtt = useServerFn(registerTaskAttachment);
-  
 
   const attachmentsQuery = useQuery({
     queryKey: ["attachments", taskId],
     queryFn: () => fetchAttachments({ data: { taskId } }),
   });
 
-  const invalidate = () =>
-    qc.invalidateQueries({ queryKey: ["attachments", taskId] });
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["attachments", taskId] });
 
   const fileInput = useRef<HTMLInputElement>(null);
 
@@ -59,13 +54,11 @@ export function AttachmentsTab({
       invalidate();
       toast.success("Archivo subido");
     },
-    onError: (err: Error) =>
-      toast.error("Error al subir", { description: err.message }),
+    onError: (err: Error) => toast.error("Error al subir", { description: err.message }),
     onSettled: () => {
       if (fileInput.current) fileInput.current.value = "";
     },
   });
-
 
   const onUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -92,9 +85,7 @@ export function AttachmentsTab({
             <Paperclip className="w-3.5 h-3.5 text-muted-foreground" />
             <span className="text-sm flex-1 truncate">{a.file_name}</span>
             {a.size && (
-              <span className="text-xs text-muted-foreground">
-                {(a.size / 1024).toFixed(1)} KB
-              </span>
+              <span className="text-xs text-muted-foreground">{(a.size / 1024).toFixed(1)} KB</span>
             )}
             {a.url && (
               <Button

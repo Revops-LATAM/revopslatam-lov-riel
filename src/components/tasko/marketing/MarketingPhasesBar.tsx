@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { Plus, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  MarketingPhaseDialog,
-  type MarketingPhaseFormValue,
-} from "./MarketingPhaseDialog";
+import { MarketingPhaseDialog, type MarketingPhaseFormValue } from "./MarketingPhaseDialog";
 
 export type MarketingPhase = {
   id: string;
@@ -26,7 +23,10 @@ export function MarketingPhasesBar({
   saving,
 }: {
   phases: MarketingPhase[];
-  members: Array<{ user_id: string; profile: { id: string; full_name?: string | null; email?: string | null } | null }>;
+  members: Array<{
+    user_id: string;
+    profile: { id: string; full_name?: string | null; email?: string | null } | null;
+  }>;
   selectedPhaseId: string | null | "_none";
   onSelect: (id: string | null | "_none") => void;
   onCreate: (v: MarketingPhaseFormValue) => void;
@@ -52,11 +52,7 @@ export function MarketingPhasesBar({
 
   return (
     <div className="border-b border-border px-6 py-2 flex items-center gap-1.5 overflow-x-auto">
-      <ChipButton
-        active={selectedPhaseId === null}
-        onClick={() => onSelect(null)}
-        label="Todas"
-      />
+      <ChipButton active={selectedPhaseId === null} onClick={() => onSelect(null)} label="Todas" />
       {phases.map((p) => (
         <div key={p.id} className="group relative">
           <ChipButton
@@ -155,12 +151,7 @@ function ChipButton({
             : "bg-muted/40 border-transparent text-muted-foreground hover:text-foreground hover:bg-muted"
       }`}
     >
-      {color && (
-        <span
-          className="w-2 h-2 rounded-full shrink-0"
-          style={{ background: color }}
-        />
-      )}
+      {color && <span className="w-2 h-2 rounded-full shrink-0" style={{ background: color }} />}
       {label}
     </button>
   );

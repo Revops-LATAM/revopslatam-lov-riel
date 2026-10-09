@@ -12,7 +12,12 @@ import {
   type DragStartEvent,
   type DragOverEvent,
 } from "@dnd-kit/core";
-import { useSortable, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  useSortable,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useQuery } from "@tanstack/react-query";
 import { sprintsQO } from "@/lib/api/tasko.queries";
@@ -47,7 +52,12 @@ type Ticket = {
 
 type Member = {
   user_id: string;
-  profile: { id: string; full_name?: string | null; email?: string | null; avatar_url?: string | null } | null;
+  profile: {
+    id: string;
+    full_name?: string | null;
+    email?: string | null;
+    avatar_url?: string | null;
+  } | null;
 };
 
 type Sprint = {
@@ -83,7 +93,7 @@ export function TicketsPipelineView({
     [meta.types],
   );
   const statuses = useMemo(
-    () => (ticketType ? meta.statusesByType.get(ticketType.id) ?? [] : []),
+    () => (ticketType ? (meta.statusesByType.get(ticketType.id) ?? []) : []),
     [ticketType, meta.statusesByType],
   );
 
@@ -105,13 +115,9 @@ export function TicketsPipelineView({
     return m;
   }, [members]);
 
-
   // Only root-level tickets of the workspace's ticket task type
   const tickets = useMemo(
-    () =>
-      tasks.filter(
-        (t) => !t.parent_task_id && ticketType && t.task_type_id === ticketType.id,
-      ),
+    () => tasks.filter((t) => !t.parent_task_id && ticketType && t.task_type_id === ticketType.id),
     [tasks, ticketType],
   );
 
@@ -232,7 +238,6 @@ export function TicketsPipelineView({
 
 const noop = () => {};
 
-
 const PipelineColumn = memo(function PipelineColumn({
   id,
   label,
@@ -290,9 +295,7 @@ const PipelineColumn = memo(function PipelineColumn({
           ))}
         </SortableContext>
         {tickets.length === 0 && (
-          <div className="text-[11px] text-muted-foreground text-center py-6">
-            Sin tickets
-          </div>
+          <div className="text-[11px] text-muted-foreground text-center py-6">Sin tickets</div>
         )}
       </div>
     </div>
@@ -348,11 +351,16 @@ const TicketCard = memo(function TicketCard({
   onUpdateTask: (vars: { taskId: string; statusId?: string; sprintId?: string | null }) => void;
   dragging?: boolean;
 }) {
-  const assignee = ticket.assignee_id ? memberById.get(ticket.assignee_id) ?? null : null;
-  const priorityIcon = ticket.priority ? PRIORITY_ICON[ticket.priority as keyof typeof PRIORITY_ICON] : null;
+  const assignee = ticket.assignee_id ? (memberById.get(ticket.assignee_id) ?? null) : null;
+  const priorityIcon = ticket.priority
+    ? PRIORITY_ICON[ticket.priority as keyof typeof PRIORITY_ICON]
+    : null;
   const due = ticket.due_date ? formatDueShort(ticket.due_date) : null;
   const dueClass = ticket.due_date ? dueToneClass(dueTone(ticket.due_date)) : "";
-  const isCritico = ticket.severity === "urgente_critico" || ticket.severity === "alta" || ticket.severity === "critica";
+  const isCritico =
+    ticket.severity === "urgente_critico" ||
+    ticket.severity === "alta" ||
+    ticket.severity === "critica";
 
   return (
     <div
@@ -366,9 +374,7 @@ const TicketCard = memo(function TicketCard({
       }}
     >
       <div className="flex items-start gap-1.5">
-        {isCritico && (
-          <AlertTriangle className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
-        )}
+        {isCritico && <AlertTriangle className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />}
         <span className="font-medium leading-snug line-clamp-2 flex-1">{ticket.title}</span>
       </div>
 
@@ -444,5 +450,3 @@ const TicketCard = memo(function TicketCard({
     </div>
   );
 });
-
-

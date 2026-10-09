@@ -96,9 +96,7 @@ export const myTasksQO = (workspaceId?: string) =>
   queryOptions({
     queryKey: ["my-tasks", workspaceId ?? "__all__"],
     queryFn: () =>
-      workspaceId
-        ? listMyTasks({ data: { workspaceId } })
-        : listMyTasks({ data: {} }),
+      workspaceId ? listMyTasks({ data: { workspaceId } }) : listMyTasks({ data: {} }),
     staleTime: 30 * 1000,
   });
 
@@ -142,20 +140,33 @@ export const accountsQO = (workspaceId: string, area?: "operations" | "finance")
   });
 
 export const accountQO = (accountId: string) =>
-  queryOptions({ queryKey: ["account", accountId], queryFn: () => getAccount({ data: { accountId } }), staleTime: LIST_CACHE_MS });
+  queryOptions({
+    queryKey: ["account", accountId],
+    queryFn: () => getAccount({ data: { accountId } }),
+    staleTime: LIST_CACHE_MS,
+  });
 
 export const contractsQO = (workspaceId: string, accountId?: string) =>
   queryOptions({
     queryKey: ["contracts", workspaceId, accountId ?? "all"],
-    queryFn: () => listContracts({ data: accountId ? { workspaceId, accountId } : { workspaceId } }),
+    queryFn: () =>
+      listContracts({ data: accountId ? { workspaceId, accountId } : { workspaceId } }),
     staleTime: LIST_CACHE_MS,
   });
 
 export const contractQO = (contractId: string) =>
-  queryOptions({ queryKey: ["contract", contractId], queryFn: () => getContract({ data: { contractId } }), staleTime: LIST_CACHE_MS });
+  queryOptions({
+    queryKey: ["contract", contractId],
+    queryFn: () => getContract({ data: { contractId } }),
+    staleTime: LIST_CACHE_MS,
+  });
 
 export const contractFinancialsQO = (contractId: string) =>
-  queryOptions({ queryKey: ["contract-financials", contractId], queryFn: () => getContractFinancials({ data: { contractId } }), staleTime: LIST_CACHE_MS });
+  queryOptions({
+    queryKey: ["contract-financials", contractId],
+    queryFn: () => getContractFinancials({ data: { contractId } }),
+    staleTime: LIST_CACHE_MS,
+  });
 
 export const sprintsQO = (contractId: string, projectId?: string | null) =>
   queryOptions({
@@ -174,7 +185,6 @@ export const contractSprintSummaryQO = (contractId: string) =>
     staleTime: LIST_CACHE_MS,
   });
 
-
 export const sprintMetricsQO = (contractId: string, projectId: string) =>
   queryOptions({
     queryKey: ["sprint-metrics", contractId, projectId],
@@ -183,16 +193,32 @@ export const sprintMetricsQO = (contractId: string, projectId: string) =>
   });
 
 export const phasesQO = (projectId: string) =>
-  queryOptions({ queryKey: ["phases", projectId], queryFn: () => listPhases({ data: { projectId } }), staleTime: LIST_CACHE_MS });
+  queryOptions({
+    queryKey: ["phases", projectId],
+    queryFn: () => listPhases({ data: { projectId } }),
+    staleTime: LIST_CACHE_MS,
+  });
 
 export const milestonesQO = (projectId: string) =>
-  queryOptions({ queryKey: ["milestones", projectId], queryFn: () => listMilestones({ data: { projectId } }), staleTime: LIST_CACHE_MS });
+  queryOptions({
+    queryKey: ["milestones", projectId],
+    queryFn: () => listMilestones({ data: { projectId } }),
+    staleTime: LIST_CACHE_MS,
+  });
 
 export const contractPaymentsQO = (contractId: string) =>
-  queryOptions({ queryKey: ["contract-payments", contractId], queryFn: () => listContractPayments({ data: { contractId } }), staleTime: LIST_CACHE_MS });
+  queryOptions({
+    queryKey: ["contract-payments", contractId],
+    queryFn: () => listContractPayments({ data: { contractId } }),
+    staleTime: LIST_CACHE_MS,
+  });
 
 export const contractProjectsQO = (contractId: string) =>
-  queryOptions({ queryKey: ["contract-projects", contractId], queryFn: () => listContractProjects({ data: { contractId } }), staleTime: LIST_CACHE_MS });
+  queryOptions({
+    queryKey: ["contract-projects", contractId],
+    queryFn: () => listContractProjects({ data: { contractId } }),
+    staleTime: LIST_CACHE_MS,
+  });
 
 export const myWorkspaceRoleQO = (workspaceId: string) =>
   queryOptions({
@@ -203,7 +229,11 @@ export const myWorkspaceRoleQO = (workspaceId: string) =>
 
 export const workspacePaymentsQO = (
   workspaceId: string,
-  filters?: { status?: "scheduled" | "invoiced" | "paid" | "overdue" | "cancelled"; fromDate?: string; toDate?: string },
+  filters?: {
+    status?: "scheduled" | "invoiced" | "paid" | "overdue" | "cancelled";
+    fromDate?: string;
+    toDate?: string;
+  },
 ) =>
   queryOptions({
     queryKey: ["ws-payments", workspaceId, filters ?? {}],
@@ -265,7 +295,6 @@ export const partnerProjectsQO = (partnerId: string) =>
     staleTime: LIST_CACHE_MS,
   });
 
-
 export const asanaWorkspacesQO = () =>
   queryOptions({
     queryKey: ["asana", "workspaces"],
@@ -288,8 +317,6 @@ export const asanaProjectsQO = (workspaceGid: string | undefined) =>
     staleTime: LIST_CACHE_MS,
   });
 
-
-
 export const taskTypesQO = (workspaceId: string) =>
   queryOptions({
     queryKey: ["task-types", workspaceId],
@@ -309,7 +336,6 @@ export const taskStatusesQO = (workspaceId: string) =>
     },
     staleTime: STABLE_CACHE_MS,
   });
-
 
 export const operationsTreeQO = (workspaceId: string) =>
   queryOptions({
@@ -438,7 +464,6 @@ export const commissionsQO = (
       }),
     staleTime: LIST_CACHE_MS,
   });
-
 
 export const dteConfigQO = (workspaceId: string) =>
   queryOptions({

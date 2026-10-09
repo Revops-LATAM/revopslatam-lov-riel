@@ -1,12 +1,24 @@
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { MemberAvatar } from "./MemberAvatar";
 import { UserPlus, X } from "lucide-react";
 
 type Member = {
   user_id: string;
-  profile: { id: string; full_name?: string | null; email?: string | null; avatar_url?: string | null } | null;
+  profile: {
+    id: string;
+    full_name?: string | null;
+    email?: string | null;
+    avatar_url?: string | null;
+  } | null;
 };
 
 export function AssigneeSelect({

@@ -127,20 +127,18 @@ export const saveNotificationPreference = createServerFn({ method: "POST" })
     }) => d,
   )
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase
-      .from("notification_preferences")
-      .upsert(
-        {
-          user_id: context.userId,
-          kind: data.kind,
-          desktop: data.desktop,
-          in_app: data.in_app,
-          email: data.email,
-          slack: data.slack,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "user_id,kind" },
-      );
+    const { error } = await context.supabase.from("notification_preferences").upsert(
+      {
+        user_id: context.userId,
+        kind: data.kind,
+        desktop: data.desktop,
+        in_app: data.in_app,
+        email: data.email,
+        slack: data.slack,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "user_id,kind" },
+    );
     if (error) throw new Error(error.message);
     return { ok: true };
   });

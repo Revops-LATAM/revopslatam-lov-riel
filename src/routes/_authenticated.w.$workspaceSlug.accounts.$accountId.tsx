@@ -9,7 +9,13 @@ import { FileText, Pencil, Plus, Trash2 } from "lucide-react";
 import { Breadcrumbs } from "@/components/tasko/Breadcrumbs";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -80,30 +86,29 @@ function AccountDetail() {
             {account.status}
           </span>
           <div className="ml-auto flex items-center gap-1">
-
-          {canEdit && (
-            <Button size="sm" variant="ghost" onClick={() => setEditOpen(true)}>
-              <Pencil className="w-3.5 h-3.5 mr-1" />
-              Editar
-            </Button>
-          )}
-          {canDelete && (
-            <Button
-              size="sm"
-              variant="ghost"
-              className="text-destructive hover:text-destructive hover:bg-destructive/10"
-              disabled={hasContracts}
-              title={
-                hasContracts
-                  ? "Elimina o desvincula los contratos asociados antes de borrar este cliente"
-                  : "Eliminar cliente"
-              }
-              onClick={() => setConfirmOpen(true)}
-            >
-              <Trash2 className="w-3.5 h-3.5 mr-1" />
-              Eliminar
-            </Button>
-          )}
+            {canEdit && (
+              <Button size="sm" variant="ghost" onClick={() => setEditOpen(true)}>
+                <Pencil className="w-3.5 h-3.5 mr-1" />
+                Editar
+              </Button>
+            )}
+            {canDelete && (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                disabled={hasContracts}
+                title={
+                  hasContracts
+                    ? "Elimina o desvincula los contratos asociados antes de borrar este cliente"
+                    : "Eliminar cliente"
+                }
+                onClick={() => setConfirmOpen(true)}
+              >
+                <Trash2 className="w-3.5 h-3.5 mr-1" />
+                Eliminar
+              </Button>
+            )}
           </div>
         </div>
       </header>
@@ -160,13 +165,19 @@ function AccountDetail() {
           );
         })()}
 
-
         {account.website && (
-          <a href={account.website} target="_blank" rel="noreferrer" className="text-xs text-primary hover:underline block">
+          <a
+            href={account.website}
+            target="_blank"
+            rel="noreferrer"
+            className="text-xs text-primary hover:underline block"
+          >
             {account.website}
           </a>
         )}
-        {account.notes && <p className="text-sm text-muted-foreground whitespace-pre-wrap">{account.notes}</p>}
+        {account.notes && (
+          <p className="text-sm text-muted-foreground whitespace-pre-wrap">{account.notes}</p>
+        )}
 
         <BillingEntitiesSection accountId={accountId} />
 
@@ -229,7 +240,9 @@ function Field({
   return (
     <div className={className}>
       <div className="text-[10px] uppercase text-muted-foreground tracking-wide">{label}</div>
-      <div className="text-foreground">{value || <span className="text-muted-foreground">—</span>}</div>
+      <div className="text-foreground">
+        {value || <span className="text-muted-foreground">—</span>}
+      </div>
     </div>
   );
 }
@@ -300,7 +313,6 @@ function normalizeAccount(a: {
   };
 }
 
-
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function EditAccountDialog({
@@ -324,13 +336,19 @@ function EditAccountDialog({
   const [address, setAddress] = useState(account.address ?? "");
   const [commune, setCommune] = useState(account.commune ?? "");
   const [primaryContactName, setPrimaryContactName] = useState(account.primary_contact_name ?? "");
-  const [primaryContactEmail, setPrimaryContactEmail] = useState(account.primary_contact_email ?? "");
+  const [primaryContactEmail, setPrimaryContactEmail] = useState(
+    account.primary_contact_email ?? "",
+  );
   const [website, setWebsite] = useState(account.website ?? "");
   const [notes, setNotes] = useState(account.notes ?? "");
   const [secondaryContacts, setSecondaryContacts] = useState<
     { _uid: string; nombre: string; email: string }[]
   >(
-    (account.secondary_contacts ?? []).map((c) => ({ _uid: newUid(), nombre: c.nombre, email: c.email })),
+    (account.secondary_contacts ?? []).map((c) => ({
+      _uid: newUid(),
+      nombre: c.nombre,
+      email: c.email,
+    })),
   );
 
   // Re-hidratar al cambiar de cliente o reabrir
@@ -348,7 +366,11 @@ function EditAccountDialog({
     setWebsite(account.website ?? "");
     setNotes(account.notes ?? "");
     setSecondaryContacts(
-      (account.secondary_contacts ?? []).map((c) => ({ _uid: newUid(), nombre: c.nombre, email: c.email })),
+      (account.secondary_contacts ?? []).map((c) => ({
+        _uid: newUid(),
+        nombre: c.nombre,
+        email: c.email,
+      })),
     );
   }, [open, account]);
 
@@ -452,7 +474,11 @@ function EditAccountDialog({
             </div>
             <div className="col-span-2">
               <Label>Sitio web</Label>
-              <Input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://..." />
+              <Input
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+                placeholder="https://..."
+              />
             </div>
           </div>
 
@@ -492,7 +518,10 @@ function EditAccountDialog({
                 size="sm"
                 variant="outline"
                 onClick={() =>
-                  setSecondaryContacts((prev) => [...prev, { _uid: newUid(), nombre: "", email: "" }])
+                  setSecondaryContacts((prev) => [
+                    ...prev,
+                    { _uid: newUid(), nombre: "", email: "" },
+                  ])
                 }
               >
                 <Plus className="w-3 h-3 mr-1" /> Agregar
@@ -510,7 +539,9 @@ function EditAccountDialog({
                         value={c.nombre}
                         onChange={(e) =>
                           setSecondaryContacts((prev) =>
-                            prev.map((x, idx) => (idx === i ? { ...x, nombre: e.target.value } : x)),
+                            prev.map((x, idx) =>
+                              idx === i ? { ...x, nombre: e.target.value } : x,
+                            ),
                           )
                         }
                       />

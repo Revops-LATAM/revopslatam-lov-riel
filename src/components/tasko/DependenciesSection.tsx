@@ -9,11 +9,7 @@ import {
 import { tasksQO } from "@/lib/api/tasko.queries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Command,
   CommandEmpty,
@@ -25,13 +21,7 @@ import {
 import { Plus, X, ArrowRight, GitBranch } from "lucide-react";
 import { toast } from "sonner";
 
-export function DependenciesSection({
-  taskId,
-  projectId,
-}: {
-  taskId: string;
-  projectId: string;
-}) {
+export function DependenciesSection({ taskId, projectId }: { taskId: string; projectId: string }) {
   const qc = useQueryClient();
   const listFn = useServerFn(listTaskDependencies);
   const addFn = useServerFn(addTaskDependency);
@@ -89,9 +79,7 @@ export function DependenciesSection({
       <AddDepInline
         placeholder="Añadir predecesora..."
         candidates={tasks.filter(
-          (t) =>
-            t.id !== taskId &&
-            !blockedBy.some((d) => d.predecessor_task_id === t.id),
+          (t) => t.id !== taskId && !blockedBy.some((d) => d.predecessor_task_id === t.id),
         )}
         onAdd={(otherId, lag) =>
           addMut.mutate({
@@ -115,9 +103,7 @@ export function DependenciesSection({
       <AddDepInline
         placeholder="Añadir sucesora..."
         candidates={tasks.filter(
-          (t) =>
-            t.id !== taskId &&
-            !blocks.some((d) => d.successor_task_id === t.id),
+          (t) => t.id !== taskId && !blocks.some((d) => d.successor_task_id === t.id),
         )}
         onAdd={(otherId, lag) =>
           addMut.mutate({
@@ -153,9 +139,7 @@ function DepList({
             <ArrowRight className="w-3 h-3 text-muted-foreground shrink-0" />
             <span className="truncate flex-1">{r.title}</span>
             {r.lag > 0 && (
-              <span className="text-[10px] text-muted-foreground tabular-nums">
-                +{r.lag}d
-              </span>
+              <span className="text-[10px] text-muted-foreground tabular-nums">+{r.lag}d</span>
             )}
             <button
               type="button"

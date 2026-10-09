@@ -25,7 +25,12 @@ type Sprint = {
 };
 
 type ReportData = {
-  project: { id: string; name: string; client_name: string | null; hours_per_sprint: number | null };
+  project: {
+    id: string;
+    name: string;
+    client_name: string | null;
+    hours_per_sprint: number | null;
+  };
   sprints: Sprint[];
   backlog?: Task[] | null;
 };
@@ -66,8 +71,7 @@ function PublicReportPage() {
         const json = (await res.json()) as ReportData;
         if (!cancelled) setState({ s: "ready", data: json });
       } catch (e) {
-        if (!cancelled)
-          setState({ s: "error", message: e instanceof Error ? e.message : "Error" });
+        if (!cancelled) setState({ s: "error", message: e instanceof Error ? e.message : "Error" });
       }
     })();
     return () => {
@@ -286,8 +290,6 @@ function PublicReportPage() {
             </div>
           </section>
         )}
-
-
 
         <footer className="mt-10 pt-4 border-t border-border text-xs text-muted-foreground">
           Informe generado por Riel · Revops LATAM

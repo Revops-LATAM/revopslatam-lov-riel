@@ -121,9 +121,7 @@ function InternalProjectPage() {
   });
 
   if (!wsQ.data || !projectQ.data) {
-    return (
-      <div className="p-6 text-sm text-muted-foreground">Cargando proyecto…</div>
-    );
+    return <div className="p-6 text-sm text-muted-foreground">Cargando proyecto…</div>;
   }
 
   return (

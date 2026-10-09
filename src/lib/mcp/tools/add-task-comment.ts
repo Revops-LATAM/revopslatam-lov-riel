@@ -15,7 +15,12 @@ export default defineTool({
       .optional()
       .describe("Make the comment visible to the client in the ticket portal (default false)."),
   },
-  annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
+  annotations: {
+    readOnlyHint: false,
+    destructiveHint: false,
+    idempotentHint: false,
+    openWorldHint: false,
+  },
   handler: async ({ taskId, body, clientVisible }, ctx) => {
     if (!ctx.isAuthenticated()) return notAuthed();
     const sb = sbForUser(ctx);

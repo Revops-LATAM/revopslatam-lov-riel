@@ -83,14 +83,13 @@ function DtePage() {
     }
   };
 
-
   return (
     <div className="p-6 max-w-2xl space-y-4">
       <div>
         <h2 className="text-sm font-semibold">Facturación electrónica (DTE/SII)</h2>
         <p className="text-xs text-muted-foreground">
-          Configura tu proveedor DTE (OpenFactura / Haulmer) para emitir facturas
-          electrónicas al SII de Chile desde Riel.
+          Configura tu proveedor DTE (OpenFactura / Haulmer) para emitir facturas electrónicas al
+          SII de Chile desde Riel.
         </p>
       </div>
 
@@ -113,7 +112,9 @@ function DtePage() {
           <Label className="text-xs">Ambiente</Label>
           <Select
             value={form.ambiente}
-            onValueChange={(v) => setForm((f) => ({ ...f, ambiente: v as "sandbox" | "production" }))}
+            onValueChange={(v) =>
+              setForm((f) => ({ ...f, ambiente: v as "sandbox" | "production" }))
+            }
           >
             <SelectTrigger>
               <SelectValue />
@@ -127,11 +128,16 @@ function DtePage() {
 
         <div className="col-span-2">
           <Label className="text-xs">
-            API Key {cfg?.has_api_key && <span className="text-muted-foreground">(actual: {cfg.api_key_preview})</span>}
+            API Key{" "}
+            {cfg?.has_api_key && (
+              <span className="text-muted-foreground">(actual: {cfg.api_key_preview})</span>
+            )}
           </Label>
           <Input
             type="password"
-            placeholder={cfg?.has_api_key ? "Deja vacío para mantener el actual" : "Pega aquí tu API key"}
+            placeholder={
+              cfg?.has_api_key ? "Deja vacío para mantener el actual" : "Pega aquí tu API key"
+            }
             value={form.api_key}
             onChange={(e) => setForm((f) => ({ ...f, api_key: e.target.value }))}
             autoComplete="off"
@@ -149,11 +155,10 @@ function DtePage() {
             placeholder="76.123.456-7"
           />
           <p className="text-[11px] text-muted-foreground mt-1">
-            La resolución SII y el timbraje los administra OpenFactura con el certificado
-            digital cargado en su portal — no se configuran acá.
+            La resolución SII y el timbraje los administra OpenFactura con el certificado digital
+            cargado en su portal — no se configuran acá.
           </p>
         </div>
-
 
         <div className="col-span-2 flex items-center gap-2 pt-2">
           <Switch

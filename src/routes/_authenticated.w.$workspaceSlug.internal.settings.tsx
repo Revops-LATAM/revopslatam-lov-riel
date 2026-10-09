@@ -54,7 +54,13 @@ function InternalSettingsPage() {
       createCat({
         data: {
           workspaceId: wsQ.data!.id,
-          key: key.trim() || name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").slice(0, 40),
+          key:
+            key.trim() ||
+            name
+              .trim()
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, "_")
+              .slice(0, 40),
           name: name.trim(),
         },
       }),

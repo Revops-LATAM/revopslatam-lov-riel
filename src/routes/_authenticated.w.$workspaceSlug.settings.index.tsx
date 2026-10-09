@@ -30,7 +30,10 @@ function SettingsGeneral() {
       </section>
       <p className="text-xs text-muted-foreground">
         Los datos personales, conexiones (Google Calendar) y preferencias se gestionan ahora en{" "}
-        <a href="/me/settings" className="text-primary hover:underline">Mi perfil</a>.
+        <a href="/me/settings" className="text-primary hover:underline">
+          Mi perfil
+        </a>
+        .
       </p>
     </div>
   );

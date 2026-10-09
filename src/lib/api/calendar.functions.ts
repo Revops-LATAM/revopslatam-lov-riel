@@ -55,16 +55,12 @@ export const startGoogleCalendarOAuth = createServerFn({ method: "POST" })
 
 export const getMyCalendarConnection = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ workspaceId: z.string().uuid() }).parse(input),
-  )
+  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { data: row, error } = await supabase
       .from("user_calendar_connections")
-      .select(
-        "id, google_account_email, status, last_synced_at, scopes, created_at",
-      )
+      .select("id, google_account_email, status, last_synced_at, scopes, created_at")
       .eq("user_id", userId)
       .eq("workspace_id", data.workspaceId)
       .maybeSingle();
@@ -74,9 +70,7 @@ export const getMyCalendarConnection = createServerFn({ method: "GET" })
 
 export const disconnectGoogleCalendar = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ workspaceId: z.string().uuid() }).parse(input),
-  )
+  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { error } = await supabase
@@ -229,11 +223,7 @@ export const syncMyCalendar = createServerFn({ method: "POST" })
       const isOoo = ev.eventType === "outOfOffice" || ev.eventType === "focusTime";
       const isTransparent = ev.transparency === "transparent";
 
-      const inboxStatus = isPrivate
-        ? "private"
-        : isOoo || isTransparent
-          ? "ignored"
-          : "pending";
+      const inboxStatus = isPrivate ? "private" : isOoo || isTransparent ? "ignored" : "pending";
 
       // Check existing row to avoid overwriting user classification
       const { data: existing } = await supabase
@@ -315,11 +305,7 @@ export const listInboxEvents = createServerFn({ method: "GET" })
 
     const events = rows ?? [];
     const seriesIds = Array.from(
-      new Set(
-        events
-          .map((e) => e.google_recurring_event_id)
-          .filter((x): x is string => !!x),
-      ),
+      new Set(events.map((e) => e.google_recurring_event_id).filter((x): x is string => !!x)),
     );
 
     const classMap = new Map<
@@ -336,18 +322,12 @@ export const listInboxEvents = createServerFn({ method: "GET" })
     if (seriesIds.length > 0) {
       const { data: classes } = await supabase
         .from("calendar_recurring_classifications")
-        .select(
-          "google_recurring_event_id, project_id, sprint_id, phase_id, classified_by",
-        )
+        .select("google_recurring_event_id, project_id, sprint_id, phase_id, classified_by")
         .eq("workspace_id", data.workspaceId)
         .in("google_recurring_event_id", seriesIds);
 
       const classifierIds = Array.from(
-        new Set(
-          (classes ?? [])
-            .map((c) => c.classified_by)
-            .filter((x): x is string => !!x),
-        ),
+        new Set((classes ?? []).map((c) => c.classified_by).filter((x): x is string => !!x)),
       );
       const nameMap = new Map<string, string>();
       if (classifierIds.length > 0) {
@@ -366,9 +346,7 @@ export const listInboxEvents = createServerFn({ method: "GET" })
           sprint_id: c.sprint_id,
           phase_id: c.phase_id,
           classified_by: c.classified_by,
-          classified_by_name: c.classified_by
-            ? (nameMap.get(c.classified_by) ?? null)
-            : null,
+          classified_by_name: c.classified_by ? (nameMap.get(c.classified_by) ?? null) : null,
         });
       }
     }
@@ -410,27 +388,20 @@ export const listMyCalendarProjects = createServerFn({ method: "GET" })
     const wsIds = (memberships ?? []).map((m) => m.workspace_id);
     if (wsIds.length === 0) return [];
 
-    const [{ data: workspaces, error: wErr }, { data: projects, error: pErr }] =
-      await Promise.all([
-        supabase
-          .from("workspaces")
-          .select("id, name, kind, color")
-          .in("id", wsIds),
-        supabase
-          .from("projects")
-          .select("id, name, color, area, workspace_id")
-          .in("workspace_id", wsIds)
-          .eq("archived", false)
-          .order("name", { ascending: true }),
-      ]);
+    const [{ data: workspaces, error: wErr }, { data: projects, error: pErr }] = await Promise.all([
+      supabase.from("workspaces").select("id, name, kind, color").in("id", wsIds),
+      supabase
+        .from("projects")
+        .select("id, name, color, area, workspace_id")
+        .in("workspace_id", wsIds)
+        .eq("archived", false)
+        .order("name", { ascending: true }),
+    ]);
     if (wErr) throw new Error(wErr.message);
     if (pErr) throw new Error(pErr.message);
 
     const wsMap = new Map(
-      (workspaces ?? []).map((w) => [
-        w.id,
-        { name: w.name, kind: w.kind, color: w.color },
-      ]),
+      (workspaces ?? []).map((w) => [w.id, { name: w.name, kind: w.kind, color: w.color }]),
     );
     return (projects ?? []).map((p) => ({
       id: p.id,
@@ -452,7 +423,11 @@ export const confirmCalendarEvent = createServerFn({ method: "POST" })
         projectId: z.string().uuid(),
         sprintId: z.string().uuid().nullable().optional(),
         phaseId: z.string().uuid().nullable().optional(),
-        durationMinutes: z.number().int().min(1).max(24 * 60),
+        durationMinutes: z
+          .number()
+          .int()
+          .min(1)
+          .max(24 * 60),
         assigneeIds: z.array(z.string().uuid()).optional(),
       })
       .parse(input),
@@ -472,10 +447,7 @@ export const confirmCalendarEvent = createServerFn({ method: "POST" })
       _phase_id: string;
       _duration_minutes: number;
     };
-    const { data: result, error } = await supabase.rpc(
-      "confirm_calendar_meeting",
-      params,
-    );
+    const { data: result, error } = await supabase.rpc("confirm_calendar_meeting", params);
     if (error) throw new Error(error.message);
     const typed = result as { task_id: string; minutes: number };
 
@@ -489,14 +461,13 @@ export const confirmCalendarEvent = createServerFn({ method: "POST" })
       // Persistir también sobre el evento
       await supabase
         .from("calendar_event_assignees")
-        .upsert(
-          unique.map((u) => ({ event_id: data.eventId, user_id: u })) as never,
-          { onConflict: "event_id,user_id", ignoreDuplicates: true },
-        );
+        .upsert(unique.map((u) => ({ event_id: data.eventId, user_id: u })) as never, {
+          onConflict: "event_id,user_id",
+          ignoreDuplicates: true,
+        });
     }
     return typed;
   });
-
 
 export const ignoreInboxEvent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -529,10 +500,15 @@ export const getProjectAnchors = createServerFn({ method: "GET" })
     if (pErr) throw new Error(pErr.message);
     if (!project) throw new Error("Proyecto no encontrado");
 
-    const contractType =
-      (project.contract as { type?: string } | null)?.type ?? null;
+    const contractType = (project.contract as { type?: string } | null)?.type ?? null;
 
-    let sprints: Array<{ id: string; sprint_number: number; start_date: string; end_date: string; status: string }> = [];
+    let sprints: Array<{
+      id: string;
+      sprint_number: number;
+      start_date: string;
+      end_date: string;
+      status: string;
+    }> = [];
     if (contractType === "recurrente" && project.contract_id) {
       const { data: sRows, error: sErr } = await supabase
         .from("sprints")
@@ -664,7 +640,9 @@ export const upsertTaskCalendarEvent = createServerFn({ method: "POST" })
     const [h, m] = t.meeting_start_time.split(":").map((x) => parseInt(x, 10));
     const totalStart = h * 60 + m;
     const totalEnd = totalStart + t.meeting_duration_minutes;
-    const endH = Math.floor((totalEnd / 60) % 24).toString().padStart(2, "0");
+    const endH = Math.floor((totalEnd / 60) % 24)
+      .toString()
+      .padStart(2, "0");
     const endM = (totalEnd % 60).toString().padStart(2, "0");
     // If crosses midnight, roll date
     const dayShift = Math.floor(totalEnd / (60 * 24));
@@ -735,7 +713,11 @@ export const deleteTaskCalendarEvent = createServerFn({ method: "POST" })
       .select("id, google_event_id, google_calendar_connection_id")
       .eq("id", data.taskId)
       .maybeSingle();
-    const t = task as { id: string; google_event_id: string | null; google_calendar_connection_id: string | null } | null;
+    const t = task as {
+      id: string;
+      google_event_id: string | null;
+      google_calendar_connection_id: string | null;
+    } | null;
     if (!t?.google_event_id || !t.google_calendar_connection_id) return { ok: true, noop: true };
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -757,8 +739,11 @@ export const deleteTaskCalendarEvent = createServerFn({ method: "POST" })
     }
     await supabase
       .from("tasks")
-      .update({ google_event_id: null, google_event_html_link: null, google_calendar_connection_id: null })
+      .update({
+        google_event_id: null,
+        google_event_html_link: null,
+        google_calendar_connection_id: null,
+      })
       .eq("id", t.id);
     return { ok: true };
   });
-

@@ -79,8 +79,7 @@ function ShareReportDialog({
     `${typeof window !== "undefined" ? window.location.origin : ""}/informe/${token}`;
 
   const createMut = useMutation({
-    mutationFn: () =>
-      createFn({ data: { projectId, sprintIds: selected, includeBacklog } }),
+    mutationFn: () => createFn({ data: { projectId, sprintIds: selected, includeBacklog } }),
     onSuccess: async (row) => {
       await qc.invalidateQueries({ queryKey: ["report-share-tokens", projectId] });
       try {
@@ -137,10 +136,7 @@ function ShareReportDialog({
                 key={s.id}
                 className="flex items-center gap-2 px-3 py-2 text-xs cursor-pointer hover:bg-muted/40"
               >
-                <Checkbox
-                  checked={selected.includes(s.id)}
-                  onCheckedChange={() => toggle(s.id)}
-                />
+                <Checkbox checked={selected.includes(s.id)} onCheckedChange={() => toggle(s.id)} />
                 <span className="font-medium">Sprint {s.sprint_number}</span>
                 <span className="text-muted-foreground">
                   {formatDateCL(s.start_date)} — {formatDateCL(s.end_date)}
@@ -165,12 +161,7 @@ function ShareReportDialog({
           </label>
 
           <div className="flex items-center gap-2 mt-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-xs"
-              onClick={() => setSelected([])}
-            >
+            <Button variant="ghost" size="sm" className="text-xs" onClick={() => setSelected([])}>
               Todos
             </Button>
             <div className="flex-1" />
@@ -201,8 +192,7 @@ function ShareReportDialog({
                   <div className="truncate font-mono">{urlOf(t.token)}</div>
                   <div className="text-muted-foreground">
                     {count === 0 ? "Todos los sprints" : `${count} sprint(s)`}
-                    {cfg.includeBacklog ? " + backlog" : ""} · Creado{" "}
-                    {formatDateCL(t.created_at)}
+                    {cfg.includeBacklog ? " + backlog" : ""} · Creado {formatDateCL(t.created_at)}
                   </div>
                 </div>
                 <Button size="icon" variant="ghost" onClick={() => copy(t.token)}>

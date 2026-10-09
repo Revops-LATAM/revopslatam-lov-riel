@@ -60,7 +60,6 @@ function CommissionsPage() {
 
   const fmt = (n: number, cur: string) => formatMoney(n, cur);
 
-
   const invalidate = () => qc.invalidateQueries({ queryKey: ["commissions", ws.id] });
 
   const handlePaid = async (id: string) => {
@@ -185,9 +184,7 @@ function CommissionsPage() {
                   <td className="px-3 py-2 text-right text-muted-foreground">
                     {fmt(r.base_amount, r.currency)}
                   </td>
-                  <td className="px-3 py-2 text-right font-medium">
-                    {fmt(r.amount, r.currency)}
-                  </td>
+                  <td className="px-3 py-2 text-right font-medium">{fmt(r.amount, r.currency)}</td>
                   <td className="px-3 py-2">
                     <span className={`text-[11px] px-2 py-0.5 rounded ${estadoCls(r.estado)}`}>
                       {r.estado}
@@ -325,9 +322,7 @@ function SplitDialog({
                   min={0}
                   max={100}
                   value={s.porcentaje}
-                  onChange={(e) =>
-                    updateSplit(i, { porcentaje: Number(e.target.value) })
-                  }
+                  onChange={(e) => updateSplit(i, { porcentaje: Number(e.target.value) })}
                 />
               </div>
               {splits.length > 2 && (
@@ -345,9 +340,7 @@ function SplitDialog({
             <Button
               size="sm"
               variant="outline"
-              onClick={() =>
-                setSplits((s) => [...s, { vendedorId: "", porcentaje: 0 }])
-              }
+              onClick={() => setSplits((s) => [...s, { vendedorId: "", porcentaje: 0 }])}
             >
               + Agregar vendedor
             </Button>

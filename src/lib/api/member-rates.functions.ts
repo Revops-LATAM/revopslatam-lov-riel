@@ -10,12 +10,17 @@ export const listMemberCostRates = createServerFn({ method: "GET" })
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("member_cost_rates")
-      .select("id, workspace_id, user_id, costo_hora, currency, effective_from, created_at, updated_at")
+      .select(
+        "id, workspace_id, user_id, costo_hora, currency, effective_from, created_at, updated_at",
+      )
       .eq("workspace_id", data.workspaceId)
       .order("effective_from", { ascending: false });
     if (error) throw new Error(error.message);
     const userIds = Array.from(new Set((rows ?? []).map((r) => r.user_id)));
-    let profilesById = new Map<string, { id: string; full_name: string | null; email: string | null; avatar_url: string | null }>();
+    let profilesById = new Map<
+      string,
+      { id: string; full_name: string | null; email: string | null; avatar_url: string | null }
+    >();
     if (userIds.length > 0) {
       const { data: profiles } = await context.supabase
         .from("profiles")

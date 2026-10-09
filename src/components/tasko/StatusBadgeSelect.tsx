@@ -1,31 +1,54 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export type StColor =
-  | "gray" | "stone" | "blue" | "purple"
-  | "magenta" | "amber" | "orange" | "red" | "teal";
+  | "gray"
+  | "stone"
+  | "blue"
+  | "purple"
+  | "magenta"
+  | "amber"
+  | "orange"
+  | "red"
+  | "teal";
 
 export type StatusOption = { value: string; label: string; color?: StColor; hex?: string | null };
 
 const STATUS_COLOR: Record<string, StColor> = {
-  nueva: "gray", backlog: "gray",
-  planificada: "blue", todo: "blue",
-  en_curso: "amber", in_progress: "amber",
+  nueva: "gray",
+  backlog: "gray",
+  planificada: "blue",
+  todo: "blue",
+  en_curso: "amber",
+  in_progress: "amber",
   en_pausa: "stone",
-  revision_interna: "purple", in_review: "purple",
+  revision_interna: "purple",
+  in_review: "purple",
   revision_cliente: "magenta",
   en_correccion: "orange",
   demorada: "red",
-  completada: "teal", done: "teal",
-  cancelada: "gray", cancelled: "gray",
-  por_planificar: "gray", sin_iniciar: "gray",
+  completada: "teal",
+  done: "teal",
+  cancelada: "gray",
+  cancelled: "gray",
+  por_planificar: "gray",
+  sin_iniciar: "gray",
   planificado: "blue",
   cerrado: "stone",
-  borrador: "gray", por_emitir: "gray",
+  borrador: "gray",
+  por_emitir: "gray",
   activo: "teal",
   en_renovacion: "amber",
   finalizado: "stone",
-  cancelado: "red", anulado: "red",
-  emitida: "teal", emitted: "teal",
+  cancelado: "red",
+  anulado: "red",
+  emitida: "teal",
+  emitted: "teal",
   pagada: "teal",
   vencida: "red",
   por_facturar: "amber",
@@ -33,12 +56,18 @@ const STATUS_COLOR: Record<string, StColor> = {
 
 export function mapCategoryToStColor(category?: string | null): StColor {
   switch (category) {
-    case "abierta": return "blue";
-    case "en_progreso": return "amber";
-    case "bloqueada": return "red";
-    case "completada": return "teal";
-    case "cancelada": return "gray";
-    default: return "gray";
+    case "abierta":
+      return "blue";
+    case "en_progreso":
+      return "amber";
+    case "bloqueada":
+      return "red";
+    case "completada":
+      return "teal";
+    case "cancelada":
+      return "gray";
+    default:
+      return "gray";
   }
 }
 
@@ -132,9 +161,12 @@ export function StatusBadgeSelect({
         {options.map((s) => {
           const sc: StColor = s.color ?? statusColorFor(s.value);
           const sh = s.hex ?? null;
-          const swatch = sh && /^#?[0-9a-f]{6}$/i.test(sh.trim())
-            ? (sh.startsWith("#") ? sh : `#${sh}`)
-            : `var(--st-${sc})`;
+          const swatch =
+            sh && /^#?[0-9a-f]{6}$/i.test(sh.trim())
+              ? sh.startsWith("#")
+                ? sh
+                : `#${sh}`
+              : `var(--st-${sc})`;
           return (
             <SelectItem key={s.value} value={s.value} className="text-[13px]">
               <span className="inline-flex items-center gap-2">
@@ -156,4 +188,3 @@ export function StatusBadgeSelect({
     </Select>
   );
 }
-

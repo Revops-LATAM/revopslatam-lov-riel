@@ -3,9 +3,15 @@ import { Button } from "@/components/ui/button";
 import { MONTH_NAMES } from "./constants";
 
 export function EmptyGrilla({
-  month, year, onGenerate, onCreate,
+  month,
+  year,
+  onGenerate,
+  onCreate,
 }: {
-  month: number; year: number; onGenerate: () => void; onCreate: () => void;
+  month: number;
+  year: number;
+  onGenerate: () => void;
+  onCreate: () => void;
 }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 px-6 text-center">

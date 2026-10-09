@@ -26,8 +26,13 @@ export type TaskStatusRow = {
   sort_order: number;
 };
 
-export function getLucideIcon(name: string): React.ComponentType<{ className?: string; size?: number }> {
-  const icons = Lucide as unknown as Record<string, React.ComponentType<{ className?: string; size?: number }>>;
+export function getLucideIcon(
+  name: string,
+): React.ComponentType<{ className?: string; size?: number }> {
+  const icons = Lucide as unknown as Record<
+    string,
+    React.ComponentType<{ className?: string; size?: number }>
+  >;
   return icons[name] ?? CheckSquare;
 }
 

@@ -18,12 +18,26 @@ import { RouteError } from "@/components/tasko/RouteError";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 
-export const Route = createFileRoute("/_authenticated/w/$workspaceSlug/marketing/settings/cadencia")({
+export const Route = createFileRoute(
+  "/_authenticated/w/$workspaceSlug/marketing/settings/cadencia",
+)({
   ssr: false,
   head: () => ({ meta: [{ title: "Cadencia · Marketing · Riel" }] }),
   errorComponent: RouteError,
@@ -84,7 +98,10 @@ function CadenceSettings() {
             </div>
           )}
           {(tplsQ.data ?? []).map((t) => (
-            <div key={t.id} className="rounded-md border border-border bg-card p-4 flex items-start justify-between gap-3">
+            <div
+              key={t.id}
+              className="rounded-md border border-border bg-card p-4 flex items-start justify-between gap-3"
+            >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <div className="text-sm font-medium">{t.name}</div>
@@ -94,13 +111,22 @@ function CadenceSettings() {
                     </Badge>
                   )}
                   {!t.is_active && (
-                    <Badge variant="secondary" className="text-[10px]">Inactiva</Badge>
+                    <Badge variant="secondary" className="text-[10px]">
+                      Inactiva
+                    </Badge>
                   )}
                 </div>
-                {t.description && <div className="text-xs text-muted-foreground mt-1">{t.description}</div>}
+                {t.description && (
+                  <div className="text-xs text-muted-foreground mt-1">{t.description}</div>
+                )}
               </div>
               <div className="flex items-center gap-1 shrink-0">
-                <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setEditing(t.id)}>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8"
+                  onClick={() => setEditing(t.id)}
+                >
                   <Edit2 className="w-3.5 h-3.5" />
                 </Button>
                 <Button
@@ -108,7 +134,8 @@ function CadenceSettings() {
                   variant="ghost"
                   className="h-8 w-8 text-destructive"
                   onClick={() => {
-                    if (confirm(`¿Eliminar "${t.name}"?`)) delMut.mutate({ data: { templateId: t.id } });
+                    if (confirm(`¿Eliminar "${t.name}"?`))
+                      delMut.mutate({ data: { templateId: t.id } });
                   }}
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -212,7 +239,10 @@ function EditTemplateDialog({
       s.map((sl, i) => {
         if (i !== idx) return sl;
         const has = sl.channels.includes(ch);
-        return { ...sl, channels: has ? sl.channels.filter((c) => c !== ch) : [...sl.channels, ch] };
+        return {
+          ...sl,
+          channels: has ? sl.channels.filter((c) => c !== ch) : [...sl.channels, ch],
+        };
       }),
     );
   }
@@ -221,13 +251,19 @@ function EditTemplateDialog({
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{templateId ? "Editar plantilla" : "Nueva plantilla de cadencia"}</DialogTitle>
+          <DialogTitle>
+            {templateId ? "Editar plantilla" : "Nueva plantilla de cadencia"}
+          </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-muted-foreground">Nombre</label>
-              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Cadencia estándar" />
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Cadencia estándar"
+              />
             </div>
             <div className="flex items-end gap-4">
               <label className="text-xs flex items-center gap-2">
@@ -242,7 +278,11 @@ function EditTemplateDialog({
           </div>
           <div>
             <label className="text-xs text-muted-foreground">Descripción</label>
-            <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} />
+            <Textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={2}
+            />
           </div>
 
           <div>
@@ -261,14 +301,22 @@ function EditTemplateDialog({
                 </div>
               )}
               {slots.map((s, idx) => (
-                <div key={idx} className="grid grid-cols-[6rem_5rem_7rem_1fr_1fr_2rem] items-center gap-2 p-2 rounded border border-border bg-muted/20">
-                  <Select value={String(s.weekday)} onValueChange={(v) => updateSlot(idx, { weekday: parseInt(v, 10) })}>
+                <div
+                  key={idx}
+                  className="grid grid-cols-[6rem_5rem_7rem_1fr_1fr_2rem] items-center gap-2 p-2 rounded border border-border bg-muted/20"
+                >
+                  <Select
+                    value={String(s.weekday)}
+                    onValueChange={(v) => updateSlot(idx, { weekday: parseInt(v, 10) })}
+                  >
                     <SelectTrigger className="h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       {WEEKDAYS.map((w, i) => (
-                        <SelectItem key={i} value={String(i)}>{w}</SelectItem>
+                        <SelectItem key={i} value={String(i)}>
+                          {w}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -278,13 +326,18 @@ function EditTemplateDialog({
                     value={s.timeOfDay ?? ""}
                     onChange={(e) => updateSlot(idx, { timeOfDay: e.target.value || null })}
                   />
-                  <Select value={s.format} onValueChange={(v) => updateSlot(idx, { format: v as Slot["format"] })}>
+                  <Select
+                    value={s.format}
+                    onValueChange={(v) => updateSlot(idx, { format: v as Slot["format"] })}
+                  >
                     <SelectTrigger className="h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       {PIECE_FORMATS.map((f) => (
-                        <SelectItem key={f} value={f}>{f}</SelectItem>
+                        <SelectItem key={f} value={f}>
+                          {f}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -306,7 +359,9 @@ function EditTemplateDialog({
                   </div>
                   <Select
                     value={s.pillarId ?? "__none__"}
-                    onValueChange={(v) => updateSlot(idx, { pillarId: v === "__none__" ? null : v })}
+                    onValueChange={(v) =>
+                      updateSlot(idx, { pillarId: v === "__none__" ? null : v })
+                    }
                   >
                     <SelectTrigger className="h-8 text-xs">
                       <SelectValue />
@@ -314,11 +369,18 @@ function EditTemplateDialog({
                     <SelectContent>
                       <SelectItem value="__none__">Sin pilar</SelectItem>
                       {(pillarsQ.data ?? []).map((p) => (
-                        <SelectItem key={p.id} value={p.id}>{p.label}</SelectItem>
+                        <SelectItem key={p.id} value={p.id}>
+                          {p.label}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" onClick={() => removeSlot(idx)}>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8 text-destructive"
+                    onClick={() => removeSlot(idx)}
+                  >
                     <X className="w-3.5 h-3.5" />
                   </Button>
                 </div>
@@ -327,7 +389,9 @@ function EditTemplateDialog({
           </div>
         </div>
         <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>Cancelar</Button>
+          <Button variant="ghost" onClick={onClose}>
+            Cancelar
+          </Button>
           <Button
             disabled={saveMut.isPending || !name}
             onClick={() =>

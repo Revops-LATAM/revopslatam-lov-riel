@@ -202,13 +202,11 @@ export const addAuthorizedEmail = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
-    const { error } = await supabase
-      .from("client_ticket_authorized_emails")
-      .insert({
-        form_id: data.formId,
-        email: data.email.toLowerCase().trim(),
-        portal_role: data.portalRole ?? "member",
-      } as never);
+    const { error } = await supabase.from("client_ticket_authorized_emails").insert({
+      form_id: data.formId,
+      email: data.email.toLowerCase().trim(),
+      portal_role: data.portalRole ?? "member",
+    } as never);
     if (error && !error.message.includes("duplicate")) throw new Error(error.message);
     return { ok: true };
   });

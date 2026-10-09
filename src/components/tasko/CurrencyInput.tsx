@@ -69,8 +69,10 @@ function toRaw(display: string, currency: Currency): string {
   return decPart ? `${intPart || "0"}.${decPart.slice(0, maxDec)}` : intPart || "0";
 }
 
-export interface CurrencyInputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "type"> {
+export interface CurrencyInputProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "value" | "onChange" | "type"
+> {
   value: string | number | null | undefined;
   onValueChange: (raw: string) => void;
   currency: Currency;

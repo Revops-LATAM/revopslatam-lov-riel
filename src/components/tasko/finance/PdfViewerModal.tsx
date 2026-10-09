@@ -106,7 +106,9 @@ export function PdfViewerModal({
         if (isSupabaseUrl) {
           // Supabase edge functions need apikey + Authorization headers
           // even when the function authenticates via a token query param.
-          const { data: { session } } = await supabase.auth.getSession();
+          const {
+            data: { session },
+          } = await supabase.auth.getSession();
           if (apikey) headers["apikey"] = apikey;
           headers["Authorization"] = `Bearer ${session?.access_token ?? apikey ?? ""}`;
         }
@@ -119,9 +121,7 @@ export function PdfViewerModal({
 
         const blob = await response.blob();
         const pdfBlob =
-          blob.type === "application/pdf"
-            ? blob
-            : new Blob([blob], { type: "application/pdf" });
+          blob.type === "application/pdf" ? blob : new Blob([blob], { type: "application/pdf" });
         const url = URL.createObjectURL(pdfBlob);
         blobUrlRef.current = url;
         setBlobUrl(url);
@@ -181,7 +181,9 @@ export function PdfViewerModal({
           <div className="flex items-center justify-between pr-10">
             <div className="flex flex-col">
               <DialogTitle className="text-sm font-semibold tracking-tight">{title}</DialogTitle>
-              <DialogDescription className="sr-only">Vista previa del PDF de la factura</DialogDescription>
+              <DialogDescription className="sr-only">
+                Vista previa del PDF de la factura
+              </DialogDescription>
               {numPages > 0 && (
                 <span className="text-[11px] text-muted-foreground mt-0.5">
                   Página {pageNumber} de {numPages} · {Math.round(scale * 100)}%
@@ -234,10 +236,22 @@ export function PdfViewerModal({
                   <div className="h-5 w-px bg-border mx-1" />
                 </>
               )}
-              <Button variant="ghost" size="sm" className="h-8" onClick={handleDownload} disabled={!blobUrl}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8"
+                onClick={handleDownload}
+                disabled={!blobUrl}
+              >
                 <Download className="h-3.5 w-3.5 mr-1.5" /> Descargar
               </Button>
-              <Button variant="ghost" size="sm" className="h-8" onClick={handleOpenExternal} disabled={!blobUrl}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8"
+                onClick={handleOpenExternal}
+                disabled={!blobUrl}
+              >
                 <ExternalLink className="h-3.5 w-3.5 mr-1.5" /> Abrir
               </Button>
             </div>

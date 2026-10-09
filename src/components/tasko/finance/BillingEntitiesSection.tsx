@@ -6,7 +6,13 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { SiiActivitySelect } from "@/components/tasko/operations/SiiActivitySelect";
 import {
   listBillingEntities,
@@ -42,7 +48,10 @@ export function BillingEntitiesSection({ accountId }: { accountId: string }) {
   const list = useServerFn(listBillingEntities);
   const save = useServerFn(upsertBillingEntity);
   const archive = useServerFn(archiveBillingEntity);
-  const q = useQuery({ queryKey: ["billing-entities", accountId], queryFn: () => list({ data: { accountId } }) });
+  const q = useQuery({
+    queryKey: ["billing-entities", accountId],
+    queryFn: () => list({ data: { accountId } }),
+  });
   const [editing, setEditing] = useState<string | "new" | null>(null);
   const [form, setForm] = useState(empty);
   const [saving, setSaving] = useState(false);
@@ -66,8 +75,13 @@ export function BillingEntitiesSection({ accountId }: { accountId: string }) {
   };
 
   const onSave = async () => {
-    const cc = form.cc.split(/[,;\s]+/).map((x) => x.trim()).filter(Boolean);
-    const bad = [form.email_facturacion, ...cc].filter((x) => x && !/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(x));
+    const cc = form.cc
+      .split(/[,;\s]+/)
+      .map((x) => x.trim())
+      .filter(Boolean);
+    const bad = [form.email_facturacion, ...cc].filter(
+      (x) => x && !/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(x),
+    );
     if (bad.length) {
       toast.error(`Correo inválido: ${bad.join(", ")}`);
       return;
@@ -119,7 +133,9 @@ export function BillingEntitiesSection({ accountId }: { accountId: string }) {
         )}
         {rows.map((e) => (
           <div key={e.id} className="flex items-center gap-3 p-3 text-sm">
-            {e.is_primary && <Star className="w-3.5 h-3.5 text-primary shrink-0" aria-label="Principal" />}
+            {e.is_primary && (
+              <Star className="w-3.5 h-3.5 text-primary shrink-0" aria-label="Principal" />
+            )}
             <div className="flex-1 min-w-0">
               <div className="font-medium truncate">{e.razon_social}</div>
               <div className="text-[11px] text-muted-foreground truncate">
@@ -151,33 +167,54 @@ export function BillingEntitiesSection({ accountId }: { accountId: string }) {
       <Dialog open={!!editing} onOpenChange={(v) => !v && setEditing(null)}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>{editing === "new" ? "Nueva razón social" : "Editar razón social"}</DialogTitle>
+            <DialogTitle>
+              {editing === "new" ? "Nueva razón social" : "Editar razón social"}
+            </DialogTitle>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label className="text-xs">RUT</Label>
-              <Input value={form.rut} onChange={(e) => setForm({ ...form, rut: e.target.value })} placeholder="76.123.456-7" />
+              <Input
+                value={form.rut}
+                onChange={(e) => setForm({ ...form, rut: e.target.value })}
+                placeholder="76.123.456-7"
+              />
             </div>
             <div>
               <Label className="text-xs">Razón social *</Label>
-              <Input value={form.razon_social} onChange={(e) => setForm({ ...form, razon_social: e.target.value })} />
+              <Input
+                value={form.razon_social}
+                onChange={(e) => setForm({ ...form, razon_social: e.target.value })}
+              />
             </div>
             <div className="col-span-2">
               <Label className="text-xs">Giro</Label>
-              <SiiActivitySelect value={form.giro} onChange={(v) => setForm({ ...form, giro: v.replace(/^\d+\s*—\s*/, "") })} />
+              <SiiActivitySelect
+                value={form.giro}
+                onChange={(v) => setForm({ ...form, giro: v.replace(/^\d+\s*—\s*/, "") })}
+              />
               {form.giro && <p className="text-[11px] text-muted-foreground mt-1">{form.giro}</p>}
             </div>
             <div>
               <Label className="text-xs">Dirección</Label>
-              <Input value={form.direccion} onChange={(e) => setForm({ ...form, direccion: e.target.value })} />
+              <Input
+                value={form.direccion}
+                onChange={(e) => setForm({ ...form, direccion: e.target.value })}
+              />
             </div>
             <div>
               <Label className="text-xs">Comuna</Label>
-              <Input value={form.comuna} onChange={(e) => setForm({ ...form, comuna: e.target.value })} />
+              <Input
+                value={form.comuna}
+                onChange={(e) => setForm({ ...form, comuna: e.target.value })}
+              />
             </div>
             <div className="col-span-2">
               <Label className="text-xs">Correo de facturación</Label>
-              <Input value={form.email_facturacion} onChange={(e) => setForm({ ...form, email_facturacion: e.target.value })} />
+              <Input
+                value={form.email_facturacion}
+                onChange={(e) => setForm({ ...form, email_facturacion: e.target.value })}
+              />
             </div>
             <div className="col-span-2">
               <Label className="text-xs">CC (separados por coma)</Label>
@@ -185,7 +222,9 @@ export function BillingEntitiesSection({ accountId }: { accountId: string }) {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setEditing(null)}>Cancelar</Button>
+            <Button variant="ghost" onClick={() => setEditing(null)}>
+              Cancelar
+            </Button>
             <Button onClick={onSave} disabled={saving || !form.razon_social.trim()}>
               {saving ? "Guardando…" : "Guardar"}
             </Button>

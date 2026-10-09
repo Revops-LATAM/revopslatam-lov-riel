@@ -23,7 +23,9 @@ export const listTaskStatuses = createServerFn({ method: "GET" })
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("task_statuses")
-      .select("id, workspace_id, task_type_id, key, name, color, category, is_system, is_default, sort_order")
+      .select(
+        "id, workspace_id, task_type_id, key, name, color, category, is_system, is_default, sort_order",
+      )
       .eq("workspace_id", data.workspaceId)
       .order("sort_order", { ascending: true });
     if (error) throw new Error(error.message);
@@ -31,13 +33,15 @@ export const listTaskStatuses = createServerFn({ method: "GET" })
   });
 
 function slugify(name: string) {
-  return name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_|_$/g, "")
-    .slice(0, 40) || `s_${Date.now()}`;
+  return (
+    name
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "_")
+      .replace(/^_|_$/g, "")
+      .slice(0, 40) || `s_${Date.now()}`
+  );
 }
 
 export const upsertTaskStatus = createServerFn({ method: "POST" })
@@ -114,7 +118,9 @@ export const deleteTaskStatus = createServerFn({ method: "POST" })
       .eq("status_id", data.id);
     if (cErr) throw new Error(cErr.message);
     if ((count ?? 0) > 0) {
-      throw new Error(`No se puede eliminar: ${count} tarea(s) usan este estado. Migra esas tareas primero.`);
+      throw new Error(
+        `No se puede eliminar: ${count} tarea(s) usan este estado. Migra esas tareas primero.`,
+      );
     }
     const { data: row, error: rErr } = await context.supabase
       .from("task_statuses")

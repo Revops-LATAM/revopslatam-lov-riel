@@ -49,7 +49,10 @@ function WorkspaceHome() {
               className="border border-border rounded-md p-4 hover:border-primary/50 hover:bg-accent/30 transition-colors"
             >
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-2 h-2 rounded-full" style={{ background: p.color ?? "#8b5cf6" }} />
+                <div
+                  className="w-2 h-2 rounded-full"
+                  style={{ background: p.color ?? "#8b5cf6" }}
+                />
                 <span className="text-sm font-medium">{p.name}</span>
               </div>
               {p.description && (

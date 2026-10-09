@@ -5,11 +5,7 @@ import { useMemo, useState } from "react";
 import { icons, Plus, Trash2, Star, Pencil, Check, X } from "lucide-react";
 import { toast } from "sonner";
 import { wsBySlugQO, taskTypesQO, taskStatusesQO } from "@/lib/api/tasko.queries";
-import {
-  upsertTaskStatus,
-  deleteTaskStatus,
-  updateTaskType,
-} from "@/lib/api/task-types.functions";
+import { upsertTaskStatus, deleteTaskStatus, updateTaskType } from "@/lib/api/task-types.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -44,9 +40,21 @@ const CATEGORY_OPTS = [
 ] as const;
 
 const SUGGESTED_COLORS = [
-  "#94a3b8", "#64748b", "#3b82f6", "#0ea5e9", "#06b6d4",
-  "#8b5cf6", "#a855f7", "#ec4899", "#f97316", "#f59e0b",
-  "#eab308", "#22c55e", "#16a34a", "#ef4444", "#71717a",
+  "#94a3b8",
+  "#64748b",
+  "#3b82f6",
+  "#0ea5e9",
+  "#06b6d4",
+  "#8b5cf6",
+  "#a855f7",
+  "#ec4899",
+  "#f97316",
+  "#f59e0b",
+  "#eab308",
+  "#22c55e",
+  "#16a34a",
+  "#ef4444",
+  "#71717a",
 ];
 
 function DynIcon({ name, className }: { name: string; className?: string }) {
@@ -74,13 +82,15 @@ function TaskTypesPage() {
     [statuses, activeType],
   );
 
-  const invalidate = () =>
-    qc.invalidateQueries({ queryKey: ["task-statuses", ws.id] });
-  const invalidateTypes = () =>
-    qc.invalidateQueries({ queryKey: ["task-types", ws.id] });
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["task-statuses", ws.id] });
+  const invalidateTypes = () => qc.invalidateQueries({ queryKey: ["task-types", ws.id] });
 
   const create = useMutation({
-    mutationFn: async (vars: { name: string; color: string; category: typeof CATEGORY_OPTS[number]["value"] }) =>
+    mutationFn: async (vars: {
+      name: string;
+      color: string;
+      category: (typeof CATEGORY_OPTS)[number]["value"];
+    }) =>
       upsert({
         data: {
           workspaceId: ws.id,
@@ -103,7 +113,7 @@ function TaskTypesPage() {
       id: string;
       name: string;
       color: string;
-      category: typeof CATEGORY_OPTS[number]["value"];
+      category: (typeof CATEGORY_OPTS)[number]["value"];
       isDefault?: boolean;
     }) =>
       upsert({
@@ -143,16 +153,16 @@ function TaskTypesPage() {
   const [newName, setNewName] = useState("");
   const [newColor, setNewColor] = useState("#3b82f6");
   const [newCategory, setNewCategory] =
-    useState<typeof CATEGORY_OPTS[number]["value"]>("abierta");
+    useState<(typeof CATEGORY_OPTS)[number]["value"]>("abierta");
 
   return (
     <div className="p-6 space-y-6 max-w-5xl">
       <div>
         <h2 className="text-base font-semibold">Tipos de tarea y estados</h2>
         <p className="text-sm text-muted-foreground">
-          Cada tipo de tarea tiene su propio conjunto de estados. Puedes editar
-          nombres, colores y agregar nuevos. La categoría se usa internamente para
-          saber si un estado cuenta como abierto, en progreso o completado.
+          Cada tipo de tarea tiene su propio conjunto de estados. Puedes editar nombres, colores y
+          agregar nuevos. La categoría se usa internamente para saber si un estado cuenta como
+          abierto, en progreso o completado.
         </p>
       </div>
 
@@ -219,7 +229,7 @@ function TaskTypesPage() {
                     id: s.id,
                     name: s.name,
                     color: s.color,
-                    category: s.category as typeof CATEGORY_OPTS[number]["value"],
+                    category: s.category as (typeof CATEGORY_OPTS)[number]["value"],
                     isDefault: true,
                   })
                 }
@@ -240,9 +250,7 @@ function TaskTypesPage() {
               <ColorPicker value={newColor} onChange={setNewColor} />
               <Select
                 value={newCategory}
-                onValueChange={(v) =>
-                  setNewCategory(v as typeof CATEGORY_OPTS[number]["value"])
-                }
+                onValueChange={(v) => setNewCategory(v as (typeof CATEGORY_OPTS)[number]["value"])}
               >
                 <SelectTrigger className="h-8">
                   <SelectValue />
@@ -330,14 +338,18 @@ function StatusRow({
     is_default: boolean;
     is_system: boolean;
   };
-  onUpdate: (v: { name: string; color: string; category: typeof CATEGORY_OPTS[number]["value"] }) => void;
+  onUpdate: (v: {
+    name: string;
+    color: string;
+    category: (typeof CATEGORY_OPTS)[number]["value"];
+  }) => void;
   onMakeDefault: () => void;
   onDelete: () => void;
 }) {
   const [name, setName] = useState(row.name);
   const [color, setColor] = useState(row.color);
-  const [category, setCategory] = useState<typeof CATEGORY_OPTS[number]["value"]>(
-    row.category as typeof CATEGORY_OPTS[number]["value"],
+  const [category, setCategory] = useState<(typeof CATEGORY_OPTS)[number]["value"]>(
+    row.category as (typeof CATEGORY_OPTS)[number]["value"],
   );
 
   const dirty = name !== row.name || color !== row.color || category !== row.category;
@@ -368,7 +380,7 @@ function StatusRow({
       <Select
         value={category}
         onValueChange={(v) => {
-          const next = v as typeof CATEGORY_OPTS[number]["value"];
+          const next = v as (typeof CATEGORY_OPTS)[number]["value"];
           setCategory(next);
           onUpdate({ name: name.trim(), color, category: next });
         }}

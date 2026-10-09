@@ -26,7 +26,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { FileText, Sparkles, FilePlus2, Info, RefreshCw, Plus, Mail, ExternalLink, Eye, CheckCircle2, XCircle, Link2, AlertTriangle } from "lucide-react";
+import {
+  FileText,
+  Sparkles,
+  FilePlus2,
+  Info,
+  RefreshCw,
+  Plus,
+  Mail,
+  ExternalLink,
+  Eye,
+  CheckCircle2,
+  XCircle,
+  Link2,
+  AlertTriangle,
+} from "lucide-react";
 import { RouteError } from "@/components/tasko/RouteError";
 import { toast } from "sonner";
 import { DataGrid, type ColumnDef } from "@/components/datagrid/DataGrid";
@@ -47,7 +61,15 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-type StatusFilter = "all" | "ready" | "scheduled" | "invoiced" | "overdue" | "draft" | "paid" | "cancelled";
+type StatusFilter =
+  | "all"
+  | "ready"
+  | "scheduled"
+  | "invoiced"
+  | "overdue"
+  | "draft"
+  | "paid"
+  | "cancelled";
 
 export const Route = createFileRoute("/_authenticated/w/$workspaceSlug/finance/payments")({
   ssr: false,
@@ -65,9 +87,7 @@ export const Route = createFileRoute("/_authenticated/w/$workspaceSlug/finance/p
       context.queryClient.getQueryData(dteKey) !== undefined;
     if (!hasAll) {
       try {
-        const { getFinancePaymentsBundle } = await import(
-          "@/lib/api/finance-bundle.functions"
-        );
+        const { getFinancePaymentsBundle } = await import("@/lib/api/finance-bundle.functions");
         const bundle = await getFinancePaymentsBundle({ data: { workspaceId: ws.id } });
         context.queryClient.setQueryData(paymentsKey, bundle.payments);
         context.queryClient.setQueryData(invoicesKey, bundle.invoices);
@@ -141,9 +161,7 @@ function StatusBadge({ status }: { status: string }) {
   const cls = STATUS_TONE[status] ?? STATUS_TONE.scheduled;
   const label = STATUS_LABEL[status] ?? status;
   return (
-    <span className={`text-[10px] uppercase rounded px-1.5 py-0.5 border ${cls}`}>
-      {label}
-    </span>
+    <span className={`text-[10px] uppercase rounded px-1.5 py-0.5 border ${cls}`}>{label}</span>
   );
 }
 
@@ -167,7 +185,11 @@ function PaymentsPage() {
   const [createInvoiceOpen, setCreateInvoiceOpen] = useState(false);
   const [actionPayment, setActionPayment] = useState<Payment | null>(null);
   const [emailInvoiceId, setEmailInvoiceId] = useState<string | null>(null);
-  const [pdfPreview, setPdfPreview] = useState<{ url: string; title: string; invoiceId: string } | null>(null);
+  const [pdfPreview, setPdfPreview] = useState<{
+    url: string;
+    title: string;
+    invoiceId: string;
+  } | null>(null);
   const [emitDialogInvoiceId, setEmitDialogInvoiceId] = useState<string | null>(null);
   const todayKey = new Date().toISOString().slice(0, 7); // YYYY-MM
   const [monthFilter, setMonthFilter] = useState<string | null>(todayKey); // YYYY-MM, null = todo
@@ -267,7 +289,6 @@ function PaymentsPage() {
     return m;
   }, [invoices]);
 
-
   // Universo completo: cuotas marcadas como payment + facturas independientes.
   // Se descartan cuotas pagadas/canceladas para enfocarse en facturación,
   // pero las facturas-only siempre se muestran (incluso paid/cancelled, ya son hechos contables).
@@ -285,20 +306,16 @@ function PaymentsPage() {
     return [...fromPayments, ...invoiceOnlyRows];
   }, [rawPayments, invoiceOnlyRows]);
 
-
   const monthKey = (p: Payment) => {
     // En modo "emisión" solo usamos fecha_emision cuando el DTE está realmente
     // emitido/pagado. Los borradores traen una fecha tentativa que no debe
     // mover la cuota de mes; esos caen al mes planificado (due_date).
-    const emitted =
-      p.invoice_estado === "emitted" || p.invoice_estado === "paid" || !!p.emitido_at;
-    const src =
-      groupBy === "emission" && emitted ? p.fecha_emision ?? p.due_date : p.due_date;
+    const emitted = p.invoice_estado === "emitted" || p.invoice_estado === "paid" || !!p.emitido_at;
+    const src = groupBy === "emission" && emitted ? (p.fecha_emision ?? p.due_date) : p.due_date;
     return src ? src.slice(0, 7) : "sin-fecha";
   };
 
-  const isReady = (p: Payment) =>
-    !!p.ready_to_invoice && p.status !== "invoiced";
+  const isReady = (p: Payment) => !!p.ready_to_invoice && p.status !== "invoiced";
 
   // Monthly summary (across all payments, regardless of grid filters)
   type MonthBucket = {
@@ -355,7 +372,6 @@ function PaymentsPage() {
     return Array.from(map.values()).sort((a, b) => a.key.localeCompare(b.key));
   }, [all, groupBy, invById]);
 
-
   // Apply grid filters
   const payments = all.filter((p) => {
     if (monthFilter && monthKey(p) !== monthFilter) return false;
@@ -382,10 +398,7 @@ function PaymentsPage() {
   // Optimistic patch helper: apply a partial update to a row in the cached
   // ws-payments list without triggering a server refetch. Returns a rollback
   // function that restores the previous snapshot on error.
-  const optimisticPatchPayment = (
-    predicate: (p: Payment) => boolean,
-    patch: Partial<Payment>,
-  ) => {
+  const optimisticPatchPayment = (predicate: (p: Payment) => boolean, patch: Partial<Payment>) => {
     const key = ["ws-payments", ws.id];
     const prev = qc.getQueryData<Payment[]>(key);
     if (prev) {
@@ -401,10 +414,17 @@ function PaymentsPage() {
 
   const m = useMutation({
     mutationFn: updateFn,
-    onMutate: (args: { data: { paymentId: string; status: "scheduled" | "invoiced" | "paid" | "overdue" | "cancelled"; paidAt?: string } }) => {
+    onMutate: (args: {
+      data: {
+        paymentId: string;
+        status: "scheduled" | "invoiced" | "paid" | "overdue" | "cancelled";
+        paidAt?: string;
+      };
+    }) => {
       const vars = args.data;
       const patch: Partial<Payment> = { status: vars.status };
-      if (vars.status === "paid") patch.paid_at = vars.paidAt ?? new Date().toISOString().slice(0, 10);
+      if (vars.status === "paid")
+        patch.paid_at = vars.paidAt ?? new Date().toISOString().slice(0, 10);
       const rollback = optimisticPatchPayment((p) => p.id === vars.paymentId, patch);
       return { rollback };
     },
@@ -420,7 +440,6 @@ function PaymentsPage() {
       qc.invalidateQueries({ queryKey: ["ws-payments", ws.id] });
     },
   });
-
 
   const dteActive = !!dteCfg?.activo;
 
@@ -452,9 +471,6 @@ function PaymentsPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-
-
-
   const bulkM = useMutation({
     mutationFn: () => bulkFn({ data: { workspaceId: ws.id } }),
     onSuccess: (r) => {
@@ -471,10 +487,11 @@ function PaymentsPage() {
     mutationFn: (invoiceId: string) => payFn({ data: { invoiceId } }),
     onMutate: (invoiceId: string) => {
       const today = new Date().toISOString().slice(0, 10);
-      const rollback = optimisticPatchPayment(
-        (p) => p.invoice_id === invoiceId,
-        { status: "paid", paid_at: today, invoice_estado: "paid" },
-      );
+      const rollback = optimisticPatchPayment((p) => p.invoice_id === invoiceId, {
+        status: "paid",
+        paid_at: today,
+        invoice_estado: "paid",
+      });
       return { rollback };
     },
     onError: (e: Error, _vars, ctx) => {
@@ -492,13 +509,12 @@ function PaymentsPage() {
   });
 
   const cancelM = useMutation({
-    mutationFn: (vars: { invoiceId: string; motivo: string }) =>
-      cancelFn({ data: vars }),
+    mutationFn: (vars: { invoiceId: string; motivo: string }) => cancelFn({ data: vars }),
     onMutate: (vars) => {
-      const rollback = optimisticPatchPayment(
-        (p) => p.invoice_id === vars.invoiceId,
-        { status: "cancelled", invoice_estado: "cancelled" },
-      );
+      const rollback = optimisticPatchPayment((p) => p.invoice_id === vars.invoiceId, {
+        status: "cancelled",
+        invoice_estado: "cancelled",
+      });
       return { rollback };
     },
     onError: (e: Error, _vars, ctx) => {
@@ -515,7 +531,6 @@ function PaymentsPage() {
     },
   });
 
-
   const columns: ColumnDef<Payment>[] = useMemo(
     () => [
       {
@@ -524,9 +539,7 @@ function PaymentsPage() {
         required: true,
         sortable: true,
         accessor: (p) => p.account_name ?? "",
-        cell: (p) => (
-          <span className="font-medium truncate">{p.account_name ?? "—"}</span>
-        ),
+        cell: (p) => <span className="font-medium truncate">{p.account_name ?? "—"}</span>,
         width: 170,
       },
       {
@@ -553,10 +566,12 @@ function PaymentsPage() {
         id: "fecha_emision",
         header: "Fecha emisión",
         sortable: true,
-        accessor: (p) => (p.emitido_at ? p.fecha_emision ?? p.emitido_at : ""),
+        accessor: (p) => (p.emitido_at ? (p.fecha_emision ?? p.emitido_at) : ""),
         cell: (p) =>
           p.emitido_at ? (
-            <span className="text-emerald-500 tabular-nums">{fmtDate(p.fecha_emision ?? p.emitido_at)}</span>
+            <span className="text-emerald-500 tabular-nums">
+              {fmtDate(p.fecha_emision ?? p.emitido_at)}
+            </span>
           ) : (
             <span className="text-muted-foreground/50">—</span>
           ),
@@ -568,10 +583,7 @@ function PaymentsPage() {
         sortable: true,
         accessor: (p) => Number(p.amount ?? 0),
         cell: (p) => (
-          <span
-            className="tabular-nums"
-            title="Monto pactado en el contrato (neto, sin IVA)"
-          >
+          <span className="tabular-nums" title="Monto pactado en el contrato (neto, sin IVA)">
             {formatMoney(Number(p.amount ?? 0), p.currency)}
           </span>
         ),
@@ -609,9 +621,7 @@ function PaymentsPage() {
               className={`tabular-nums font-medium inline-flex items-center justify-end gap-1 cursor-pointer select-none ${isUF && p.es_uf_estimada ? "text-amber-400" : ""}`}
             >
               {formatMoney(Number(p.monto_clp ?? 0), "CLP")}
-              {isUF && ufVal ? (
-                <Info className="h-3 w-3 text-amber-500/80" />
-              ) : null}
+              {isUF && ufVal ? <Info className="h-3 w-3 text-amber-500/80" /> : null}
             </span>
           );
 
@@ -630,9 +640,7 @@ function PaymentsPage() {
                     <div className="font-medium">
                       {amtFmt} UF × ${ufFmt}
                     </div>
-                    {fechaTxt ? (
-                      <div className="text-[10px] opacity-80">{fechaTxt}</div>
-                    ) : null}
+                    {fechaTxt ? <div className="text-[10px] opacity-80">{fechaTxt}</div> : null}
                     <div className="text-[10px] opacity-70 mt-1">
                       {isInvoiced
                         ? "Monto CLP real del DTE (congelado al emitir)"
@@ -745,8 +753,18 @@ function PaymentsPage() {
 
   // Month / Year selector state derived from monthFilter
   const MESES = [
-    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
   ];
   const [selYear, selMonth] = monthFilter
     ? monthFilter.split("-").map(Number)
@@ -764,8 +782,7 @@ function PaymentsPage() {
     return Array.from(set).sort((a, b) => a - b);
   }, [monthly]);
 
-  const setMY = (y: number, m: number) =>
-    setMonthFilter(`${y}-${String(m).padStart(2, "0")}`);
+  const setMY = (y: number, m: number) => setMonthFilter(`${y}-${String(m).padStart(2, "0")}`);
 
   // Bucket for currently-selected month (computed across all data, not just visible)
   const selectedBucket = useMemo(() => {
@@ -795,9 +812,7 @@ function PaymentsPage() {
     );
   }, [monthly, monthFilter]);
 
-  const titleLabel = monthFilter
-    ? `${MESES[selMonth - 1]} ${selYear}`
-    : "Todos los meses";
+  const titleLabel = monthFilter ? `${MESES[selMonth - 1]} ${selYear}` : "Todos los meses";
 
   return (
     <div className="flex flex-col h-full">
@@ -818,8 +833,8 @@ function PaymentsPage() {
           <div className="flex items-center gap-2 text-xs text-amber-200">
             <Sparkles className="w-4 h-4" />
             <span>
-              <strong>{readyCount}</strong>{" "}
-              {readyCount === 1 ? "pago listo" : "pagos listos"} para facturar (hitos completados).
+              <strong>{readyCount}</strong> {readyCount === 1 ? "pago listo" : "pagos listos"} para
+              facturar (hitos completados).
             </span>
           </div>
           <Button
@@ -946,9 +961,6 @@ function PaymentsPage() {
         onCreated={invalidatePayments}
       />
 
-
-
-
       <DataGrid<Payment>
         viewKey={`payments:${ws.id}`}
         columns={columns}
@@ -1000,7 +1012,6 @@ function PaymentsPage() {
           if (!p.invoice_id) return;
           emitM.mutate(p.invoice_id, { onSuccess: () => setActionPayment(null) });
         }}
-
         onMarkInvoiced={(p) => {
           m.mutate(
             { data: { paymentId: p.id, status: "invoiced" } },
@@ -1079,10 +1090,8 @@ function PaymentsPage() {
         onOpenChange={(o) => !o && setEmitDialogInvoiceId(null)}
         onEmitted={invalidatePayments}
       />
-
     </div>
   );
-
 }
 
 function SummaryCard({
@@ -1115,7 +1124,9 @@ function SummaryCard({
       <div className={`absolute left-0 top-0 bottom-0 w-[3px] ${accent.bar}`} />
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <div className={`text-[10px] font-bold uppercase tracking-wider ${accent.text} leading-tight`}>
+          <div
+            className={`text-[10px] font-bold uppercase tracking-wider ${accent.text} leading-tight`}
+          >
             {label}
           </div>
           <div className="flex items-baseline gap-1.5 mt-0.5">
@@ -1161,16 +1172,13 @@ function UfChip({ workspaceId }: { workspaceId: string }) {
         qc.invalidateQueries({ queryKey: ["ws-payments", workspaceId] });
         qc.invalidateQueries({ queryKey: ["finance-dashboard", workspaceId] });
         qc.invalidateQueries({ queryKey: ["invoices", workspaceId] });
-
       } else {
         toast.error(res.error ?? "No se pudo actualizar la UF");
       }
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Error al actualizar UF"),
   });
-  const valor = uf?.valor
-    ? uf.valor.toLocaleString("es-CL", { maximumFractionDigits: 0 })
-    : "—";
+  const valor = uf?.valor ? uf.valor.toLocaleString("es-CL", { maximumFractionDigits: 0 }) : "—";
   return (
     <div className="inline-flex items-center gap-1.5 h-7 px-2 text-xs text-muted-foreground bg-muted/40 border border-border rounded-md">
       <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">
@@ -1225,15 +1233,13 @@ function PaymentActionDialog({
   onViewPdf: (p: Payment) => void;
   onGoToContract: (p: Payment) => void;
 }) {
-
   const open = !!payment;
   const hasInvoice = !!payment?.invoice_id;
   const isEmissionPending = payment?.invoice_estado === "scheduled" && !payment?.folio_sii;
   const canBeInvoiced = payment?.status === "scheduled" || payment?.status === "overdue";
   const isDraft = payment?.status === "draft";
   const isInvoicedOrPaid = payment?.status === "invoiced" || payment?.status === "paid";
-  const canCancel =
-    hasInvoice && payment?.status !== "paid" && payment?.status !== "cancelled";
+  const canCancel = hasInvoice && payment?.status !== "paid" && payment?.status !== "cancelled";
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -1322,7 +1328,6 @@ function PaymentActionDialog({
               </div>
             ) : null}
 
-
             {isInvoicedOrPaid ? (
               <div className="flex flex-col gap-2">
                 {payment.pdf_url || payment.has_pdf || payment.folio_sii ? (
@@ -1369,7 +1374,6 @@ function PaymentActionDialog({
               </Button>
             ) : null}
 
-
             <DialogFooter className="sm:justify-between gap-2">
               <Button
                 variant="ghost"
@@ -1380,7 +1384,12 @@ function PaymentActionDialog({
                 <ExternalLink className="w-3.5 h-3.5 mr-1" />
                 Ir al contrato
               </Button>
-              <Button variant="ghost" size="sm" className="text-xs" onClick={() => onOpenChange(false)}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs"
+                onClick={() => onOpenChange(false)}
+              >
                 Cerrar
               </Button>
             </DialogFooter>
@@ -1390,4 +1399,3 @@ function PaymentActionDialog({
     </Dialog>
   );
 }
-

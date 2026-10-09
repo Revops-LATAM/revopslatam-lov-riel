@@ -53,7 +53,11 @@ function HandoffsBoard() {
   const { data: handoffs } = useSuspenseQuery(handoffsQO(ws.id));
   const qc = useQueryClient();
   const updateFn = useServerFn(updateHandoff);
-  const [wizard, setWizard] = useState<{ handoffId: string; contractId: string; name: string } | null>(null);
+  const [wizard, setWizard] = useState<{
+    handoffId: string;
+    contractId: string;
+    name: string;
+  } | null>(null);
 
   const m = useMutation({
     mutationFn: updateFn,
@@ -161,9 +165,7 @@ function HandoffCard({
 }) {
   const account = h.contracts?.accounts?.name ?? "—";
   const contractName = h.contracts?.name ?? "Contrato";
-  const created = h.created_at
-    ? format(new Date(h.created_at), "dd/MM", { locale: es })
-    : "";
+  const created = h.created_at ? format(new Date(h.created_at), "dd/MM", { locale: es }) : "";
   // state-derived labels handled inline below
   return (
     <div className="border border-border bg-background rounded-md p-3 space-y-2">
@@ -195,12 +197,7 @@ function HandoffCard({
       <div className="flex items-center justify-between gap-2 pt-1">
         <span className="text-[10px] text-muted-foreground">Creado {created}</span>
         {h.state === "pendiente" ? (
-          <Button
-            size="sm"
-            className="h-7 text-xs"
-            disabled={busy}
-            onClick={onPlan}
-          >
+          <Button size="sm" className="h-7 text-xs" disabled={busy} onClick={onPlan}>
             <Sparkles className="w-3.5 h-3.5 mr-1" />
             Planificar
           </Button>

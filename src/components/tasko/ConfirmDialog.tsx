@@ -53,11 +53,7 @@ export function ConfirmDialog({
               e.preventDefault();
               onConfirm();
             }}
-            className={
-              destructive
-                ? buttonVariants({ variant: "destructive" })
-                : undefined
-            }
+            className={destructive ? buttonVariants({ variant: "destructive" }) : undefined}
           >
             {loading ? "Procesando..." : confirmLabel}
           </AlertDialogAction>

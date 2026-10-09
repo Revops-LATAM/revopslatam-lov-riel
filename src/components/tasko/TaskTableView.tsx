@@ -1,5 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { Trash2, Plus, ChevronDown, ChevronRight, X, ArrowUpRight, Columns3, Pencil, Calendar as CalendarLucide } from "lucide-react";
+import {
+  Trash2,
+  Plus,
+  ChevronDown,
+  ChevronRight,
+  X,
+  ArrowUpRight,
+  Columns3,
+  Pencil,
+  Calendar as CalendarLucide,
+} from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { MemberAvatar } from "@/components/tasko/MemberAvatar";
@@ -30,10 +40,7 @@ import { MultiAssigneeSelect } from "@/components/tasko/MultiAssigneeSelect";
 import { InlineEditableText } from "@/components/tasko/InlineEditableText";
 import { useQuery } from "@tanstack/react-query";
 import { sprintsQO } from "@/lib/api/tasko.queries";
-import {
-  PRIORITY_OPTIONS,
-  PRIORITY_ICON,
-} from "@/lib/tasko-constants";
+import { PRIORITY_OPTIONS, PRIORITY_ICON } from "@/lib/tasko-constants";
 import { isCompleted, isCancelled, getTaskStatus } from "@/lib/tasko/status";
 import { dueTone, dueToneClass, formatDueShort } from "@/lib/tasko-utils";
 import { formatDateTimeCL } from "@/lib/date-format";
@@ -92,7 +99,10 @@ export type TaskUpdateVars = {
   totalEffortHours?: number | null;
 };
 
-const getAssigneeIds = (task: { assignee_id?: string | null; assignees?: Array<{ user_id: string }> | null }) => {
+const getAssigneeIds = (task: {
+  assignee_id?: string | null;
+  assignees?: Array<{ user_id: string }> | null;
+}) => {
   const ids = (task.assignees ?? []).map((a) => a.user_id);
   if (ids.length === 0 && task.assignee_id) return [task.assignee_id];
   return ids;
@@ -111,9 +121,10 @@ type PhaseRow = {
 const PRIORITY_LABEL = Object.fromEntries(
   PRIORITY_OPTIONS.map((o) => [o.value, o.label]),
 ) as Record<string, string>;
-const PRIORITY_RANK = Object.fromEntries(
-  PRIORITY_OPTIONS.map((o, i) => [o.value, i]),
-) as Record<string, number>;
+const PRIORITY_RANK = Object.fromEntries(PRIORITY_OPTIONS.map((o, i) => [o.value, i])) as Record<
+  string,
+  number
+>;
 
 type GroupKey = "none" | "status" | "priority" | "assignee" | "due" | "sprint" | "phase";
 
@@ -186,11 +197,13 @@ function DateCell({
 }) {
   const [open, setOpen] = useState(false);
   // Parse "YYYY-MM-DD" como fecha local (no UTC) para evitar desfases de zona horaria.
-  const parsedValue = value ? (() => {
-    const [y, m, d] = value.split("-").map(Number);
-    if (!y || !m || !d) return undefined;
-    return new Date(y, m - 1, d);
-  })() : undefined;
+  const parsedValue = value
+    ? (() => {
+        const [y, m, d] = value.split("-").map(Number);
+        if (!y || !m || !d) return undefined;
+        return new Date(y, m - 1, d);
+      })()
+    : undefined;
   const formatLocal = (d: Date) => {
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, "0");
@@ -210,11 +223,7 @@ function DateCell({
           {value ? formatDueShort(value) : placeholder}
         </button>
       </PopoverTrigger>
-      <PopoverContent
-        className="w-auto p-0"
-        align="start"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <PopoverContent className="w-auto p-0" align="start" onClick={(e) => e.stopPropagation()}>
         <Calendar
           mode="single"
           selected={parsedValue}
@@ -385,14 +394,8 @@ export function TaskTableView({
     const types = metaRaw.types.filter((t) => allowed.has(t.key));
     return { ...metaRaw, types };
   }, [metaRaw, allowedTaskTypeKeys]);
-  const memberById = useMemo(
-    () => new Map(members.map((m) => [m.user_id, m] as const)),
-    [members],
-  );
-  const phaseById = useMemo(
-    () => new Map(phases.map((p) => [p.id, p] as const)),
-    [phases],
-  );
+  const memberById = useMemo(() => new Map(members.map((m) => [m.user_id, m] as const)), [members]);
+  const phaseById = useMemo(() => new Map(phases.map((p) => [p.id, p] as const)), [phases]);
 
   const { data: sprints = [] } = useQuery({
     ...sprintsQO(contractId ?? "", projectId),
@@ -407,7 +410,6 @@ export function TaskTableView({
       ),
     [sprints],
   );
-
 
   const [groupBy, setGroupBy] = useState<GroupKey>(initialGroupBy ?? "none");
   const [newTitle, setNewTitle] = useState("");
@@ -428,13 +430,10 @@ export function TaskTableView({
     setDragOverPhaseKey(null);
   };
 
-
   // Default the quick-add type to "Tarea" (or first available) once types load.
   const defaultTypeId = useMemo(() => {
     if (meta.types.length === 0) return null;
-    return (
-      meta.types.find((t) => t.key === "tarea")?.id ?? meta.types[0].id
-    );
+    return meta.types.find((t) => t.key === "tarea")?.id ?? meta.types[0].id;
   }, [meta.types]);
   const activeQuickAddTypeId = quickAddTypeId ?? defaultTypeId;
 
@@ -460,11 +459,7 @@ export function TaskTableView({
               }`}
             >
               {TypeIcon && dynType && (
-                <TypeIcon
-                  className="w-3.5 h-3.5 shrink-0"
-                  aria-label={dynType.name}
-                  size={14}
-                />
+                <TypeIcon className="w-3.5 h-3.5 shrink-0" aria-label={dynType.name} size={14} />
               )}
               <InlineEditableText
                 value={t.title}
@@ -515,7 +510,9 @@ export function TaskTableView({
                           <span className="truncate">
                             {(() => {
                               const s = sprintById.get(t.sprint_id);
-                              return s?.sprint_number != null ? `Sprint ${s.sprint_number}` : "Sprint";
+                              return s?.sprint_number != null
+                                ? `Sprint ${s.sprint_number}`
+                                : "Sprint";
                             })()}
                           </span>
                         ) : (
@@ -527,16 +524,13 @@ export function TaskTableView({
                       <SelectItem value="_none" className="text-[13px]">
                         Backlog
                       </SelectItem>
-                      {(sprints as { id: string; sprint_number?: number | null }[]).map(
-                        (s) => (
-                          <SelectItem key={s.id} value={s.id} className="text-[13px]">
-                            {s.sprint_number != null ? `Sprint ${s.sprint_number}` : "Sprint"}
-                          </SelectItem>
-                        ),
-                      )}
+                      {(sprints as { id: string; sprint_number?: number | null }[]).map((s) => (
+                        <SelectItem key={s.id} value={s.id} className="text-[13px]">
+                          {s.sprint_number != null ? `Sprint ${s.sprint_number}` : "Sprint"}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
-
                 </div>
               ),
               width: 140,
@@ -548,8 +542,7 @@ export function TaskTableView({
             id: "phase",
             header: "Fase",
             sortable: true,
-            accessor: (t) =>
-              t.phase_id ? phaseById.get(t.phase_id)?.name ?? "" : "",
+            accessor: (t) => (t.phase_id ? (phaseById.get(t.phase_id)?.name ?? "") : ""),
             cell: (t) => (
               <div onClick={(e) => e.stopPropagation()}>
                 <Select
@@ -564,9 +557,7 @@ export function TaskTableView({
                   >
                     <SelectValue>
                       {t.phase_id ? (
-                        <span className="truncate">
-                          {phaseById.get(t.phase_id)?.name ?? "—"}
-                        </span>
+                        <span className="truncate">{phaseById.get(t.phase_id)?.name ?? "—"}</span>
                       ) : (
                         <span className="text-muted-foreground">Sin fase</span>
                       )}
@@ -597,7 +588,7 @@ export function TaskTableView({
         cell: (t) => {
           const isBacklog = contractType === "recurrente" && !t.sprint_id;
           const st = getTaskStatus(t);
-          const dynStatuses = t.task_type_id ? meta.statusesByType.get(t.task_type_id) ?? [] : [];
+          const dynStatuses = t.task_type_id ? (meta.statusesByType.get(t.task_type_id) ?? []) : [];
           if (dynStatuses.length === 0) {
             return (
               <div className="text-[11px] text-muted-foreground italic px-1.5">
@@ -701,11 +692,7 @@ export function TaskTableView({
         accessor: (t) => rollups?.[t.id]?.logged ?? -1,
         cell: (t) => {
           const logged = rollups?.[t.id]?.logged ?? null;
-          return (
-            <span className="text-xs text-muted-foreground">
-              {formatHours(logged)}
-            </span>
-          );
+          return <span className="text-xs text-muted-foreground">{formatHours(logged)}</span>;
         },
         width: 110,
       },
@@ -727,9 +714,7 @@ export function TaskTableView({
                 <SelectValue>
                   <span className="inline-flex items-center gap-1.5">
                     {PRIORITY_ICON[t.priority as keyof typeof PRIORITY_ICON]}
-                    <span className="truncate">
-                      {PRIORITY_LABEL[t.priority] ?? t.priority}
-                    </span>
+                    <span className="truncate">{PRIORITY_LABEL[t.priority] ?? t.priority}</span>
                   </span>
                 </SelectValue>
               </SelectTrigger>
@@ -759,13 +744,22 @@ export function TaskTableView({
         width: 140,
       },
     ],
-    [members, memberById, sprintById, phaseById, phases, sprints, onUpdate, contractType, meta, rollups],
+    [
+      members,
+      memberById,
+      sprintById,
+      phaseById,
+      phases,
+      sprints,
+      onUpdate,
+      contractType,
+      meta,
+      rollups,
+    ],
   );
 
-
   const rootTasks = useMemo(
-    () =>
-      tasks.filter((t) => !t.parent_task_id && matchesStatusFilter(t, statusFilter)),
+    () => tasks.filter((t) => !t.parent_task_id && matchesStatusFilter(t, statusFilter)),
     [tasks, statusFilter],
   );
 
@@ -792,13 +786,27 @@ export function TaskTableView({
       if (groupBy === "status") {
         const st = getTaskStatus(t);
         const CAT_ORDER: Record<string, number> = {
-          abierta: 0, en_progreso: 1, bloqueada: 2, completada: 3, cancelada: 4,
+          abierta: 0,
+          en_progreso: 1,
+          bloqueada: 2,
+          completada: 3,
+          cancelada: 4,
         };
         const CAT_LABEL: Record<string, string> = {
-          abierta: "Abiertas", en_progreso: "En progreso", bloqueada: "Bloqueadas",
-          completada: "Completadas", cancelada: "Canceladas",
+          abierta: "Abiertas",
+          en_progreso: "En progreso",
+          bloqueada: "Bloqueadas",
+          completada: "Completadas",
+          cancelada: "Canceladas",
         };
-        push({ key: st.category, label: CAT_LABEL[st.category] ?? st.category, order: CAT_ORDER[st.category] ?? 99 }, t);
+        push(
+          {
+            key: st.category,
+            label: CAT_LABEL[st.category] ?? st.category,
+            order: CAT_ORDER[st.category] ?? 99,
+          },
+          t,
+        );
       } else if (groupBy === "priority") {
         const idx = PRIORITY_RANK[t.priority] ?? 99;
         push({ key: t.priority, label: PRIORITY_LABEL[t.priority] ?? t.priority, order: idx }, t);
@@ -826,7 +834,11 @@ export function TaskTableView({
         else {
           const s = sprintById.get(t.sprint_id);
           push(
-            { key: t.sprint_id, label: s?.sprint_number != null ? `Sprint ${s.sprint_number}` : "Sprint", order: s?.sprint_number ?? 0 },
+            {
+              key: t.sprint_id,
+              label: s?.sprint_number != null ? `Sprint ${s.sprint_number}` : "Sprint",
+              order: s?.sprint_number ?? 0,
+            },
             t,
           );
         }
@@ -879,9 +891,7 @@ export function TaskTableView({
     setNewTitle("");
   };
 
-  const activeQuickType = activeQuickAddTypeId
-    ? meta.typeById.get(activeQuickAddTypeId)
-    : null;
+  const activeQuickType = activeQuickAddTypeId ? meta.typeById.get(activeQuickAddTypeId) : null;
   const QuickTypeIcon = activeQuickType ? getLucideIcon(activeQuickType.icon) : null;
 
   const quickAddRow = onCreate ? (
@@ -890,22 +900,14 @@ export function TaskTableView({
       className="border-t border-border px-4 py-1.5 flex items-center gap-2 bg-muted/20"
     >
       {meta.types.length > 0 ? (
-        <Select
-          value={activeQuickAddTypeId ?? ""}
-          onValueChange={(v) => setQuickAddTypeId(v)}
-        >
+        <Select value={activeQuickAddTypeId ?? ""} onValueChange={(v) => setQuickAddTypeId(v)}>
           <SelectTrigger
             aria-label="Tipo de tarea"
             className="h-6 px-1.5 text-[11px] gap-1 border-0 bg-transparent shadow-none w-auto [&>svg]:hidden"
           >
             <SelectValue>
               <span className="inline-flex items-center gap-1.5">
-                {QuickTypeIcon && (
-                  <QuickTypeIcon
-                    className="w-3.5 h-3.5"
-                    size={14}
-                  />
-                )}
+                {QuickTypeIcon && <QuickTypeIcon className="w-3.5 h-3.5" size={14} />}
                 <span className="truncate">{activeQuickType?.name ?? "Tipo"}</span>
               </span>
             </SelectValue>
@@ -982,7 +984,6 @@ export function TaskTableView({
       )}
     </div>
   );
-
 
   const renderSelectionActions = (selected: TaskRow[]) => (
     <>
@@ -1103,162 +1104,163 @@ export function TaskTableView({
             <div className="p-8 text-center text-xs text-muted-foreground">{emptyMessage}</div>
           ) : (
             (() => {
-              const firstVisibleIdx = groups.findIndex((gg) => !collapsed[gg.key] && gg.rows.length > 0);
-              return groups.map((g, gIdx) => {
-              const isCollapsed = collapsed[g.key];
-              const ownerProfile = g.ownerId
-                ? memberById.get(g.ownerId)?.profile ?? null
-                : null;
-              const ownerLabel = ownerProfile
-                ? ownerProfile.full_name ?? ownerProfile.email ?? "Responsable"
-                : null;
-              const fmtDate = (iso?: string | null) => {
-                if (!iso) return null;
-                try {
-                  return format(parseISO(iso), "dd/MM", { locale: es });
-                } catch {
-                  return null;
-                }
-              };
-              const startTxt = fmtDate(g.startDate);
-              const endTxt = fmtDate(g.endDate);
-              const dateTxt =
-                startTxt && endTxt
-                  ? `${startTxt} – ${endTxt}`
-                  : startTxt
-                    ? `Desde ${startTxt}`
-                    : endTxt
-                      ? `Hasta ${endTxt}`
-                      : null;
-              const targetPhaseId = groupBy === "phase" ? (g.phaseId ?? null) : undefined;
-              const isDndTarget = groupBy === "phase" && draggingTaskId !== null;
-              const isOver = dragOverPhaseKey === g.key;
-              return (
-                <div
-                  key={g.key}
-                  onDragOver={
-                    isDndTarget
-                      ? (e) => {
-                          e.preventDefault();
-                          e.dataTransfer.dropEffect = "move";
-                          if (dragOverPhaseKey !== g.key) setDragOverPhaseKey(g.key);
-                        }
-                      : undefined
-                  }
-                  onDragLeave={
-                    isDndTarget
-                      ? (e) => {
-                          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
-                            setDragOverPhaseKey((k) => (k === g.key ? null : k));
-                          }
-                        }
-                      : undefined
-                  }
-                  onDrop={
-                    isDndTarget
-                      ? (e) => {
-                          e.preventDefault();
-                          const taskId =
-                            e.dataTransfer.getData("application/x-task-id") || draggingTaskId;
-                          setDragOverPhaseKey(null);
-                          setDraggingTaskId(null);
-                          if (!taskId) return;
-                          const task = tasks.find((t) => t.id === taskId);
-                          if (!task) return;
-                          if ((task.phase_id ?? null) === (targetPhaseId ?? null)) return;
-                          onUpdate({ taskId, phaseId: targetPhaseId ?? null });
-                        }
-                      : undefined
-                  }
-                  className={cn(isOver && "ring-2 ring-primary/60 ring-inset")}
-                >
-                  <div className="w-full px-4 py-1.5 flex items-center gap-2 bg-muted/30 hover:bg-muted/50 border-t border-b border-border">
-                    <button
-                      type="button"
-                      className="flex items-center gap-2 min-w-0 flex-1 text-left"
-                      onClick={() =>
-                        setCollapsed((c) => ({ ...c, [g.key]: !c[g.key] }))
-                      }
-                    >
-                      {isCollapsed ? (
-                        <ChevronRight className="w-3.5 h-3.5 shrink-0" />
-                      ) : (
-                        <ChevronDown className="w-3.5 h-3.5 shrink-0" />
-                      )}
-                      {g.color && (
-                        <span
-                          className="w-2 h-2 rounded-full shrink-0"
-                          style={{ backgroundColor: g.color }}
-                          aria-hidden="true"
-                        />
-                      )}
-                      <span className="text-xs font-medium truncate">{g.label}</span>
-                      <span className="text-[11px] text-muted-foreground shrink-0">
-                        {g.rows.length}
-                      </span>
-                    </button>
-                    <div className="flex items-center gap-3 shrink-0">
-                      {ownerProfile && (
-                        <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                          <MemberAvatar profile={ownerProfile} size={18} shape="circle" />
-                          <span className="max-w-[120px] truncate">{ownerLabel}</span>
-                        </div>
-                      )}
-                      {dateTxt && (
-                        <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
-                          <CalendarLucide className="w-3 h-3" />
-                          <span>{dateTxt}</span>
-                        </div>
-                      )}
-                      {g.phaseId && onEditPhase && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="w-6 h-6"
-                          aria-label={`Editar fase ${g.label}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onEditPhase(g.phaseId!);
-                          }}
-                        >
-                          <Pencil className="w-3 h-3" />
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                  {!isCollapsed && g.rows.length > 0 && (
-                    <DataGrid<TaskRow>
-                      viewKey={`${viewKey}:${groupBy}:${g.key}`}
-                      columns={columns}
-                      rows={g.rows}
-                      rowKey={(t) => t.id}
-                      onRowClick={(t) => onOpenTask(t.id)}
-                      searchable={false}
-                      showRowNumbers={false}
-                      empty={emptyMessage}
-                      rowActions={rowActions}
-                      renderSelectionActions={renderSelectionActions}
-                      hideToolbar
-                      hideHeader={gIdx !== firstVisibleIdx}
-                      hidden={sharedHidden}
-                      onHiddenChange={setSharedHidden}
-                      autoHeight
-                      rowDraggable={groupBy === "phase"}
-                      onRowDragStart={handleRowDragStart}
-                      onRowDragEnd={handleRowDragEnd}
-                    />
-                  )}
-
-                  {!isCollapsed && g.rows.length === 0 && (
-                    <div className="px-6 py-2 text-[11px] text-muted-foreground italic">
-                      {isDndTarget ? "Suelta aquí para mover a esta fase" : "Sin tareas en esta fase."}
-                    </div>
-                  )}
-                </div>
+              const firstVisibleIdx = groups.findIndex(
+                (gg) => !collapsed[gg.key] && gg.rows.length > 0,
               );
+              return groups.map((g, gIdx) => {
+                const isCollapsed = collapsed[g.key];
+                const ownerProfile = g.ownerId
+                  ? (memberById.get(g.ownerId)?.profile ?? null)
+                  : null;
+                const ownerLabel = ownerProfile
+                  ? (ownerProfile.full_name ?? ownerProfile.email ?? "Responsable")
+                  : null;
+                const fmtDate = (iso?: string | null) => {
+                  if (!iso) return null;
+                  try {
+                    return format(parseISO(iso), "dd/MM", { locale: es });
+                  } catch {
+                    return null;
+                  }
+                };
+                const startTxt = fmtDate(g.startDate);
+                const endTxt = fmtDate(g.endDate);
+                const dateTxt =
+                  startTxt && endTxt
+                    ? `${startTxt} – ${endTxt}`
+                    : startTxt
+                      ? `Desde ${startTxt}`
+                      : endTxt
+                        ? `Hasta ${endTxt}`
+                        : null;
+                const targetPhaseId = groupBy === "phase" ? (g.phaseId ?? null) : undefined;
+                const isDndTarget = groupBy === "phase" && draggingTaskId !== null;
+                const isOver = dragOverPhaseKey === g.key;
+                return (
+                  <div
+                    key={g.key}
+                    onDragOver={
+                      isDndTarget
+                        ? (e) => {
+                            e.preventDefault();
+                            e.dataTransfer.dropEffect = "move";
+                            if (dragOverPhaseKey !== g.key) setDragOverPhaseKey(g.key);
+                          }
+                        : undefined
+                    }
+                    onDragLeave={
+                      isDndTarget
+                        ? (e) => {
+                            if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+                              setDragOverPhaseKey((k) => (k === g.key ? null : k));
+                            }
+                          }
+                        : undefined
+                    }
+                    onDrop={
+                      isDndTarget
+                        ? (e) => {
+                            e.preventDefault();
+                            const taskId =
+                              e.dataTransfer.getData("application/x-task-id") || draggingTaskId;
+                            setDragOverPhaseKey(null);
+                            setDraggingTaskId(null);
+                            if (!taskId) return;
+                            const task = tasks.find((t) => t.id === taskId);
+                            if (!task) return;
+                            if ((task.phase_id ?? null) === (targetPhaseId ?? null)) return;
+                            onUpdate({ taskId, phaseId: targetPhaseId ?? null });
+                          }
+                        : undefined
+                    }
+                    className={cn(isOver && "ring-2 ring-primary/60 ring-inset")}
+                  >
+                    <div className="w-full px-4 py-1.5 flex items-center gap-2 bg-muted/30 hover:bg-muted/50 border-t border-b border-border">
+                      <button
+                        type="button"
+                        className="flex items-center gap-2 min-w-0 flex-1 text-left"
+                        onClick={() => setCollapsed((c) => ({ ...c, [g.key]: !c[g.key] }))}
+                      >
+                        {isCollapsed ? (
+                          <ChevronRight className="w-3.5 h-3.5 shrink-0" />
+                        ) : (
+                          <ChevronDown className="w-3.5 h-3.5 shrink-0" />
+                        )}
+                        {g.color && (
+                          <span
+                            className="w-2 h-2 rounded-full shrink-0"
+                            style={{ backgroundColor: g.color }}
+                            aria-hidden="true"
+                          />
+                        )}
+                        <span className="text-xs font-medium truncate">{g.label}</span>
+                        <span className="text-[11px] text-muted-foreground shrink-0">
+                          {g.rows.length}
+                        </span>
+                      </button>
+                      <div className="flex items-center gap-3 shrink-0">
+                        {ownerProfile && (
+                          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                            <MemberAvatar profile={ownerProfile} size={18} shape="circle" />
+                            <span className="max-w-[120px] truncate">{ownerLabel}</span>
+                          </div>
+                        )}
+                        {dateTxt && (
+                          <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                            <CalendarLucide className="w-3 h-3" />
+                            <span>{dateTxt}</span>
+                          </div>
+                        )}
+                        {g.phaseId && onEditPhase && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="w-6 h-6"
+                            aria-label={`Editar fase ${g.label}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onEditPhase(g.phaseId!);
+                            }}
+                          >
+                            <Pencil className="w-3 h-3" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                    {!isCollapsed && g.rows.length > 0 && (
+                      <DataGrid<TaskRow>
+                        viewKey={`${viewKey}:${groupBy}:${g.key}`}
+                        columns={columns}
+                        rows={g.rows}
+                        rowKey={(t) => t.id}
+                        onRowClick={(t) => onOpenTask(t.id)}
+                        searchable={false}
+                        showRowNumbers={false}
+                        empty={emptyMessage}
+                        rowActions={rowActions}
+                        renderSelectionActions={renderSelectionActions}
+                        hideToolbar
+                        hideHeader={gIdx !== firstVisibleIdx}
+                        hidden={sharedHidden}
+                        onHiddenChange={setSharedHidden}
+                        autoHeight
+                        rowDraggable={groupBy === "phase"}
+                        onRowDragStart={handleRowDragStart}
+                        onRowDragEnd={handleRowDragEnd}
+                      />
+                    )}
 
-            });
+                    {!isCollapsed && g.rows.length === 0 && (
+                      <div className="px-6 py-2 text-[11px] text-muted-foreground italic">
+                        {isDndTarget
+                          ? "Suelta aquí para mover a esta fase"
+                          : "Sin tareas en esta fase."}
+                      </div>
+                    )}
+                  </div>
+                );
+              });
             })()
           )}
         </div>

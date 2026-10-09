@@ -136,8 +136,7 @@ function toHours(v: unknown): number | null {
   if (!s) return null;
   if (s.includes(":")) {
     const [h, m, sec] = s.split(":").map((x) => Number(x));
-    if (isFinite(h))
-      return h + (isFinite(m) ? m / 60 : 0) + (isFinite(sec) ? sec / 3600 : 0);
+    if (isFinite(h)) return h + (isFinite(m) ? m / 60 : 0) + (isFinite(sec) ? sec / 3600 : 0);
   }
   const n = Number(s);
   return isFinite(n) ? n : null;
@@ -209,7 +208,6 @@ function buildSprintGrid(
   return out;
 }
 
-
 // ============================================================
 // Server fn: importWrikeContract
 // ============================================================
@@ -237,8 +235,14 @@ export const importWrikeContract = createServerFn({ method: "POST" })
          * generada por cadencia) y ubica cada tarea suelta por su fecha.
          */
         sprintMode: z.enum(["folders", "by_date"]).default("folders"),
-        sprintStartDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-        sprintEndDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+        sprintStartDate: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .optional(),
+        sprintEndDate: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .optional(),
         hoursPerSprint: z.number().min(0).max(10000).optional(),
         fileBase64: z.string().min(1),
         dryRun: z.boolean().default(false),
@@ -261,7 +265,9 @@ export const importWrikeContract = createServerFn({ method: "POST" })
     // 1) Contrato y workspace
     const { data: contract, error: cErr } = await supabase
       .from("contracts")
-      .select("id, workspace_id, account_id, name, start_date, end_date, sprint_cadence, hours_per_sprint")
+      .select(
+        "id, workspace_id, account_id, name, start_date, end_date, sprint_cadence, hours_per_sprint",
+      )
       .eq("id", data.contractId)
       .maybeSingle();
     if (cErr) throw new Error(cErr.message);
@@ -343,8 +349,7 @@ export const importWrikeContract = createServerFn({ method: "POST" })
             key: `SPRINT ${s.sprint_number}`,
             startDate: s.start_date as string,
             endDate: s.end_date as string,
-            contractedHours:
-              data.hoursPerSprint ?? (s.contracted_hours as number | null) ?? null,
+            contractedHours: data.hoursPerSprint ?? (s.contracted_hours as number | null) ?? null,
             wrikeStatus: null,
           }));
       } else {
@@ -354,20 +359,17 @@ export const importWrikeContract = createServerFn({ method: "POST" })
           throw new Error(
             "Sin sprints en el contrato y sin fechas para generar la grilla (sprintStartDate/sprintEndDate)",
           );
-        sprintFolders = buildSprintGrid(gridStart, gridEnd, data.sprintCadence).map(
-          (g, i) => ({
-            folderTitle: `Sprint ${i + 1}`,
-            key: `SPRINT ${i + 1}`,
-            startDate: g.start,
-            endDate: g.end,
-            contractedHours:
-              data.hoursPerSprint ?? (contract.hours_per_sprint as number | null) ?? null,
-            wrikeStatus: null,
-          }),
-        );
+        sprintFolders = buildSprintGrid(gridStart, gridEnd, data.sprintCadence).map((g, i) => ({
+          folderTitle: `Sprint ${i + 1}`,
+          key: `SPRINT ${i + 1}`,
+          startDate: g.start,
+          endDate: g.end,
+          contractedHours:
+            data.hoursPerSprint ?? (contract.hours_per_sprint as number | null) ?? null,
+          wrikeStatus: null,
+        }));
       }
     }
-
 
     // 4) Filas de tarea (todo lo que tiene Title y Key y no es folder)
     type TaskRow = {
@@ -385,12 +387,7 @@ export const importWrikeContract = createServerFn({ method: "POST" })
       description: string;
     };
     const taskRows: TaskRow[] = raw
-      .filter(
-        (r) =>
-          r["Title"] &&
-          r["Key"] &&
-          !/^\/.*\/$/.test((r["Title"] as string) ?? ""),
-      )
+      .filter((r) => r["Title"] && r["Key"] && !/^\/.*\/$/.test((r["Title"] as string) ?? ""))
       .map((r) => ({
         key: String(r["Key"]),
         folder: (r["Folder"] ?? null) as string | null,
@@ -424,9 +421,7 @@ export const importWrikeContract = createServerFn({ method: "POST" })
       .eq("workspace_id", workspaceId)
       .in("task_type_id", [taskTypeIdTarea, taskTypeIdReunion]);
     const statusByTypeKey = new Map<string, string>();
-    (statusRows ?? []).forEach((s) =>
-      statusByTypeKey.set(`${s.task_type_id}:${s.key}`, s.id),
-    );
+    (statusRows ?? []).forEach((s) => statusByTypeKey.set(`${s.task_type_id}:${s.key}`, s.id));
 
     // 6) Miembros y matcher por nombre/email
     const { data: memberRows } = await supabase
@@ -538,11 +533,8 @@ export const importWrikeContract = createServerFn({ method: "POST" })
       const startDate = toISODate(r.startDate);
       const dueDate = toISODate(r.endDate);
       const folderKey = normSprintKey(r.folder);
-      const byFolder =
-        !useByDate && folderKey ? sprintKeyToNumber.get(folderKey) ?? null : null;
-      const sprintNumber = useByDate
-        ? sprintNumberForDate(startDate ?? dueDate)
-        : byFolder;
+      const byFolder = !useByDate && folderKey ? (sprintKeyToNumber.get(folderKey) ?? null) : null;
+      const sprintNumber = useByDate ? sprintNumberForDate(startDate ?? dueDate) : byFolder;
       const taskTypeKey = detectTaskType(r.title);
       const statusKey = mapStatus(taskTypeKey, r.customStatus, r.wrikeStatus);
 
@@ -580,7 +572,11 @@ export const importWrikeContract = createServerFn({ method: "POST" })
         currentCadence: contract.sprint_cadence,
         currentHoursPerSprint: contract.hours_per_sprint,
       },
-      sprintMode: useByDate ? (gridFromDb ? "by_date (grilla existente)" : "by_date (grilla nueva)") : "folders",
+      sprintMode: useByDate
+        ? gridFromDb
+          ? "by_date (grilla existente)"
+          : "by_date (grilla nueva)"
+        : "folders",
       phaseName: data.phaseName ?? null,
       workspaceId,
 
@@ -599,8 +595,7 @@ export const importWrikeContract = createServerFn({ method: "POST" })
         return acc;
       }, {}),
       byStatus: taskPlan.reduce<Record<string, number>>((acc, p) => {
-        acc[`${p.taskTypeKey}:${p.statusKey}`] =
-          (acc[`${p.taskTypeKey}:${p.statusKey}`] ?? 0) + 1;
+        acc[`${p.taskTypeKey}:${p.statusKey}`] = (acc[`${p.taskTypeKey}:${p.statusKey}`] ?? 0) + 1;
         return acc;
       }, {}),
       bySprint: taskPlan.reduce<Record<string, number>>((acc, p) => {
@@ -610,9 +605,8 @@ export const importWrikeContract = createServerFn({ method: "POST" })
       }, {}),
       unmatchedAssignees: Array.from(new Set(taskPlan.flatMap((p) => p.unmatched))).sort(),
       withPrimaryAssignee: taskPlan.filter((p) => p.primaryUserId).length,
-      withMultiAssignees: taskPlan.filter(
-        (p) => p.assignees.filter((a) => a.userId).length > 1,
-      ).length,
+      withMultiAssignees: taskPlan.filter((p) => p.assignees.filter((a) => a.userId).length > 1)
+        .length,
       withTimeSpent: taskPlan.filter((p) => (p.timeSpentHours ?? 0) > 0).length,
       totalEffortHours: taskPlan.reduce((s, p) => s + (p.effortHours ?? 0), 0),
       totalTimeSpentHours: taskPlan.reduce((s, p) => s + (p.timeSpentHours ?? 0), 0),
@@ -652,9 +646,7 @@ export const importWrikeContract = createServerFn({ method: "POST" })
     let sprintsUpdated = 0;
     for (const s of sprintPlan) {
       if (!s.folder.startDate || !s.folder.endDate) {
-        throw new Error(
-          `Sprint ${s.sprintNumber} (${s.folder.folderTitle}) sin fechas`,
-        );
+        throw new Error(`Sprint ${s.sprintNumber} (${s.folder.folderTitle}) sin fechas`);
       }
       let existingQuery = supabaseAdmin
         .from("sprints")
@@ -680,25 +672,24 @@ export const importWrikeContract = createServerFn({ method: "POST" })
         _notes: `Wrike: ${s.folder.folderTitle}`,
         _project_id: data.targetProjectId ?? null,
       });
-      if (error || !sid) throw new Error(`upsert sprint ${s.sprintNumber}: ${error?.message ?? "no id"}`);
+      if (error || !sid)
+        throw new Error(`upsert sprint ${s.sprintNumber}: ${error?.message ?? "no id"}`);
       sprintIdByNumber.set(s.sprintNumber, sid as string);
-      if (existing?.id) sprintsUpdated += 1; else sprintsCreated += 1;
+      if (existing?.id) sprintsUpdated += 1;
+      else sprintsCreated += 1;
     }
 
-
     // 9.b.2 Ensure contract handoff is 'completado' so the account appears in Operaciones
-    await supabaseAdmin
-      .from("contract_handoffs")
-      .upsert(
-        {
-          contract_id: data.contractId,
-          workspace_id: workspaceId,
-          state: "completado",
-          completado_at: new Date().toISOString(),
-          notas: "Handoff automático tras import Wrike",
-        } as never,
-        { onConflict: "contract_id" },
-      );
+    await supabaseAdmin.from("contract_handoffs").upsert(
+      {
+        contract_id: data.contractId,
+        workspace_id: workspaceId,
+        state: "completado",
+        completado_at: new Date().toISOString(),
+        notas: "Handoff automático tras import Wrike",
+      } as never,
+      { onConflict: "contract_id" },
+    );
 
     // 9.c Reuse/create project.
     // Un contrato = un proyecto: si ya existe uno para el contrato lo
@@ -720,12 +711,8 @@ export const importWrikeContract = createServerFn({ method: "POST" })
       projectId = existingProject.id;
     } else {
       const startDate = sprintPlan[0]?.folder.startDate ?? contract.start_date;
-      const endDate =
-        sprintPlan[sprintPlan.length - 1]?.folder.endDate ?? contract.end_date;
-      const budgetHours = sprintPlan.reduce(
-        (s, p) => s + (p.folder.contractedHours ?? 0),
-        0,
-      );
+      const endDate = sprintPlan[sprintPlan.length - 1]?.folder.endDate ?? contract.end_date;
+      const budgetHours = sprintPlan.reduce((s, p) => s + (p.folder.contractedHours ?? 0), 0);
       const { data: created, error: pErr } = await supabase
         .from("projects")
         .insert({
@@ -786,7 +773,6 @@ export const importWrikeContract = createServerFn({ method: "POST" })
       }
     }
 
-
     // 9.d Insert/update tasks
     let inserted = 0;
     let updated = 0;
@@ -795,17 +781,15 @@ export const importWrikeContract = createServerFn({ method: "POST" })
 
     for (const p of taskPlan) {
       try {
-        const taskTypeId =
-          p.taskTypeKey === "reunion" ? taskTypeIdReunion : taskTypeIdTarea;
+        const taskTypeId = p.taskTypeKey === "reunion" ? taskTypeIdReunion : taskTypeIdTarea;
         const statusId =
           statusByTypeKey.get(`${taskTypeId}:${p.statusKey}`) ??
           statusByTypeKey.get(
             `${taskTypeId}:${p.taskTypeKey === "reunion" ? "agendada" : "nueva"}`,
           );
-        if (!statusId)
-          throw new Error(`Sin status fallback para tipo ${p.taskTypeKey}`);
+        if (!statusId) throw new Error(`Sin status fallback para tipo ${p.taskTypeKey}`);
 
-        const sprintId = p.sprintNumber ? sprintIdByNumber.get(p.sprintNumber) ?? null : null;
+        const sprintId = p.sprintNumber ? (sprintIdByNumber.get(p.sprintNumber) ?? null) : null;
 
         const { data: existing } = await supabaseAdmin
           .from("tasks")
@@ -930,14 +914,14 @@ export const importWrikeContract = createServerFn({ method: "POST" })
 
 export const listContractsForImport = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ workspaceId: z.string().uuid() }).parse(input),
-  )
+  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows, error } = await supabase
       .from("contracts")
-      .select("id, name, status, start_date, end_date, sprint_cadence, hours_per_sprint, account_id, accounts:account_id(name)")
+      .select(
+        "id, name, status, start_date, end_date, sprint_cadence, hours_per_sprint, account_id, accounts:account_id(name)",
+      )
       .eq("workspace_id", data.workspaceId)
       .order("start_date", { ascending: false });
     if (error) throw new Error(error.message);

@@ -93,5 +93,4 @@ export const isInProgress = (t: TaskLike | null | undefined) =>
   getTaskStatus(t).category === "en_progreso";
 export const isBlocked = (t: TaskLike | null | undefined) =>
   getTaskStatus(t).category === "bloqueada";
-export const isOpen = (t: TaskLike | null | undefined) =>
-  getTaskStatus(t).category === "abierta";
+export const isOpen = (t: TaskLike | null | undefined) => getTaskStatus(t).category === "abierta";

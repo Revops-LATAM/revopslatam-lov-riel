@@ -50,10 +50,26 @@ const TIMEZONES = [
   "Australia/Sydney",
 ];
 
-const STRATEGIES: Array<{ value: "fit_capacity" | "spread" | "due_date"; label: string; desc: string }> = [
-  { value: "fit_capacity", label: "Ajustar a capacidad", desc: "Reparte respetando huecos libres por día." },
-  { value: "spread", label: "Distribuir parejo", desc: "Divide en partes iguales entre los días del rango." },
-  { value: "due_date", label: "Todo al vencimiento", desc: "Carga el estimado completo el día de due_date." },
+const STRATEGIES: Array<{
+  value: "fit_capacity" | "spread" | "due_date";
+  label: string;
+  desc: string;
+}> = [
+  {
+    value: "fit_capacity",
+    label: "Ajustar a capacidad",
+    desc: "Reparte respetando huecos libres por día.",
+  },
+  {
+    value: "spread",
+    label: "Distribuir parejo",
+    desc: "Divide en partes iguales entre los días del rango.",
+  },
+  {
+    value: "due_date",
+    label: "Todo al vencimiento",
+    desc: "Carga el estimado completo el día de due_date.",
+  },
 ];
 
 export const Route = createFileRoute("/_authenticated/w/$workspaceSlug/time-settings")({
@@ -142,8 +158,10 @@ function TimeSettingsPage() {
   });
 
   const saveWs = useMutation({
-    mutationFn: (v: { timezone?: string; allocationStrategy?: "fit_capacity" | "spread" | "due_date" }) =>
-      updateWsFn({ data: { workspaceId: wsId!, ...v } }),
+    mutationFn: (v: {
+      timezone?: string;
+      allocationStrategy?: "fit_capacity" | "spread" | "due_date";
+    }) => updateWsFn({ data: { workspaceId: wsId!, ...v } }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["ws", workspaceSlug] });
       qc.invalidateQueries({ queryKey: ["workload"] });
@@ -158,7 +176,8 @@ function TimeSettingsPage() {
     if (wsQ.data) {
       setTz(wsQ.data.timezone ?? "UTC");
       setStrategy(
-        (wsQ.data.allocation_strategy as "fit_capacity" | "spread" | "due_date" | null) ?? "fit_capacity",
+        (wsQ.data.allocation_strategy as "fit_capacity" | "spread" | "due_date" | null) ??
+          "fit_capacity",
       );
     }
   }, [wsQ.data]);
@@ -359,8 +378,18 @@ function CapacityRow({
   initial,
   onSave,
 }: {
-  profile: { id: string; full_name: string | null; email: string | null; avatar_url: string | null } | null;
-  initial: { daily_hours: number; hourly_rate: number | null; currency: string; max_timer_hours: number };
+  profile: {
+    id: string;
+    full_name: string | null;
+    email: string | null;
+    avatar_url: string | null;
+  } | null;
+  initial: {
+    daily_hours: number;
+    hourly_rate: number | null;
+    currency: string;
+    max_timer_hours: number;
+  };
   onSave: (v: {
     dailyHours: number;
     hourlyRate: number | null;

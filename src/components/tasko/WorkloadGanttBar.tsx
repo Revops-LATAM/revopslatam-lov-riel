@@ -19,13 +19,13 @@ const STATUS_LABEL: Record<TaskStatusCategory, string> = {
   cancelada: "Cancelada",
 };
 
-export const STATUS_LEGEND: { category: TaskStatusCategory; color: string; label: string }[] =
-  (Object.keys(STATUS_COLOR) as TaskStatusCategory[]).map((c) => ({
-    category: c,
-    color: STATUS_COLOR[c],
-    label: STATUS_LABEL[c],
-  }));
-
+export const STATUS_LEGEND: { category: TaskStatusCategory; color: string; label: string }[] = (
+  Object.keys(STATUS_COLOR) as TaskStatusCategory[]
+).map((c) => ({
+  category: c,
+  color: STATUS_COLOR[c],
+  label: STATUS_LABEL[c],
+}));
 
 export type GanttTask = {
   id: string;
@@ -185,4 +185,3 @@ function pickReadableColor(bg: string): string {
   const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
   return lum > 0.6 ? "#1a1a1a" : "#ffffff";
 }
-

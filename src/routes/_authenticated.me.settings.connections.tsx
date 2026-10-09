@@ -11,9 +11,7 @@ function MeConnections() {
   const workspaces = useQuery(workspacesQO());
   // La conexión de Google Calendar es per-user-per-workspace; usamos el primer
   // workspace operations al que pertenece el usuario como ámbito por defecto.
-  const ws =
-    workspaces.data?.find((w) => w.kind === "operations") ??
-    workspaces.data?.[0];
+  const ws = workspaces.data?.find((w) => w.kind === "operations") ?? workspaces.data?.[0];
 
   return (
     <div className="p-6 space-y-6 max-w-2xl">
@@ -26,9 +24,7 @@ function MeConnections() {
       {ws ? (
         <CalendarConnectionSection workspaceId={ws.id} />
       ) : (
-        <div className="text-xs text-muted-foreground">
-          Cargando workspace…
-        </div>
+        <div className="text-xs text-muted-foreground">Cargando workspace…</div>
       )}
     </div>
   );

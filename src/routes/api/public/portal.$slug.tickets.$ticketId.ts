@@ -64,7 +64,7 @@ export const Route = createFileRoute("/api/public/portal/$slug/tickets/$ticketId
           task,
           comments: (comments ?? []).map((comment) => ({
             ...comment,
-            profiles: comment.author_id ? profilesById.get(comment.author_id) ?? null : null,
+            profiles: comment.author_id ? (profilesById.get(comment.author_id) ?? null) : null,
           })),
         });
       },

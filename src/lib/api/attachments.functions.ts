@@ -16,9 +16,7 @@ export const listTaskAttachments = createServerFn({ method: "GET" })
     const withUrls = await Promise.all(
       (rows ?? []).map(async (r) => {
         const [{ data: signed }, { data: signedDownload }] = await Promise.all([
-          supabase.storage
-            .from("task-attachments")
-            .createSignedUrl(r.file_path, 60 * 60),
+          supabase.storage.from("task-attachments").createSignedUrl(r.file_path, 60 * 60),
           supabase.storage
             .from("task-attachments")
             .createSignedUrl(r.file_path, 60 * 60, { download: r.file_name }),
@@ -63,9 +61,7 @@ export const registerTaskAttachment = createServerFn({ method: "POST" })
 
 export const deleteTaskAttachment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ attachmentId: z.string().uuid() }).parse(input),
-  )
+  .inputValidator((input) => z.object({ attachmentId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: row } = await supabase
@@ -76,10 +72,7 @@ export const deleteTaskAttachment = createServerFn({ method: "POST" })
     if (row?.file_path) {
       await supabase.storage.from("task-attachments").remove([row.file_path]);
     }
-    const { error } = await supabase
-      .from("task_attachments")
-      .delete()
-      .eq("id", data.attachmentId);
+    const { error } = await supabase.from("task_attachments").delete().eq("id", data.attachmentId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });

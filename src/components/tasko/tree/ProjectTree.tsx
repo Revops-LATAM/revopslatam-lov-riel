@@ -23,10 +23,6 @@ import {
 } from "@/components/ui/context-menu";
 import { AccountShareDialog } from "@/components/tasko/AccountShareDialog";
 
-
-
-
-
 type Props = {
   workspaceId: string;
   workspaceSlug: string;
@@ -56,8 +52,7 @@ function useTreeExpansion(workspaceId: string) {
   const toggle = (id: string, fallback = false) =>
     setState((s) => ({ ...s, [id]: !(s[id] ?? fallback) }));
   const isOpen = (id: string, fallback = false) => state[id] ?? fallback;
-  const setOpen = (id: string, open: boolean) =>
-    setState((s) => ({ ...s, [id]: open }));
+  const setOpen = (id: string, open: boolean) => setState((s) => ({ ...s, [id]: open }));
   return { isOpen, toggle, setOpen };
 }
 
@@ -65,7 +60,6 @@ export function ProjectTree({ workspaceId, workspaceSlug }: Props) {
   const { data: accounts = [], isLoading } = useQuery(operationsTreeQO(workspaceId));
   const { isOpen, toggle, setOpen } = useTreeExpansion(workspaceId);
   const [shareAccountId, setShareAccountId] = useState<string | null>(null);
-
 
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const search = useRouterState({ select: (r) => r.location.search }) as {
@@ -101,9 +95,7 @@ export function ProjectTree({ workspaceId, workspaceSlug }: Props) {
     if (accMatch) return accMatch[1];
     const projMatch = pathname.match(/\/projects\/([0-9a-f-]{36})/i);
     if (projMatch) {
-      const acc = accounts.find((a) =>
-        a.contracts.some((c) => c.project_id === projMatch[1]),
-      );
+      const acc = accounts.find((a) => a.contracts.some((c) => c.project_id === projMatch[1]));
       return acc?.id ?? null;
     }
     return null;
@@ -112,7 +104,6 @@ export function ProjectTree({ workspaceId, workspaceSlug }: Props) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-auto py-1">
-
         {isLoading ? (
           <p className="px-3 py-2 text-xs text-muted-foreground">Cargando...</p>
         ) : accounts.length === 0 ? (
@@ -162,7 +153,6 @@ export function ProjectTree({ workspaceId, workspaceSlug }: Props) {
                   </ContextMenuContent>
                 </ContextMenu>
 
-
                 {accOpen && (
                   <div className="ml-3">
                     {[...account.contracts]
@@ -201,8 +191,6 @@ export function ProjectTree({ workspaceId, workspaceSlug }: Props) {
     </div>
   );
 }
-
-
 
 function ContractBranch({
   contract,
@@ -299,7 +287,6 @@ function ContractBranch({
             <span className="text-[11px] leading-4 italic">sin proyecto</span>
           </span>
         )}
-
       </div>
 
       {open && children && (
@@ -307,8 +294,7 @@ function ContractBranch({
           {children.projects.length > 1 ? (
             children.projects.map((p) => {
               const pOpen = isOpen(`p:${p.id}`, true);
-              const isActiveProject =
-                pathname.includes(p.id) && !search.sprint && !search.phase;
+              const isActiveProject = pathname.includes(p.id) && !search.sprint && !search.phase;
               return (
                 <div key={p.id}>
                   <div className="flex items-center gap-0.5">
@@ -377,9 +363,7 @@ function ContractBranch({
               {contract.type === "implementation" && (
                 <>
                   {children.phases.length === 0 && (
-                    <p className="px-2 py-1 text-xs text-muted-foreground italic">
-                      Sin fases
-                    </p>
+                    <p className="px-2 py-1 text-xs text-muted-foreground italic">Sin fases</p>
                   )}
                   {children.phases.map((p) => (
                     <PhaseLink
@@ -462,8 +446,7 @@ function SprintsBranch({
     const open: SprintNode[] = [];
     const closed: SprintNode[] = [];
     for (const s of sprints) {
-      const isClosed =
-        s.status === "cerrado" || (s.end_date != null && s.end_date < today);
+      const isClosed = s.status === "cerrado" || (s.end_date != null && s.end_date < today);
       if (isClosed) closed.push(s);
       else open.push(s);
     }
@@ -472,9 +455,7 @@ function SprintsBranch({
     return { openSprints: open, closedSprints: closed };
   }, [sprints, today]);
 
-  const activeIsClosed = !!(
-    activeSprintId && closedSprints.some((s) => s.id === activeSprintId)
-  );
+  const activeIsClosed = !!(activeSprintId && closedSprints.some((s) => s.id === activeSprintId));
 
   const storageKey = `tree:closed-sprints:${contractId}`;
   const [archiveOpen, setArchiveOpen] = useState<boolean>(() => {
@@ -503,10 +484,7 @@ function SprintsBranch({
   const renderSprintLink = (s: SprintNode) => {
     const isActive = activeSprintId === s.id;
     const isCurrent =
-      s.start_date != null &&
-      s.end_date != null &&
-      s.start_date <= today &&
-      s.end_date >= today;
+      s.start_date != null && s.end_date != null && s.start_date <= today && s.end_date >= today;
     return (
       <Link
         key={s.id}
@@ -520,24 +498,19 @@ function SprintsBranch({
           isCurrent && !isActive && "text-foreground",
         )}
       >
-        <Rocket
-          className={cn(
-            "w-3.5 h-3.5 flex-shrink-0",
-            isCurrent && "text-primary",
-          )}
-        />
+        <Rocket className={cn("w-3.5 h-3.5 flex-shrink-0", isCurrent && "text-primary")} />
         <span className="text-[13px] leading-5 truncate flex-1">Sprint {s.sprint_number}</span>
         {s.open_tasks > 0 && (
-          <span className="text-[11px] leading-4 font-medium tabular-nums text-muted-foreground">{s.open_tasks}</span>
+          <span className="text-[11px] leading-4 font-medium tabular-nums text-muted-foreground">
+            {s.open_tasks}
+          </span>
         )}
       </Link>
     );
   };
 
   if (sprints.length === 0) {
-    return (
-      <p className="px-2 py-1 text-xs text-muted-foreground italic">Sin sprints</p>
-    );
+    return <p className="px-2 py-1 text-xs text-muted-foreground italic">Sin sprints</p>;
   }
 
   return (
@@ -560,19 +533,18 @@ function SprintsBranch({
             <span className="text-[13px] leading-5 truncate flex-1 text-left">
               Sprints cerrados
             </span>
-            <span className="text-[11px] leading-4 font-medium tabular-nums">{closedSprints.length}</span>
+            <span className="text-[11px] leading-4 font-medium tabular-nums">
+              {closedSprints.length}
+            </span>
           </button>
           {archiveOpen && (
-            <div className="ml-5 opacity-80">
-              {closedSprints.map(renderSprintLink)}
-            </div>
+            <div className="ml-5 opacity-80">{closedSprints.map(renderSprintLink)}</div>
           )}
         </div>
       )}
     </>
   );
 }
-
 
 function Chevron({ open }: { open: boolean }) {
   return open ? (
@@ -581,4 +553,3 @@ function Chevron({ open }: { open: boolean }) {
     <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
   );
 }
-

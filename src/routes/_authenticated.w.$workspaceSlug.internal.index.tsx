@@ -1,7 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Coffee, Users, GraduationCap, CalendarHeart, Settings as SettingsIcon, Folder } from "lucide-react";
+import {
+  Coffee,
+  Users,
+  GraduationCap,
+  CalendarHeart,
+  Settings as SettingsIcon,
+  Folder,
+} from "lucide-react";
 import { getWorkspaceBySlug } from "@/lib/api/tasko.functions";
 import { listInternalCategories, listInternalProjects } from "@/lib/api/internal.functions";
 import { RouteError } from "@/components/tasko/RouteError";
@@ -44,7 +51,10 @@ function InternalHome() {
   const projectCountByCat = new Map<string, number>();
   for (const p of projsQ.data ?? []) {
     if (!p.internal_category_id) continue;
-    projectCountByCat.set(p.internal_category_id, (projectCountByCat.get(p.internal_category_id) ?? 0) + 1);
+    projectCountByCat.set(
+      p.internal_category_id,
+      (projectCountByCat.get(p.internal_category_id) ?? 0) + 1,
+    );
   }
 
   return (
@@ -78,7 +88,10 @@ function InternalHome() {
                   <div className="flex items-start gap-3">
                     <div
                       className="w-9 h-9 rounded-md flex items-center justify-center shrink-0"
-                      style={{ background: `${c.color ?? "#0ea5e9"}22`, color: c.color ?? "#0ea5e9" }}
+                      style={{
+                        background: `${c.color ?? "#0ea5e9"}22`,
+                        color: c.color ?? "#0ea5e9",
+                      }}
                     >
                       <Icon className="w-4 h-4" />
                     </div>

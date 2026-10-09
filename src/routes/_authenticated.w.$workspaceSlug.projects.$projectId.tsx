@@ -3,12 +3,7 @@ import { memo, useEffect, useState, useMemo, useRef, useCallback, type ReactNode
 import { z } from "zod";
 import { useSuspenseQuery, useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import {
-  createTask,
-  updateTask,
-  deleteTask,
-  reorderTasks,
-} from "@/lib/api/tasko.functions";
+import { createTask, updateTask, deleteTask, reorderTasks } from "@/lib/api/tasko.functions";
 import { AsanaSyncControls } from "@/components/tasko/AsanaSyncControls";
 import {
   DndContext,
@@ -54,7 +49,6 @@ import { ProjectGanttView } from "@/components/tasko/ProjectGanttView";
 import { ShareGanttButton } from "@/components/tasko/ShareGanttButton";
 import { ShareReportButton } from "@/components/tasko/ShareReportButton";
 
-
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -66,7 +60,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Trash2, Calendar as CalendarIcon, Rocket, ChevronDown, ChevronRight, Table2, Layers, X, Play, Flag, Timer, Ticket, RefreshCw, GitBranch } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  Calendar as CalendarIcon,
+  Rocket,
+  ChevronDown,
+  ChevronRight,
+  Table2,
+  Layers,
+  X,
+  Play,
+  Flag,
+  Timer,
+  Ticket,
+  RefreshCw,
+  GitBranch,
+} from "lucide-react";
 
 import { getProjectTicketForm } from "@/lib/api/client-tickets.functions";
 
@@ -84,21 +94,21 @@ import {
 } from "@/lib/tasko-constants";
 import { isCompleted, isCancelled, getTaskStatus } from "@/lib/tasko/status";
 import { StatusBadgeSelect } from "@/components/tasko/StatusBadgeSelect";
-import { updateSprintStatus, updatePhaseStatus, moveSprintPendingTasks } from "@/lib/api/operations.functions";
+import {
+  updateSprintStatus,
+  updatePhaseStatus,
+  moveSprintPendingTasks,
+} from "@/lib/api/operations.functions";
 import { dueTone, formatDueShort } from "@/lib/tasko-utils";
 
 import { TaskDetailDrawer } from "@/components/tasko/TaskDetailDrawer";
 import { MultiAssigneeSelect } from "@/components/tasko/MultiAssigneeSelect";
 import { EmptyState } from "@/components/tasko/EmptyState";
 import { TaskFilters, applyFilters, type TaskFiltersValue } from "@/components/tasko/TaskFilters";
-import {
-  TaskListSkeleton,
-  PageHeaderSkeleton,
-} from "@/components/tasko/Skeletons";
+import { TaskListSkeleton, PageHeaderSkeleton } from "@/components/tasko/Skeletons";
 import { RouteError } from "@/components/tasko/RouteError";
 import { ConfirmDialog } from "@/components/tasko/ConfirmDialog";
 import { Breadcrumbs } from "@/components/tasko/Breadcrumbs";
-
 
 export const Route = createFileRoute("/_authenticated/w/$workspaceSlug/projects/$projectId")({
   ssr: false,
@@ -119,7 +129,9 @@ export const Route = createFileRoute("/_authenticated/w/$workspaceSlug/projects/
         taskType: z.string().optional(),
         sprint: z.string().uuid().optional(),
         phase: z.string().uuid().optional(),
-        tab: z.enum(["tickets-pipeline", "phases", "sprints", "gantt", "table", "tickets"]).optional(),
+        tab: z
+          .enum(["tickets-pipeline", "phases", "sprints", "gantt", "table", "tickets"])
+          .optional(),
       })
       .parse(s),
   loader: async ({ context, params }) => {
@@ -181,7 +193,6 @@ function ProjectDetail() {
   });
   const hasTicketPortal = !!ticketFormSummary?.form;
 
-
   const breadcrumbCrumbs = useMemo(() => {
     const acc = opsTree.find((a) => a.contracts.some((c) => c.project_id === projectId));
     const contract = acc?.contracts.find((c) => c.project_id === projectId);
@@ -219,29 +230,42 @@ function ProjectDetail() {
       base[base.length - 1] = { label: base[base.length - 1].label };
     }
     return base;
-  }, [opsTree, projectId, workspaceSlug, project.name, search.sprint, search.phase, sprintsForCrumb, phases]);
+  }, [
+    opsTree,
+    projectId,
+    workspaceSlug,
+    project.name,
+    search.sprint,
+    search.phase,
+    sprintsForCrumb,
+    phases,
+  ]);
 
+  const filters: TaskFiltersValue = useMemo(
+    () => ({
+      q: search.q ?? "",
+      priority: search.priority ?? "all",
+      assignee: search.assignee ?? "all",
+      taskType: (search as { taskType?: string }).taskType ?? "all",
+    }),
+    [search.q, search.priority, search.assignee, (search as { taskType?: string }).taskType],
+  );
+  const setFilters = useCallback(
+    (f: TaskFiltersValue) => {
+      navigate({
+        search: (prev: Record<string, unknown>) => ({
+          ...prev,
+          q: f.q.trim() || undefined,
+          priority: f.priority === "all" ? undefined : f.priority,
+          assignee: f.assignee === "all" ? undefined : f.assignee,
+          taskType: f.taskType === "all" ? undefined : f.taskType,
+        }),
+        replace: true,
+      });
+    },
+    [navigate],
+  );
 
-  const filters: TaskFiltersValue = useMemo(() => ({
-    q: search.q ?? "",
-    priority: search.priority ?? "all",
-    assignee: search.assignee ?? "all",
-    taskType: (search as { taskType?: string }).taskType ?? "all",
-  }), [search.q, search.priority, search.assignee, (search as { taskType?: string }).taskType]);
-  const setFilters = useCallback((f: TaskFiltersValue) => {
-    navigate({
-      search: (prev: Record<string, unknown>) => ({
-        ...prev,
-        q: f.q.trim() || undefined,
-        priority: f.priority === "all" ? undefined : f.priority,
-        assignee: f.assignee === "all" ? undefined : f.assignee,
-        taskType: f.taskType === "all" ? undefined : f.taskType,
-      }),
-      replace: true,
-    });
-  }, [navigate]);
-
-  
   const visitedTabsRef = useRef<Set<string>>(new Set());
 
   const [selectedTask, setSelectedTask] = useState<string | null>(search.task ?? null);
@@ -256,10 +280,24 @@ function ProjectDetail() {
   }, [project?.name]);
   type TaskRow = (typeof tasks)[number];
 
-
   const createMut = useMutation({
-    mutationFn: (vars: { title: string; status?: string; sprintId?: string | null; phaseId?: string | null; taskTypeId?: string | null }) =>
-      createFn({ data: { projectId, title: vars.title, status: vars.status, sprintId: vars.sprintId, phaseId: vars.phaseId, taskTypeId: vars.taskTypeId } as never }),
+    mutationFn: (vars: {
+      title: string;
+      status?: string;
+      sprintId?: string | null;
+      phaseId?: string | null;
+      taskTypeId?: string | null;
+    }) =>
+      createFn({
+        data: {
+          projectId,
+          title: vars.title,
+          status: vars.status,
+          sprintId: vars.sprintId,
+          phaseId: vars.phaseId,
+          taskTypeId: vars.taskTypeId,
+        } as never,
+      }),
     onMutate: async (vars) => {
       await qc.cancelQueries({ queryKey: ["tasks", projectId] });
       const prev = qc.getQueryData<TaskRow[]>(["tasks", projectId]);
@@ -305,11 +343,21 @@ function ProjectDetail() {
     },
   });
 
-
-
   const updateMut = useMutation({
-    mutationFn: (vars: { taskId: string; status?: string; statusId?: string | null; priority?: string; title?: string; assigneeId?: string | null; assigneeIds?: string[]; dueDate?: string | null; startDate?: string | null; sprintId?: string | null; phaseId?: string | null; totalEffortHours?: number | null }) =>
-      updateFn({ data: vars as never }),
+    mutationFn: (vars: {
+      taskId: string;
+      status?: string;
+      statusId?: string | null;
+      priority?: string;
+      title?: string;
+      assigneeId?: string | null;
+      assigneeIds?: string[];
+      dueDate?: string | null;
+      startDate?: string | null;
+      sprintId?: string | null;
+      phaseId?: string | null;
+      totalEffortHours?: number | null;
+    }) => updateFn({ data: vars as never }),
     onMutate: async (vars) => {
       await qc.cancelQueries({ queryKey: ["tasks", projectId] });
       const prev = qc.getQueryData<TaskRow[]>(["tasks", projectId]);
@@ -320,18 +368,27 @@ function ProjectDetail() {
           const patched: TaskRow = {
             ...t,
             ...(vars.status !== undefined ? { status: vars.status as TaskRow["status"] } : {}),
-            ...(vars.statusId !== undefined ? { status_id: vars.statusId as TaskRow["status_id"] } : {}),
-            ...(vars.priority !== undefined ? { priority: vars.priority as TaskRow["priority"] } : {}),
+            ...(vars.statusId !== undefined
+              ? { status_id: vars.statusId as TaskRow["status_id"] }
+              : {}),
+            ...(vars.priority !== undefined
+              ? { priority: vars.priority as TaskRow["priority"] }
+              : {}),
             ...(vars.title !== undefined ? { title: vars.title } : {}),
             ...(vars.assigneeId !== undefined ? { assignee_id: vars.assigneeId } : {}),
             ...(vars.assigneeIds !== undefined
-              ? { assignee_id: vars.assigneeIds[0] ?? null, assignees: vars.assigneeIds.map((user_id) => ({ user_id })) }
+              ? {
+                  assignee_id: vars.assigneeIds[0] ?? null,
+                  assignees: vars.assigneeIds.map((user_id) => ({ user_id })),
+                }
               : {}),
             ...(vars.dueDate !== undefined ? { due_date: vars.dueDate } : {}),
             ...(vars.startDate !== undefined ? { start_date: vars.startDate } : {}),
             ...(vars.sprintId !== undefined ? { sprint_id: vars.sprintId } : {}),
             ...(vars.phaseId !== undefined ? { phase_id: vars.phaseId } : {}),
-            ...(vars.totalEffortHours !== undefined ? { total_effort_hours: vars.totalEffortHours } : {}),
+            ...(vars.totalEffortHours !== undefined
+              ? { total_effort_hours: vars.totalEffortHours }
+              : {}),
           };
           return patched;
         });
@@ -411,16 +468,22 @@ function ProjectDetail() {
 
   const isMounted = useCallback((tab: string) => visitedTabsRef.current.has(tab), []);
   type ProjectTab = "gantt" | "phases" | "sprints" | "table" | "tickets" | "tickets-pipeline";
-  const setActiveTab = useCallback((value: string) => {
-    const tab = value as ProjectTab;
-    visitedTabsRef.current.add(tab);
-    setLocalActiveTab(tab);
-    navigate({
-      to: ".",
-      search: (prev: Record<string, unknown>) => ({ ...prev, tab: tab === fallbackTab ? undefined : tab }),
-      replace: true,
-    });
-  }, [fallbackTab, navigate, projectId, ws.slug]);
+  const setActiveTab = useCallback(
+    (value: string) => {
+      const tab = value as ProjectTab;
+      visitedTabsRef.current.add(tab);
+      setLocalActiveTab(tab);
+      navigate({
+        to: ".",
+        search: (prev: Record<string, unknown>) => ({
+          ...prev,
+          tab: tab === fallbackTab ? undefined : tab,
+        }),
+        replace: true,
+      });
+    },
+    [fallbackTab, navigate, projectId, ws.slug],
+  );
 
   const tableCount = rootTasks.length;
   const sprintsCount = sprintsViewTasks.length;
@@ -467,8 +530,12 @@ function ProjectDetail() {
         </div>
       </header>
 
-      <Tabs key={search.sprint ?? search.phase ?? "all"} value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
-
+      <Tabs
+        key={search.sprint ?? search.phase ?? "all"}
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="flex-1 flex flex-col overflow-hidden"
+      >
         <div className="border-b border-border px-6 py-1.5 flex items-center gap-3 flex-wrap">
           <TabsList className="h-8">
             {showTicketsPipeline && (
@@ -479,18 +546,24 @@ function ProjectDetail() {
             {showPhases && (
               <TabsTrigger value="phases" className="text-xs gap-1.5">
                 <Layers className="w-3.5 h-3.5" /> Fases
-                <span className="ml-1 text-[10px] tabular-nums text-muted-foreground">{phases.length}</span>
+                <span className="ml-1 text-[10px] tabular-nums text-muted-foreground">
+                  {phases.length}
+                </span>
               </TabsTrigger>
             )}
             {showSprints && (
               <TabsTrigger value="sprints" className="text-xs gap-1.5">
                 <Rocket className="w-3.5 h-3.5" /> Sprints
-                <span className="ml-1 text-[10px] tabular-nums text-muted-foreground">{sprintsCount}</span>
+                <span className="ml-1 text-[10px] tabular-nums text-muted-foreground">
+                  {sprintsCount}
+                </span>
               </TabsTrigger>
             )}
             <TabsTrigger value="table" className="text-xs gap-1.5">
               <Table2 className="w-3.5 h-3.5" /> Tabla
-              <span className="ml-1 text-[10px] tabular-nums text-muted-foreground">{tableCount}</span>
+              <span className="ml-1 text-[10px] tabular-nums text-muted-foreground">
+                {tableCount}
+              </span>
             </TabsTrigger>
             {contractType === "implementation" && (
               <TabsTrigger value="gantt" className="text-xs gap-1.5">
@@ -502,12 +575,21 @@ function ProjectDetail() {
             </TabsTrigger>
           </TabsList>
           <div className="ml-auto">
-            <TaskFilters value={filters} onChange={setFilters} members={members} workspaceId={ws.id} />
+            <TaskFilters
+              value={filters}
+              onChange={setFilters}
+              members={members}
+              workspaceId={ws.id}
+            />
           </div>
         </div>
 
         {showTicketsPipeline && isMounted("tickets-pipeline") && (
-          <TabsContent forceMount value="tickets-pipeline" className="flex-1 overflow-hidden mt-0 data-[state=inactive]:hidden">
+          <TabsContent
+            forceMount
+            value="tickets-pipeline"
+            className="flex-1 overflow-hidden mt-0 data-[state=inactive]:hidden"
+          >
             <TicketsPipelineView
               tasks={filteredTasks}
               members={members}
@@ -521,9 +603,12 @@ function ProjectDetail() {
           </TabsContent>
         )}
 
-
         {showPhases && isMounted("phases") && (
-          <TabsContent forceMount value="phases" className="flex-1 overflow-auto mt-0 data-[state=inactive]:hidden">
+          <TabsContent
+            forceMount
+            value="phases"
+            className="flex-1 overflow-auto mt-0 data-[state=inactive]:hidden"
+          >
             <PhasesView
               phases={phases}
               tasks={filteredTasks}
@@ -536,9 +621,12 @@ function ProjectDetail() {
           </TabsContent>
         )}
 
-
         {showSprints && project.contract_id && isMounted("sprints") && (
-          <TabsContent forceMount value="sprints" className="flex-1 overflow-auto mt-0 data-[state=inactive]:hidden">
+          <TabsContent
+            forceMount
+            value="sprints"
+            className="flex-1 overflow-auto mt-0 data-[state=inactive]:hidden"
+          >
             <SprintsView
               contractId={project.contract_id}
               projectId={projectId}
@@ -554,9 +642,12 @@ function ProjectDetail() {
           </TabsContent>
         )}
 
-
         {isMounted("table") && (
-          <TabsContent forceMount value="table" className="flex-1 overflow-hidden mt-0 data-[state=inactive]:hidden">
+          <TabsContent
+            forceMount
+            value="table"
+            className="flex-1 overflow-hidden mt-0 data-[state=inactive]:hidden"
+          >
             <TaskTableView
               viewKey={`project-tasks-v2:${projectId}`}
               tasks={filteredTasks}
@@ -586,13 +677,19 @@ function ProjectDetail() {
                 });
               }}
               emptyHasFilters={hasActiveFilters}
-              onClearFilters={() => setFilters({ q: "", priority: "all", assignee: "all", taskType: "all" })}
+              onClearFilters={() =>
+                setFilters({ q: "", priority: "all", assignee: "all", taskType: "all" })
+              }
             />
           </TabsContent>
         )}
 
         {contractType === "implementation" && isMounted("gantt") && (
-          <TabsContent forceMount value="gantt" className="flex-1 overflow-hidden mt-0 data-[state=inactive]:hidden">
+          <TabsContent
+            forceMount
+            value="gantt"
+            className="flex-1 overflow-hidden mt-0 data-[state=inactive]:hidden"
+          >
             <ProjectGanttView
               projectId={projectId}
               tasks={filteredTasks as Parameters<typeof ProjectGanttView>[0]["tasks"]}
@@ -604,14 +701,15 @@ function ProjectDetail() {
         )}
 
         {isMounted("tickets") && (
-          <TabsContent forceMount value="tickets" className="flex-1 overflow-auto mt-0 data-[state=inactive]:hidden">
+          <TabsContent
+            forceMount
+            value="tickets"
+            className="flex-1 overflow-auto mt-0 data-[state=inactive]:hidden"
+          >
             <TicketPortalPanel projectId={projectId} />
           </TabsContent>
         )}
-
-
       </Tabs>
-
 
       <TaskDetailDrawer
         taskId={selectedTask}
@@ -661,7 +759,10 @@ type SprintTask = {
   task_type_id?: string | null;
 };
 
-const getTaskAssigneeIds = (task: { assignee_id?: string | null; assignees?: Array<{ user_id: string }> | null }) => {
+const getTaskAssigneeIds = (task: {
+  assignee_id?: string | null;
+  assignees?: Array<{ user_id: string }> | null;
+}) => {
   const ids = (task.assignees ?? []).map((a) => a.user_id);
   if (ids.length === 0 && task.assignee_id) return [task.assignee_id];
   return ids;
@@ -669,7 +770,12 @@ const getTaskAssigneeIds = (task: { assignee_id?: string | null; assignees?: Arr
 
 type MemberRow = {
   user_id: string;
-  profile: { id: string; full_name?: string | null; email?: string | null; avatar_url?: string | null } | null;
+  profile: {
+    id: string;
+    full_name?: string | null;
+    email?: string | null;
+    avatar_url?: string | null;
+  } | null;
 };
 
 function SprintsView({
@@ -693,21 +799,29 @@ function SprintsView({
   taskTypes: Array<{ id: string; name: string; icon: string | null; sort_order: number }>;
   onSelectTask: (id: string) => void;
   onCreateTask: (title: string, sprintId: string | null, taskTypeId: string | null) => void;
-  onUpdateTask: (vars: { taskId: string; status?: string; assigneeId?: string | null; assigneeIds?: string[]; sprintId?: string | null; dueDate?: string | null; startDate?: string | null; totalEffortHours?: number | null }) => void;
+  onUpdateTask: (vars: {
+    taskId: string;
+    status?: string;
+    assigneeId?: string | null;
+    assigneeIds?: string[];
+    sprintId?: string | null;
+    dueDate?: string | null;
+    startDate?: string | null;
+    totalEffortHours?: number | null;
+  }) => void;
 }) {
   const { data: sprints = [], isLoading } = useQuery(sprintsQO(contractId, projectId));
   const { data: metrics = [] } = useQuery(sprintMetricsQO(contractId, projectId));
-  const metricsBySprint = useMemo(
-    () => new Map(metrics.map((m) => [m.sprint_id, m])),
-    [metrics],
-  );
+  const metricsBySprint = useMemo(() => new Map(metrics.map((m) => [m.sprint_id, m])), [metrics]);
   const qc = useQueryClient();
   const updateSprintStatusFn = useServerFn(updateSprintStatus);
   const reorderFn = useServerFn(reorderTasks);
   const moveSprintFn = useServerFn(moveSprintPendingTasks);
   const sprintStatusMut = useMutation({
     mutationFn: (vars: { sprintId: string; status: string }) =>
-      updateSprintStatusFn({ data: { sprintId: vars.sprintId, status: vars.status as "planificado" } }),
+      updateSprintStatusFn({
+        data: { sprintId: vars.sprintId, status: vars.status as "planificado" },
+      }),
     onMutate: async (vars) => {
       await qc.cancelQueries({ queryKey: ["sprints", contractId] });
       const prev = qc.getQueryData<Array<{ id: string; status: string }>>(["sprints", contractId]);
@@ -728,7 +842,9 @@ function SprintsView({
     onSuccess: (res) => {
       qc.invalidateQueries({ queryKey: ["tasks", projectId] });
       qc.invalidateQueries({ queryKey: ["sprint-metrics", contractId, projectId] });
-      toast.success(`${res.moved} ${res.moved === 1 ? "tarea movida" : "tareas movidas"} al siguiente sprint`);
+      toast.success(
+        `${res.moved} ${res.moved === 1 ? "tarea movida" : "tareas movidas"} al siguiente sprint`,
+      );
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -758,10 +874,7 @@ function SprintsView({
   }, []);
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const defaultTypeId = taskTypes[0]?.id ?? null;
-  const typeById = useMemo(
-    () => new Map(taskTypes.map((t) => [t.id, t])),
-    [taskTypes],
-  );
+  const typeById = useMemo(() => new Map(taskTypes.map((t) => [t.id, t])), [taskTypes]);
 
   // Local optimistic mirror of tasks for smooth drag-and-drop
   const [localTasks, setLocalTasks] = useState<SprintTask[] | null>(null);
@@ -799,7 +912,6 @@ function SprintsView({
 
   const toggle = (id: string, defaultOpen: boolean) =>
     setOpenSprints((s) => ({ ...s, [id]: !(s[id] ?? defaultOpen) }));
-
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -860,7 +972,9 @@ function SprintsView({
     }
 
     // Same section reorder
-    const secItems = base.filter((t) => (t.sprint_id ?? "unassigned") === toSec && !t.parent_task_id);
+    const secItems = base.filter(
+      (t) => (t.sprint_id ?? "unassigned") === toSec && !t.parent_task_id,
+    );
     const oldIdx = secItems.findIndex((t) => t.id === activeStr);
     const newIdx = overId.startsWith("section:")
       ? secItems.length - 1
@@ -873,9 +987,7 @@ function SprintsView({
   };
 
   const today = new Date().toISOString().slice(0, 10);
-  const visibleSprints = scopedSprintId
-    ? sprints.filter((s) => s.id === scopedSprintId)
-    : sprints;
+  const visibleSprints = scopedSprintId ? sprints.filter((s) => s.id === scopedSprintId) : sprints;
   type Section = {
     id: string;
     title: string;
@@ -887,7 +999,15 @@ function SprintsView({
   };
   const backlogSection: Section | null = scopedSprintId
     ? null
-    : { id: "unassigned", title: "Backlog", range: "", isCurrent: false, hours: null, status: null, endDate: null };
+    : {
+        id: "unassigned",
+        title: "Backlog",
+        range: "",
+        isCurrent: false,
+        hours: null,
+        status: null,
+        endDate: null,
+      };
   const sprintSections: Section[] = visibleSprints.map((s) => ({
     id: s.id,
     title: `Sprint ${s.sprint_number}`,
@@ -948,8 +1068,6 @@ function SprintsView({
     );
   }
 
-
-
   return (
     <DndContext
       sensors={sensors}
@@ -966,314 +1084,367 @@ function SprintsView({
 
         {(() => {
           const renderSection = (sec: Section) => {
-
-          const items = (tasksBySprint.get(sec.id) ?? []).filter((t) => !t.parent_task_id);
-          const defaultOpen = sec.id === "unassigned" || sec.isCurrent;
-          const isOpen = openSprints[sec.id] ?? defaultOpen;
-          const isOver = overSection === sec.id;
-          const isBacklog = sec.id === "unassigned";
-          const isActive = sec.isCurrent;
-          const monthShort = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
-          const fmtDateShort = (iso: string) => {
-            const parts = iso.split("-").map(Number);
-            if (parts.length < 3) return iso;
-            return `${parts[2]} ${monthShort[(parts[1] || 1) - 1]}`;
-          };
-          const renderRange = (raw: string) => {
-            const [a, b] = raw.split(" → ");
-            if (!a || !b) return raw;
-            return `${fmtDateShort(a)} — ${fmtDateShort(b)}`;
-          };
-          const fmtH = (n: number) => {
-            const r = Math.round(n * 10) / 10;
-            return Number.isInteger(r) ? `${r}` : r.toFixed(1);
-          };
-          return (
-            <div
-              key={sec.id}
-              style={{
-                contentVisibility: isActive ? undefined : "auto",
-                containIntrinsicSize: "auto 400px",
-              }}
-              className={cn(
-                "relative bg-card rounded-xl overflow-hidden transition-all",
-                isActive
-                  ? "border-2 border-primary/25 ring-4 ring-primary/5 shadow-sm"
-                  : "border border-border shadow-sm hover:border-border/70",
-                isOver && "ring-2 ring-primary/30 border-primary/50",
-              )}
-            >
-              {isActive && (
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary" aria-hidden />
-              )}
+            const items = (tasksBySprint.get(sec.id) ?? []).filter((t) => !t.parent_task_id);
+            const defaultOpen = sec.id === "unassigned" || sec.isCurrent;
+            const isOpen = openSprints[sec.id] ?? defaultOpen;
+            const isOver = overSection === sec.id;
+            const isBacklog = sec.id === "unassigned";
+            const isActive = sec.isCurrent;
+            const monthShort = [
+              "ene",
+              "feb",
+              "mar",
+              "abr",
+              "may",
+              "jun",
+              "jul",
+              "ago",
+              "sep",
+              "oct",
+              "nov",
+              "dic",
+            ];
+            const fmtDateShort = (iso: string) => {
+              const parts = iso.split("-").map(Number);
+              if (parts.length < 3) return iso;
+              return `${parts[2]} ${monthShort[(parts[1] || 1) - 1]}`;
+            };
+            const renderRange = (raw: string) => {
+              const [a, b] = raw.split(" → ");
+              if (!a || !b) return raw;
+              return `${fmtDateShort(a)} — ${fmtDateShort(b)}`;
+            };
+            const fmtH = (n: number) => {
+              const r = Math.round(n * 10) / 10;
+              return Number.isInteger(r) ? `${r}` : r.toFixed(1);
+            };
+            return (
               <div
-                role="button"
-                tabIndex={0}
-                onClick={() => toggle(sec.id, defaultOpen)}
-                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(sec.id, defaultOpen); } }}
-
+                key={sec.id}
+                style={{
+                  contentVisibility: isActive ? undefined : "auto",
+                  containIntrinsicSize: "auto 400px",
+                }}
                 className={cn(
-                  "w-full flex items-center gap-4 text-left cursor-pointer select-none",
-                  isBacklog ? "px-5 py-3 bg-muted/30 border-b border-border" : "px-5 py-3",
+                  "relative bg-card rounded-xl overflow-hidden transition-all",
+                  isActive
+                    ? "border-2 border-primary/25 ring-4 ring-primary/5 shadow-sm"
+                    : "border border-border shadow-sm hover:border-border/70",
+                  isOver && "ring-2 ring-primary/30 border-primary/50",
                 )}
               >
-                {isOpen ? (
-                  <ChevronDown className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                ) : (
-                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                {isActive && (
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary" aria-hidden />
                 )}
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => toggle(sec.id, defaultOpen)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      toggle(sec.id, defaultOpen);
+                    }
+                  }}
+                  className={cn(
+                    "w-full flex items-center gap-4 text-left cursor-pointer select-none",
+                    isBacklog ? "px-5 py-3 bg-muted/30 border-b border-border" : "px-5 py-3",
+                  )}
+                >
+                  {isOpen ? (
+                    <ChevronDown className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                  ) : (
+                    <ChevronRight className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                  )}
 
-                {isBacklog ? (
-                  <>
-                    <span className="text-sm font-semibold text-foreground">{sec.title}</span>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-6 px-2 gap-1 text-[11px] font-medium text-primary hover:bg-primary/10"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (!(openSprints[sec.id] ?? defaultOpen)) toggle(sec.id, defaultOpen);
-                        setTimeout(() => inputRefs.current[sec.id]?.focus(), 60);
-                      }}
-                    >
-                      <Plus className="w-3 h-3" /> Nueva
-                    </Button>
-                    <span className="ml-auto text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-                      {items.length} {items.length === 1 ? "tarea" : "tareas"}
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <div className="min-w-[110px] flex flex-col gap-1 shrink-0">
-                      <span className={cn("text-sm leading-tight", isActive ? "font-bold text-foreground" : "font-semibold text-foreground/85")}>
-                        {sec.title}
-                      </span>
-                      <div className="flex items-center gap-1.5">
-                        {sec.status && (
-                          <div onClick={(e) => e.stopPropagation()}>
-                            <StatusBadgeSelect
-                              value={sec.status}
-                              options={SPRINT_STATUS_OPTIONS}
-                              onChange={(v) => sprintStatusMut.mutate({ sprintId: sec.id, status: v })}
-                              disabled={sprintStatusMut.isPending}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {sec.range && (
-                      <div className="flex items-center gap-1.5 text-muted-foreground text-xs shrink-0">
-                        <CalendarIcon className="w-3.5 h-3.5" />
-                        <span className="font-medium">{renderRange(sec.range)}</span>
-                      </div>
-                    )}
-
-                    {(() => {
-                      const m = metricsBySprint.get(sec.id);
-                      if (!m) return <div className="flex-1" />;
-                      const cap = m.contracted_hours || m.team_capacity_hours || 0;
-                      const overEst = cap > 0 && m.estimated_hours > cap;
-                      const overReal = cap > 0 && m.real_hours > cap;
-                      const loadPct = cap > 0 ? Math.min(100, (m.estimated_hours / cap) * 100) : 0;
-                      const progressDen = m.estimated_hours > 0 ? m.estimated_hours : cap;
-                      const progressPct = progressDen > 0 ? Math.min(100, (m.real_hours / progressDen) * 100) : 0;
-                      const isEmpty = m.estimated_hours === 0 && m.real_hours === 0;
-                      const capTitle = `Capacidad contratada: ${fmtH(m.contracted_hours)}h${m.team_capacity_hours > 0 ? ` · Equipo: ${fmtH(m.team_capacity_hours)}h` : ""}`;
-                      return (
-                        <div className={cn(
-                          "flex-1 flex items-center justify-end gap-6 pl-4 border-l border-border/60",
-                          isEmpty && !isActive && "opacity-50",
-                        )}>
-                          {/* CARGA */}
-                          <div className="flex flex-col gap-1 w-32 shrink-0" title={capTitle}>
-                            <div className="flex justify-between text-[10px] font-semibold text-muted-foreground">
-                              <span className="tracking-wide">CARGA</span>
-                              <span>{cap > 0 && m.estimated_hours > 0 ? `${Math.round((m.estimated_hours / cap) * 100)}%` : "—"}</span>
-                            </div>
-                            <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                              {m.estimated_hours > 0 && cap > 0 && (
-                                <div
-                                  className={cn(
-                                    "h-full rounded-full transition-all",
-                                    overEst ? "bg-amber-500" : "bg-blue-500",
-                                  )}
-                                  style={{ width: `${loadPct}%` }}
-                                />
-                              )}
-                            </div>
-                            <span className="text-[9px] text-muted-foreground">
-                              {m.estimated_hours > 0
-                                ? `${fmtH(m.estimated_hours)}h de ${fmtH(cap)}h`
-                                : cap > 0
-                                  ? `Sin estimar · ${fmtH(cap)}h`
-                                  : "Sin estimar"}
-                            </span>
-                          </div>
-
-                          {/* AVANCE */}
-                          <div className="flex flex-col gap-1 w-32 shrink-0" title="Horas reales cargadas vs estimadas">
-                            <div className="flex justify-between text-[10px] font-semibold text-muted-foreground">
-                              <span className="tracking-wide">AVANCE</span>
-                              <span>{progressDen > 0 && m.real_hours > 0 ? `${Math.round((m.real_hours / progressDen) * 100)}%` : "—"}</span>
-                            </div>
-                            <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                              {m.real_hours > 0 && progressDen > 0 && (
-                                <div
-                                  className={cn(
-                                    "h-full rounded-full transition-all",
-                                    overReal ? "bg-destructive" : "bg-primary",
-                                  )}
-                                  style={{ width: `${progressPct}%` }}
-                                />
-                              )}
-                            </div>
-                            <span className={cn(
-                              "text-[9px] text-right",
-                              overReal ? "text-destructive font-semibold" : "text-muted-foreground",
-                            )}>
-                              Real: {fmtH(m.real_hours)}h
-                            </span>
-                          </div>
-
-                          {overReal && m.pending_tasks > 0 && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="h-7 px-2 text-[10px] border-destructive/40 text-destructive hover:bg-destructive/10 shrink-0"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                moveMut.mutate({ sprintId: sec.id });
-                              }}
-                              disabled={moveMut.isPending}
-                            >
-                              Mover {m.pending_tasks} →
-                            </Button>
-                          )}
-                        </div>
-                      );
-                    })()}
-
-                    <span className={cn(
-                      "text-xs text-right min-w-[70px] shrink-0",
-                      items.length > 0 ? "font-bold text-foreground" : "font-medium text-muted-foreground",
-                    )}>
-                      {items.length} {items.length === 1 ? "tarea" : "tareas"}
-                    </span>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-7 px-2 gap-1 text-[11px] font-medium text-primary hover:bg-primary/10 shrink-0"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (!(openSprints[sec.id] ?? defaultOpen)) toggle(sec.id, defaultOpen);
-                        setTimeout(() => inputRefs.current[sec.id]?.focus(), 60);
-                      }}
-                    >
-                      <Plus className="w-3.5 h-3.5" /> Nueva tarea
-                    </Button>
-                  </>
-                )}
-              </div>
-
-
-              {isOpen && (
-                <SprintDroppable sectionId={sec.id} isOver={isOver}>
-                  <SortableContext items={items.map((t) => t.id)} strategy={verticalListSortingStrategy}>
-                    <div className="divide-y divide-border">
-                      <form
-                        className="px-3 py-2 flex items-center gap-2 bg-muted/20"
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          const v = (newTitleBySprint[sec.id] ?? "").trim();
-                          if (!v) return;
-                          const typeId: string | null = typeBySprint[sec.id] ?? defaultTypeId;
-                          onCreateTask(v, sec.id === "unassigned" ? null : sec.id, typeId);
-                          setNewTitleBySprint((s) => ({ ...s, [sec.id]: "" }));
+                  {isBacklog ? (
+                    <>
+                      <span className="text-sm font-semibold text-foreground">{sec.title}</span>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-6 px-2 gap-1 text-[11px] font-medium text-primary hover:bg-primary/10"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!(openSprints[sec.id] ?? defaultOpen)) toggle(sec.id, defaultOpen);
+                          setTimeout(() => inputRefs.current[sec.id]?.focus(), 60);
                         }}
                       >
-                        <Plus className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                        <Input
-                          ref={(el) => { inputRefs.current[sec.id] = el; }}
-                          value={newTitleBySprint[sec.id] ?? ""}
-                          onChange={(e) =>
-                            setNewTitleBySprint((s) => ({ ...s, [sec.id]: e.target.value }))
-                          }
-                          placeholder="Añadir tarea... (Enter)"
-                          className="border-0 shadow-none focus-visible:ring-0 px-0 h-7 bg-transparent text-sm flex-1"
-                        />
-                        {taskTypes.length > 0 && (
-                          <Select
-                            value={typeBySprint[sec.id] ?? defaultTypeId ?? undefined}
-                            onValueChange={(v) => setTypeBySprint((s) => ({ ...s, [sec.id]: v }))}
-                          >
-                            <SelectTrigger className="h-7 w-[130px] text-xs shrink-0">
-                              <SelectValue placeholder="Tipo" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {taskTypes.map((tt) => {
-                                const Icon = getLucideIcon(tt.icon ?? "circle");
-                                return (
-                                  <SelectItem key={tt.id} value={tt.id}>
-                                    <span className="flex items-center gap-1.5">
-                                      <Icon className="w-3.5 h-3.5" />
-                                      {tt.name}
-                                    </span>
-                                  </SelectItem>
-                                );
-                              })}
-                            </SelectContent>
-                          </Select>
-                        )}
-                      </form>
-                      {items.map((task) => {
-                        const subs = childrenByParent.get(task.id) ?? [];
+                        <Plus className="w-3 h-3" /> Nueva
+                      </Button>
+                      <span className="ml-auto text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                        {items.length} {items.length === 1 ? "tarea" : "tareas"}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <div className="min-w-[110px] flex flex-col gap-1 shrink-0">
+                        <span
+                          className={cn(
+                            "text-sm leading-tight",
+                            isActive
+                              ? "font-bold text-foreground"
+                              : "font-semibold text-foreground/85",
+                          )}
+                        >
+                          {sec.title}
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          {sec.status && (
+                            <div onClick={(e) => e.stopPropagation()}>
+                              <StatusBadgeSelect
+                                value={sec.status}
+                                options={SPRINT_STATUS_OPTIONS}
+                                onChange={(v) =>
+                                  sprintStatusMut.mutate({ sprintId: sec.id, status: v })
+                                }
+                                disabled={sprintStatusMut.isPending}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {sec.range && (
+                        <div className="flex items-center gap-1.5 text-muted-foreground text-xs shrink-0">
+                          <CalendarIcon className="w-3.5 h-3.5" />
+                          <span className="font-medium">{renderRange(sec.range)}</span>
+                        </div>
+                      )}
+
+                      {(() => {
+                        const m = metricsBySprint.get(sec.id);
+                        if (!m) return <div className="flex-1" />;
+                        const cap = m.contracted_hours || m.team_capacity_hours || 0;
+                        const overEst = cap > 0 && m.estimated_hours > cap;
+                        const overReal = cap > 0 && m.real_hours > cap;
+                        const loadPct =
+                          cap > 0 ? Math.min(100, (m.estimated_hours / cap) * 100) : 0;
+                        const progressDen = m.estimated_hours > 0 ? m.estimated_hours : cap;
+                        const progressPct =
+                          progressDen > 0 ? Math.min(100, (m.real_hours / progressDen) * 100) : 0;
+                        const isEmpty = m.estimated_hours === 0 && m.real_hours === 0;
+                        const capTitle = `Capacidad contratada: ${fmtH(m.contracted_hours)}h${m.team_capacity_hours > 0 ? ` · Equipo: ${fmtH(m.team_capacity_hours)}h` : ""}`;
                         return (
-                          <div key={task.id}>
-                            <SprintTaskRow
-                              task={task}
-                              members={members}
-                              rollup={rollups?.[task.id]}
-                              typeById={typeById}
-                              onSelect={onSelectTask}
-                              onUpdate={onUpdateTask}
-                              selected={selectedIds.has(task.id)}
-                              onToggleSelected={toggleSelected}
-                            />
-                            {subs.length > 0 && (
-                              <div className="bg-muted/20 border-l-2 border-border ml-6">
-                                {subs.map((sub) => (
-                                  <SprintTaskRow
-                                    key={sub.id}
-                                    task={sub}
-                                    members={members}
-                                    rollup={rollups?.[sub.id]}
-                                    typeById={typeById}
-                                    onSelect={onSelectTask}
-                                    onUpdate={onUpdateTask}
-                                    selected={selectedIds.has(sub.id)}
-                                    onToggleSelected={toggleSelected}
-                                    isSubtask
-                                  />
-                                ))}
+                          <div
+                            className={cn(
+                              "flex-1 flex items-center justify-end gap-6 pl-4 border-l border-border/60",
+                              isEmpty && !isActive && "opacity-50",
+                            )}
+                          >
+                            {/* CARGA */}
+                            <div className="flex flex-col gap-1 w-32 shrink-0" title={capTitle}>
+                              <div className="flex justify-between text-[10px] font-semibold text-muted-foreground">
+                                <span className="tracking-wide">CARGA</span>
+                                <span>
+                                  {cap > 0 && m.estimated_hours > 0
+                                    ? `${Math.round((m.estimated_hours / cap) * 100)}%`
+                                    : "—"}
+                                </span>
                               </div>
+                              <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                                {m.estimated_hours > 0 && cap > 0 && (
+                                  <div
+                                    className={cn(
+                                      "h-full rounded-full transition-all",
+                                      overEst ? "bg-amber-500" : "bg-blue-500",
+                                    )}
+                                    style={{ width: `${loadPct}%` }}
+                                  />
+                                )}
+                              </div>
+                              <span className="text-[9px] text-muted-foreground">
+                                {m.estimated_hours > 0
+                                  ? `${fmtH(m.estimated_hours)}h de ${fmtH(cap)}h`
+                                  : cap > 0
+                                    ? `Sin estimar · ${fmtH(cap)}h`
+                                    : "Sin estimar"}
+                              </span>
+                            </div>
+
+                            {/* AVANCE */}
+                            <div
+                              className="flex flex-col gap-1 w-32 shrink-0"
+                              title="Horas reales cargadas vs estimadas"
+                            >
+                              <div className="flex justify-between text-[10px] font-semibold text-muted-foreground">
+                                <span className="tracking-wide">AVANCE</span>
+                                <span>
+                                  {progressDen > 0 && m.real_hours > 0
+                                    ? `${Math.round((m.real_hours / progressDen) * 100)}%`
+                                    : "—"}
+                                </span>
+                              </div>
+                              <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                                {m.real_hours > 0 && progressDen > 0 && (
+                                  <div
+                                    className={cn(
+                                      "h-full rounded-full transition-all",
+                                      overReal ? "bg-destructive" : "bg-primary",
+                                    )}
+                                    style={{ width: `${progressPct}%` }}
+                                  />
+                                )}
+                              </div>
+                              <span
+                                className={cn(
+                                  "text-[9px] text-right",
+                                  overReal
+                                    ? "text-destructive font-semibold"
+                                    : "text-muted-foreground",
+                                )}
+                              >
+                                Real: {fmtH(m.real_hours)}h
+                              </span>
+                            </div>
+
+                            {overReal && m.pending_tasks > 0 && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-7 px-2 text-[10px] border-destructive/40 text-destructive hover:bg-destructive/10 shrink-0"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  moveMut.mutate({ sprintId: sec.id });
+                                }}
+                                disabled={moveMut.isPending}
+                              >
+                                Mover {m.pending_tasks} →
+                              </Button>
                             )}
                           </div>
                         );
-                      })}
-                      {items.length === 0 && (
-                        <div className={`px-3 py-4 text-center text-[11px] text-muted-foreground ${activeId ? "bg-primary/[0.03]" : ""}`}>
-                          {activeId ? "Soltar aquí" : "Sin tareas"}
-                        </div>
-                      )}
-                    </div>
-                  </SortableContext>
-                </SprintDroppable>
-              )}
+                      })()}
 
-            </div>
-          );
-        };
+                      <span
+                        className={cn(
+                          "text-xs text-right min-w-[70px] shrink-0",
+                          items.length > 0
+                            ? "font-bold text-foreground"
+                            : "font-medium text-muted-foreground",
+                        )}
+                      >
+                        {items.length} {items.length === 1 ? "tarea" : "tareas"}
+                      </span>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-7 px-2 gap-1 text-[11px] font-medium text-primary hover:bg-primary/10 shrink-0"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!(openSprints[sec.id] ?? defaultOpen)) toggle(sec.id, defaultOpen);
+                          setTimeout(() => inputRefs.current[sec.id]?.focus(), 60);
+                        }}
+                      >
+                        <Plus className="w-3.5 h-3.5" /> Nueva tarea
+                      </Button>
+                    </>
+                  )}
+                </div>
+
+                {isOpen && (
+                  <SprintDroppable sectionId={sec.id} isOver={isOver}>
+                    <SortableContext
+                      items={items.map((t) => t.id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="divide-y divide-border">
+                        <form
+                          className="px-3 py-2 flex items-center gap-2 bg-muted/20"
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            const v = (newTitleBySprint[sec.id] ?? "").trim();
+                            if (!v) return;
+                            const typeId: string | null = typeBySprint[sec.id] ?? defaultTypeId;
+                            onCreateTask(v, sec.id === "unassigned" ? null : sec.id, typeId);
+                            setNewTitleBySprint((s) => ({ ...s, [sec.id]: "" }));
+                          }}
+                        >
+                          <Plus className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                          <Input
+                            ref={(el) => {
+                              inputRefs.current[sec.id] = el;
+                            }}
+                            value={newTitleBySprint[sec.id] ?? ""}
+                            onChange={(e) =>
+                              setNewTitleBySprint((s) => ({ ...s, [sec.id]: e.target.value }))
+                            }
+                            placeholder="Añadir tarea... (Enter)"
+                            className="border-0 shadow-none focus-visible:ring-0 px-0 h-7 bg-transparent text-sm flex-1"
+                          />
+                          {taskTypes.length > 0 && (
+                            <Select
+                              value={typeBySprint[sec.id] ?? defaultTypeId ?? undefined}
+                              onValueChange={(v) => setTypeBySprint((s) => ({ ...s, [sec.id]: v }))}
+                            >
+                              <SelectTrigger className="h-7 w-[130px] text-xs shrink-0">
+                                <SelectValue placeholder="Tipo" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {taskTypes.map((tt) => {
+                                  const Icon = getLucideIcon(tt.icon ?? "circle");
+                                  return (
+                                    <SelectItem key={tt.id} value={tt.id}>
+                                      <span className="flex items-center gap-1.5">
+                                        <Icon className="w-3.5 h-3.5" />
+                                        {tt.name}
+                                      </span>
+                                    </SelectItem>
+                                  );
+                                })}
+                              </SelectContent>
+                            </Select>
+                          )}
+                        </form>
+                        {items.map((task) => {
+                          const subs = childrenByParent.get(task.id) ?? [];
+                          return (
+                            <div key={task.id}>
+                              <SprintTaskRow
+                                task={task}
+                                members={members}
+                                rollup={rollups?.[task.id]}
+                                typeById={typeById}
+                                onSelect={onSelectTask}
+                                onUpdate={onUpdateTask}
+                                selected={selectedIds.has(task.id)}
+                                onToggleSelected={toggleSelected}
+                              />
+                              {subs.length > 0 && (
+                                <div className="bg-muted/20 border-l-2 border-border ml-6">
+                                  {subs.map((sub) => (
+                                    <SprintTaskRow
+                                      key={sub.id}
+                                      task={sub}
+                                      members={members}
+                                      rollup={rollups?.[sub.id]}
+                                      typeById={typeById}
+                                      onSelect={onSelectTask}
+                                      onUpdate={onUpdateTask}
+                                      selected={selectedIds.has(sub.id)}
+                                      onToggleSelected={toggleSelected}
+                                      isSubtask
+                                    />
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                        {items.length === 0 && (
+                          <div
+                            className={`px-3 py-4 text-center text-[11px] text-muted-foreground ${activeId ? "bg-primary/[0.03]" : ""}`}
+                          >
+                            {activeId ? "Soltar aquí" : "Sin tareas"}
+                          </div>
+                        )}
+                      </div>
+                    </SortableContext>
+                  </SprintDroppable>
+                )}
+              </div>
+            );
+          };
           return (
             <>
               {openSections.map((sec) => renderSection(sec))}
@@ -1326,7 +1497,15 @@ function SprintsView({
   );
 }
 
-function SprintDroppable({ sectionId, isOver, children }: { sectionId: string; isOver: boolean; children: React.ReactNode }) {
+function SprintDroppable({
+  sectionId,
+  isOver,
+  children,
+}: {
+  sectionId: string;
+  isOver: boolean;
+  children: React.ReactNode;
+}) {
   const { setNodeRef } = useDroppable({ id: `section:${sectionId}` });
   return (
     <div ref={setNodeRef} className={isOver ? "bg-primary/[0.04]" : ""}>
@@ -1351,7 +1530,16 @@ const SprintTaskRow = memo(function SprintTaskRow({
   rollup?: { estimate: number; logged: number };
   typeById?: Map<string, { id: string; name: string; icon: string | null; sort_order: number }>;
   onSelect: (id: string) => void;
-  onUpdate: (vars: { taskId: string; status?: string; assigneeId?: string | null; assigneeIds?: string[]; sprintId?: string | null; dueDate?: string | null; startDate?: string | null; totalEffortHours?: number | null }) => void;
+  onUpdate: (vars: {
+    taskId: string;
+    status?: string;
+    assigneeId?: string | null;
+    assigneeIds?: string[];
+    sprintId?: string | null;
+    dueDate?: string | null;
+    startDate?: string | null;
+    totalEffortHours?: number | null;
+  }) => void;
   selected?: boolean;
   onToggleSelected?: (id: string) => void;
   isSubtask?: boolean;
@@ -1409,9 +1597,7 @@ const SprintTaskRow = memo(function SprintTaskRow({
       )}
       <span
         className={`flex-1 text-sm font-medium truncate ${
-          done || cancelled
-            ? "line-through text-muted-foreground font-normal"
-            : "text-foreground"
+          done || cancelled ? "line-through text-muted-foreground font-normal" : "text-foreground"
         }`}
       >
         {task.title}
@@ -1504,9 +1690,13 @@ function EffortInputChip({
 
   const estimate = value ?? 0;
   const pct = estimate > 0 ? (logged / estimate) * 100 : logged > 0 ? 999 : 0;
-  let tone = "text-muted-foreground border-transparent hover:border-border hover:bg-background hover:text-foreground";
-  if (estimate > 0 && pct > 100) tone = "text-destructive bg-destructive/10 border-transparent hover:bg-destructive/15";
-  else if (estimate > 0 && pct >= 80) tone = "text-status-in-progress bg-status-in-progress/10 border-transparent hover:bg-status-in-progress/15";
+  let tone =
+    "text-muted-foreground border-transparent hover:border-border hover:bg-background hover:text-foreground";
+  if (estimate > 0 && pct > 100)
+    tone = "text-destructive bg-destructive/10 border-transparent hover:bg-destructive/15";
+  else if (estimate > 0 && pct >= 80)
+    tone =
+      "text-status-in-progress bg-status-in-progress/10 border-transparent hover:bg-status-in-progress/15";
   else if (estimate > 0) tone = "text-foreground bg-muted/60 border-transparent hover:bg-muted";
   else if (logged > 0) tone = "text-foreground bg-muted/60 border-transparent hover:bg-muted";
 
@@ -1553,9 +1743,7 @@ function EffortInputChip({
         >
           <Timer className="w-3.5 h-3.5" />
           <span>
-            {hasData
-              ? `${fmt(logged)}${value != null ? ` / ${fmt(value)}` : ""}`
-              : "Estimar"}
+            {hasData ? `${fmt(logged)}${value != null ? ` / ${fmt(value)}` : ""}` : "Estimar"}
           </span>
         </button>
       </PopoverTrigger>
@@ -1621,7 +1809,6 @@ function EffortInputChip({
           </Button>
         </div>
       </PopoverContent>
-
     </Popover>
   );
 }
@@ -1693,7 +1880,6 @@ function DateChip({
   );
 }
 
-
 type PhaseRow = {
   id: string;
   name: string;
@@ -1733,13 +1919,20 @@ function PhasesView({
   scopedPhaseId?: string | null;
   onSelectTask: (id: string) => void;
   onCreateTask: (title: string, phaseId: string | null) => void;
-  onUpdateTask: (vars: { taskId: string; status?: string; assigneeId?: string | null; assigneeIds?: string[] }) => void;
+  onUpdateTask: (vars: {
+    taskId: string;
+    status?: string;
+    assigneeId?: string | null;
+    assigneeIds?: string[];
+  }) => void;
 }) {
   const qc = useQueryClient();
   const updatePhaseStatusFn = useServerFn(updatePhaseStatus);
   const phaseStatusMut = useMutation({
     mutationFn: (vars: { phaseId: string; status: string }) =>
-      updatePhaseStatusFn({ data: { phaseId: vars.phaseId, status: vars.status as "sin_iniciar" } }),
+      updatePhaseStatusFn({
+        data: { phaseId: vars.phaseId, status: vars.status as "sin_iniciar" },
+      }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["phases"] });
       toast.success("Estado de la fase actualizado");
@@ -1760,12 +1953,9 @@ function PhasesView({
     return map;
   }, [tasks]);
 
-  const toggle = (id: string) =>
-    setOpenPhases((s) => ({ ...s, [id]: !(s[id] ?? true) }));
+  const toggle = (id: string) => setOpenPhases((s) => ({ ...s, [id]: !(s[id] ?? true) }));
 
-  const visiblePhases = scopedPhaseId
-    ? phases.filter((p) => p.id === scopedPhaseId)
-    : phases;
+  const visiblePhases = scopedPhaseId ? phases.filter((p) => p.id === scopedPhaseId) : phases;
 
   const sections = [
     ...visiblePhases.map((p) => ({
@@ -1774,7 +1964,7 @@ function PhasesView({
       range:
         p.start_date && p.end_date
           ? `${p.start_date} → ${p.end_date}`
-          : p.start_date ?? p.end_date ?? "",
+          : (p.start_date ?? p.end_date ?? ""),
       status: p.status,
       isTicketInbox: !!p.is_ticket_inbox,
     })),
@@ -1801,7 +1991,12 @@ function PhasesView({
               role="button"
               tabIndex={0}
               onClick={() => toggle(sec.id)}
-              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(sec.id); } }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  toggle(sec.id);
+                }
+              }}
               className={`w-full flex items-center gap-2 px-3 py-2 text-left cursor-pointer select-none ${
                 sec.isTicketInbox
                   ? "bg-amber-500/10 hover:bg-amber-500/15"
@@ -1813,7 +2008,9 @@ function PhasesView({
               ) : (
                 <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
               )}
-              {sec.isTicketInbox && <Ticket className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />}
+              {sec.isTicketInbox && (
+                <Ticket className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+              )}
               <span className="text-sm font-medium">{sec.title}</span>
               {sec.isTicketInbox && (
                 <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-700 dark:text-amber-300 font-semibold">
@@ -1832,7 +2029,8 @@ function PhasesView({
                 <span className="text-xs text-muted-foreground">{sec.range}</span>
               )}
               <span className="ml-auto text-xs text-muted-foreground">
-                {items.length} {items.length === 1 ? "ticket" : sec.isTicketInbox ? "tickets" : "tareas"}
+                {items.length}{" "}
+                {items.length === 1 ? "ticket" : sec.isTicketInbox ? "tickets" : "tareas"}
               </span>
             </div>
 
@@ -1880,7 +2078,12 @@ function PhasesView({
                       >
                         {task.title}
                       </span>
-                      <SlaDot target={task.sla_target_resolution_at ?? task.sla_target_response_at ?? null} done={isCompleted(task) || isCancelled(task)} />
+                      <SlaDot
+                        target={
+                          task.sla_target_resolution_at ?? task.sla_target_response_at ?? null
+                        }
+                        done={isCompleted(task) || isCancelled(task)}
+                      />
                       {task.due_date && (
                         <span className="text-[11px] text-muted-foreground inline-flex items-center gap-1">
                           <CalendarIcon className="w-3 h-3" /> {formatDueShort(task.due_date)}
@@ -1897,7 +2100,6 @@ function PhasesView({
                   ))}
               </div>
             )}
-
           </div>
         );
       })}
@@ -1930,7 +2132,3 @@ function SlaDot({ target, done }: { target: string | null; done: boolean }) {
     </span>
   );
 }
-
-
-
-

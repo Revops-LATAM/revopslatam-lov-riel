@@ -14,9 +14,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
  */
 export const getFinancePaymentsBundle = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ workspaceId: z.string().uuid() }).parse(input),
-  )
+  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const workspaceId = data.workspaceId;
 
@@ -87,7 +85,9 @@ export const getFinancePaymentsBundle = createServerFn({ method: "GET" })
 
     const dteConfigPromise = context.supabase
       .from("workspace_dte_config")
-      .select("workspace_id, provider, ambiente, rut_emisor, resolucion_sii, fecha_resolucion, activo, updated_at")
+      .select(
+        "workspace_id, provider, ambiente, rut_emisor, resolucion_sii, fecha_resolucion, activo, updated_at",
+      )
       .eq("workspace_id", workspaceId)
       .maybeSingle()
       .then(async ({ data: row, error }) => {
@@ -104,30 +104,33 @@ export const getFinancePaymentsBundle = createServerFn({ method: "GET" })
         return {
           ...row,
           api_key: null as string | null,
-          api_key_preview: (k ? (k.length > 4 ? `••••${k.slice(-4)}` : "••••") : null) as `••••${string}` | null,
+          api_key_preview: (k ? (k.length > 4 ? `••••${k.slice(-4)}` : "••••") : null) as
+            | `••••${string}`
+            | null,
           has_api_key: !!k,
         };
       });
 
-    const ufRatePromise = Promise.resolve(context.supabase
-      .from("currency_rates")
-      .select("rate_to_base, rate_date, updated_at")
-      .eq("workspace_id", workspaceId)
-      .eq("currency", "UF")
-      .eq("base_currency", "CLP")
-      .order("rate_date", { ascending: false })
-      .limit(1)
-      .maybeSingle()
-      .then(({ data: row, error }) => {
-        if (error) throw new Error(error.message);
-        if (!row) return null;
-        return {
-          valor: Number(row.rate_to_base),
-          fecha: String(row.rate_date).slice(0, 10),
-          updatedAt: row.updated_at,
-        };
-      }))
-      .catch(() => null);
+    const ufRatePromise = Promise.resolve(
+      context.supabase
+        .from("currency_rates")
+        .select("rate_to_base, rate_date, updated_at")
+        .eq("workspace_id", workspaceId)
+        .eq("currency", "UF")
+        .eq("base_currency", "CLP")
+        .order("rate_date", { ascending: false })
+        .limit(1)
+        .maybeSingle()
+        .then(({ data: row, error }) => {
+          if (error) throw new Error(error.message);
+          if (!row) return null;
+          return {
+            valor: Number(row.rate_to_base),
+            fecha: String(row.rate_date).slice(0, 10),
+            updatedAt: row.updated_at,
+          };
+        }),
+    ).catch(() => null);
 
     const [payments, invoices, dteConfig, ufRate] = await Promise.all([
       paymentsPromise,

@@ -20,7 +20,6 @@ export const listTasks = createServerFn({ method: "GET" })
     return tasks ?? [];
   });
 
-
 export const getTask = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
@@ -64,10 +63,6 @@ export const resolveTaskLocation = createServerFn({ method: "GET" })
       area: project.area ?? "operations",
     };
   });
-
-
-
-
 
 export const createTask = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -184,7 +179,6 @@ export const createTask = createServerFn({ method: "POST" })
     return task;
   });
 
-
 export const updateTask = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
@@ -209,18 +203,50 @@ export const updateTask = createServerFn({ method: "POST" })
         submitterEmail: z.string().trim().email().max(255).nullable().optional(),
         requestType: z.enum(["incidencia", "requerimiento"]).nullable().optional(),
         severity: z.enum(["normal", "urgente_critico"]).nullable().optional(),
-        meetingStartTime: z.string().regex(/^\d{2}:\d{2}(:\d{2})?$/).nullable().optional(),
-        meetingDurationMinutes: z.number().int().min(1).max(24 * 60).nullable().optional(),
+        meetingStartTime: z
+          .string()
+          .regex(/^\d{2}:\d{2}(:\d{2})?$/)
+          .nullable()
+          .optional(),
+        meetingDurationMinutes: z
+          .number()
+          .int()
+          .min(1)
+          .max(24 * 60)
+          .nullable()
+          .optional(),
         meetingTimezone: z.string().min(1).max(64).nullable().optional(),
       })
       .parse(input),
-
   )
   .handler(async ({ data, context }) => {
     const { supabase } = context;
-    const { taskId, assigneeId, assigneeIds, dueDate, startDate, sprintId, phaseId, taskTypeId, statusId, status, effortMode, totalEffortHours, submitterEmail, requestType, severity, meetingStartTime, meetingDurationMinutes, meetingTimezone, ...rest } = data;
-    const uniqueAssigneeIds = assigneeIds !== undefined ? Array.from(new Set(assigneeIds)) : undefined;
-    const syncedAssigneeIds = uniqueAssigneeIds ?? (assigneeId !== undefined ? (assigneeId ? [assigneeId] : []) : undefined);
+    const {
+      taskId,
+      assigneeId,
+      assigneeIds,
+      dueDate,
+      startDate,
+      sprintId,
+      phaseId,
+      taskTypeId,
+      statusId,
+      status,
+      effortMode,
+      totalEffortHours,
+      submitterEmail,
+      requestType,
+      severity,
+      meetingStartTime,
+      meetingDurationMinutes,
+      meetingTimezone,
+      ...rest
+    } = data;
+    const uniqueAssigneeIds =
+      assigneeIds !== undefined ? Array.from(new Set(assigneeIds)) : undefined;
+    const syncedAssigneeIds =
+      uniqueAssigneeIds ??
+      (assigneeId !== undefined ? (assigneeId ? [assigneeId] : []) : undefined);
 
     let resolvedStatusId: string | undefined = statusId ?? undefined;
     if (!resolvedStatusId && status) {
@@ -229,7 +255,8 @@ export const updateTask = createServerFn({ method: "POST" })
         .select("project_id, projects:projects(workspace_id), task_type_id")
         .eq("id", taskId)
         .maybeSingle();
-      const wsId = (row as { projects?: { workspace_id?: string } | null } | null)?.projects?.workspace_id;
+      const wsId = (row as { projects?: { workspace_id?: string } | null } | null)?.projects
+        ?.workspace_id;
       const ttId = (row as { task_type_id?: string | null } | null)?.task_type_id;
       if (wsId) {
         let q = supabase
@@ -262,7 +289,9 @@ export const updateTask = createServerFn({ method: "POST" })
       ...(requestType !== undefined ? { request_type: requestType } : {}),
       ...(severity !== undefined ? { severity } : {}),
       ...(meetingStartTime !== undefined ? { meeting_start_time: meetingStartTime } : {}),
-      ...(meetingDurationMinutes !== undefined ? { meeting_duration_minutes: meetingDurationMinutes } : {}),
+      ...(meetingDurationMinutes !== undefined
+        ? { meeting_duration_minutes: meetingDurationMinutes }
+        : {}),
       ...(meetingTimezone !== undefined ? { meeting_timezone: meetingTimezone } : {}),
     } as never;
     if (Object.keys(patch as Record<string, unknown>).length > 0) {
@@ -296,8 +325,6 @@ export const updateTask = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-
-
 export const reorderTasks = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
@@ -325,7 +352,10 @@ export const reorderTasks = createServerFn({ method: "POST" })
       data.updates.map(async (u) => {
         const patch: { position: number; status_id?: string } = { position: u.position };
         if (u.statusId) patch.status_id = u.statusId;
-        const { error } = await supabase.from("tasks").update(patch as never).eq("id", u.taskId);
+        const { error } = await supabase
+          .from("tasks")
+          .update(patch as never)
+          .eq("id", u.taskId);
         if (error) throw new Error(error.message);
       }),
     );
@@ -350,9 +380,7 @@ export const listMyTasks = createServerFn({ method: "GET" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
 
-    let projectsQuery = supabase
-      .from("projects")
-      .select("id, name, color, workspace_id");
+    let projectsQuery = supabase.from("projects").select("id, name, color, workspace_id");
     if (data.workspaceId) {
       projectsQuery = projectsQuery.eq("workspace_id", data.workspaceId);
     }
@@ -372,7 +400,9 @@ export const listMyTasks = createServerFn({ method: "GET" })
       .from("task_assignees")
       .select("task_id")
       .eq("user_id", userId);
-    const myTaskIds = Array.from(new Set((myAssignments ?? []).map((r) => (r as { task_id: string }).task_id)));
+    const myTaskIds = Array.from(
+      new Set((myAssignments ?? []).map((r) => (r as { task_id: string }).task_id)),
+    );
     if (myTaskIds.length === 0) return [];
 
     // Chunk `in("id", myTaskIds)` to keep URLs short — users can have 1000+
@@ -406,20 +436,14 @@ export const listMyTasks = createServerFn({ method: "GET" })
     }
     const tasks = tasksAcc;
 
-
-
     const byId = new Map((projects ?? []).map((p) => [p.id, p]));
     return (tasks ?? []).map((t) => {
       const project = byId.get(t.project_id) ?? null;
-      const ws = project ? wsById.get(project.workspace_id) ?? null : null;
+      const ws = project ? (wsById.get(project.workspace_id) ?? null) : null;
       return {
         ...t,
-        project: project
-          ? { id: project.id, name: project.name, color: project.color }
-          : null,
-        workspace: ws
-          ? { id: ws.id, name: ws.name, slug: ws.slug, color: ws.color }
-          : null,
+        project: project ? { id: project.id, name: project.name, color: project.color } : null,
+        workspace: ws ? { id: ws.id, name: ws.name, slug: ws.slug, color: ws.color } : null,
       };
     });
   });
@@ -550,7 +574,10 @@ export const createTaskRecurrence = createServerFn({ method: "POST" })
         weekdays: z.array(z.number().int().min(0).max(6)).optional(),
         endMode: z.enum(["count", "until"]),
         count: z.number().int().min(2).max(100).optional(),
-        until: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+        until: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .optional(),
       })
       .parse(input),
   )
@@ -651,10 +678,9 @@ export const createTaskRecurrence = createServerFn({ method: "POST" })
       position: position++,
     }));
 
-    const { data: inserted, error: insErr } = await supabase.rpc(
-      "insert_task_recurrence_batch",
-      { _rows: insertPayload as never },
-    );
+    const { data: inserted, error: insErr } = await supabase.rpc("insert_task_recurrence_batch", {
+      _rows: insertPayload as never,
+    });
     if (insErr) throw new Error(insErr.message);
     const newIds = ((inserted ?? []) as Array<{ id: string }>).map((r) => r.id);
 
@@ -672,10 +698,8 @@ export const createTaskRecurrence = createServerFn({ method: "POST" })
       }
     }
 
-
     return { created: newIds.length };
   });
-
 
 export const setTaskEstimateForUser = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -702,7 +726,10 @@ export const setTaskEstimateForUser = createServerFn({ method: "POST" })
       .from("task_estimates")
       .select("hours")
       .eq("task_id", data.taskId);
-    const total = (rows ?? []).reduce((acc, r) => acc + Number((r as { hours: number }).hours ?? 0), 0);
+    const total = (rows ?? []).reduce(
+      (acc, r) => acc + Number((r as { hours: number }).hours ?? 0),
+      0,
+    );
     await supabase
       .from("tasks")
       .update({ total_effort_hours: Math.round(total * 100) / 100 } as never)

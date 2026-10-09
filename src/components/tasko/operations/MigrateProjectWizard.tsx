@@ -149,22 +149,20 @@ export function MigrateProjectWizard({
 
   const step1Valid =
     (accountMode === "existing" ? !!accountId : newAccountName.trim().length > 0) &&
-    (contractMode === "existing"
-      ? !!existingContractId
-      : ncName.trim().length > 0 && !!ncStart);
+    (contractMode === "existing" ? !!existingContractId : ncName.trim().length > 0 && !!ncStart);
   const step2Valid = pName.trim().length > 0;
 
   const mutation = useMutation({
     mutationFn: async () => {
       const account =
         accountMode === "existing"
-          ? ({ kind: "existing" as const, accountId })
-          : ({ kind: "new" as const, name: newAccountName.trim() });
+          ? { kind: "existing" as const, accountId }
+          : { kind: "new" as const, name: newAccountName.trim() };
 
       const contract =
         contractMode === "existing"
-          ? ({ kind: "existing" as const, contractId: existingContractId })
-          : ({
+          ? { kind: "existing" as const, contractId: existingContractId }
+          : {
               kind: "new" as const,
               name: ncName.trim(),
               type: ncType,
@@ -173,7 +171,7 @@ export function MigrateProjectWizard({
               endDate: ncEnd || null,
               hoursPerSprint: ncHoursPerSprint ? Number(ncHoursPerSprint) : null,
               vendedorId: ncVendedor || null,
-            });
+            };
 
       return migrateFn({
         data: {
@@ -235,8 +233,8 @@ export function MigrateProjectWizard({
         <DialogHeader>
           <DialogTitle>Migrar proyecto desde Wrike</DialogTitle>
           <DialogDescription>
-            Atajo de marcha blanca. Crea proyecto + contrato ya en curso, sin pasar por
-            proyección ni handoff. Paso {step} de 3.
+            Atajo de marcha blanca. Crea proyecto + contrato ya en curso, sin pasar por proyección
+            ni handoff. Paso {step} de 3.
           </DialogDescription>
         </DialogHeader>
 
@@ -363,11 +361,7 @@ export function MigrateProjectWizard({
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs">Fin (opcional)</Label>
-                    <Input
-                      type="date"
-                      value={ncEnd}
-                      onChange={(e) => setNcEnd(e.target.value)}
-                    />
+                    <Input type="date" value={ncEnd} onChange={(e) => setNcEnd(e.target.value)} />
                   </div>
                   {ncType === "recurrente" && (
                     <div className="space-y-1">
@@ -448,19 +442,11 @@ export function MigrateProjectWizard({
               </div>
               <div className="space-y-1">
                 <Label>Inicio de delivery</Label>
-                <Input
-                  type="date"
-                  value={pInicio}
-                  onChange={(e) => setPInicio(e.target.value)}
-                />
+                <Input type="date" value={pInicio} onChange={(e) => setPInicio(e.target.value)} />
               </div>
               <div className="space-y-1">
                 <Label>Entrega objetivo</Label>
-                <Input
-                  type="date"
-                  value={pEntrega}
-                  onChange={(e) => setPEntrega(e.target.value)}
-                />
+                <Input type="date" value={pEntrega} onChange={(e) => setPEntrega(e.target.value)} />
               </div>
               <div className="space-y-1 col-span-2">
                 <Label>Horas totales presupuestadas</Label>
@@ -508,19 +494,11 @@ export function MigrateProjectWizard({
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs">Inicio</Label>
-                    <Input
-                      type="date"
-                      value={sStart}
-                      onChange={(e) => setSStart(e.target.value)}
-                    />
+                    <Input type="date" value={sStart} onChange={(e) => setSStart(e.target.value)} />
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs">Fin</Label>
-                    <Input
-                      type="date"
-                      value={sEnd}
-                      onChange={(e) => setSEnd(e.target.value)}
-                    />
+                    <Input type="date" value={sEnd} onChange={(e) => setSEnd(e.target.value)} />
                   </div>
                 </div>
               )}
@@ -543,11 +521,7 @@ export function MigrateProjectWizard({
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs">Fecha objetivo</Label>
-                    <Input
-                      type="date"
-                      value={hDue}
-                      onChange={(e) => setHDue(e.target.value)}
-                    />
+                    <Input type="date" value={hDue} onChange={(e) => setHDue(e.target.value)} />
                   </div>
                 </div>
               )}
@@ -563,8 +537,8 @@ export function MigrateProjectWizard({
                 onChange={(e) => setHorasPrev(e.target.value)}
               />
               <p className="text-xs text-muted-foreground">
-                Se registra como un único ajuste imputado al lead, para que el contador de
-                horas consumidas vs contratadas quede correcto desde el día 1.
+                Se registra como un único ajuste imputado al lead, para que el contador de horas
+                consumidas vs contratadas quede correcto desde el día 1.
               </p>
             </section>
           </div>

@@ -2,7 +2,14 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const CAMPAIGN_STATUSES = ["idea", "planning", "in_execution", "live", "measuring", "closed"] as const;
+const CAMPAIGN_STATUSES = [
+  "idea",
+  "planning",
+  "in_execution",
+  "live",
+  "measuring",
+  "closed",
+] as const;
 
 export const listCampaigns = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -58,8 +65,14 @@ export const createCampaign = createServerFn({ method: "POST" })
         briefMd: z.string().max(20000).optional(),
         kpiLabel: z.string().max(80).optional(),
         kpiTarget: z.number().optional(),
-        launchDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-        endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+        launchDate: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .optional(),
+        endDate: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .optional(),
         budget: z.number().nonnegative().optional(),
         currency: z.string().max(6).optional(),
         channels: z.array(z.string()).optional(),
@@ -108,8 +121,16 @@ export const updateCampaign = createServerFn({ method: "POST" })
         kpiLabel: z.string().max(80).nullable().optional(),
         kpiTarget: z.number().nullable().optional(),
         kpiActual: z.number().nullable().optional(),
-        launchDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
-        endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+        launchDate: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .nullable()
+          .optional(),
+        endDate: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .nullable()
+          .optional(),
         budget: z.number().nonnegative().nullable().optional(),
         currency: z.string().max(6).optional(),
         channels: z.array(z.string()).optional(),
@@ -185,7 +206,9 @@ export const getMarketingDashboard = createServerFn({ method: "GET" })
     const [campaignsRes, upcomingRes, overdueRes] = await Promise.all([
       supabase
         .from("campaigns")
-        .select("id, name, status, launch_date, end_date, color, kpi_label, kpi_target, kpi_actual, channels")
+        .select(
+          "id, name, status, launch_date, end_date, color, kpi_label, kpi_target, kpi_actual, channels",
+        )
         .eq("workspace_id", data.workspaceId)
         .eq("archived", false)
         .in("status", ["planning", "in_execution", "live", "measuring"])

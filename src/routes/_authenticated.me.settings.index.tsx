@@ -49,14 +49,18 @@ function MePersonal() {
         <h2 className="text-sm font-semibold">Datos personales</h2>
         <div className="space-y-3">
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-xs">Email</Label>
+            <Label htmlFor="email" className="text-xs">
+              Email
+            </Label>
             <Input id="email" value={profile.data?.email ?? ""} disabled />
             <p className="text-[11px] text-muted-foreground">
               El email se gestiona desde tu cuenta de autenticación.
             </p>
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="fullName" className="text-xs">Nombre completo</Label>
+            <Label htmlFor="fullName" className="text-xs">
+              Nombre completo
+            </Label>
             <Input
               id="fullName"
               value={fullName}
@@ -65,7 +69,9 @@ function MePersonal() {
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="avatarUrl" className="text-xs">URL de avatar</Label>
+            <Label htmlFor="avatarUrl" className="text-xs">
+              URL de avatar
+            </Label>
             <Input
               id="avatarUrl"
               value={avatarUrl}

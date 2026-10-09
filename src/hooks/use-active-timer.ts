@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import {
-  getActiveTimer,
-  startTimer,
-  stopTimer,
-} from "@/lib/api/tasko.functions";
+import { getActiveTimer, startTimer, stopTimer } from "@/lib/api/tasko.functions";
 import { authUserQO } from "@/lib/api/auth.queries";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";

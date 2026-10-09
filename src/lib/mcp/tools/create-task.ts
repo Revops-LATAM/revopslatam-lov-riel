@@ -14,8 +14,16 @@ export default defineTool({
     sprintId: z.string().uuid().optional().describe("Optional sprint (use list_sprints first)."),
     phaseId: z.string().uuid().optional().describe("Optional phase id."),
     priority: z.enum(["none", "low", "medium", "high", "urgent"]).optional(),
-    startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe("Start date YYYY-MM-DD."),
-    dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe("Due date YYYY-MM-DD."),
+    startDate: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .optional()
+      .describe("Start date YYYY-MM-DD."),
+    dueDate: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .optional()
+      .describe("Due date YYYY-MM-DD."),
     estimatedHours: z.number().min(0).max(999).optional().describe("Estimated effort in hours."),
     assigneeIds: z
       .array(z.string().uuid())
@@ -24,7 +32,12 @@ export default defineTool({
       .describe("User ids to assign (omit to leave unassigned; defaults to nobody)."),
     assignToMe: z.boolean().optional().describe("Assign the task to the signed-in user."),
   },
-  annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
+  annotations: {
+    readOnlyHint: false,
+    destructiveHint: false,
+    idempotentHint: false,
+    openWorldHint: false,
+  },
   handler: async (input, ctx) => {
     if (!ctx.isAuthenticated()) return notAuthed();
     const sb = sbForUser(ctx);
@@ -47,7 +60,6 @@ export default defineTool({
       .limit(1)
       .maybeSingle();
     if (!defStatus?.id) return fail("No default task status configured in this workspace.");
-
 
     const assignees = Array.from(
       new Set([...(input.assigneeIds ?? []), ...(input.assignToMe && userId ? [userId] : [])]),
@@ -72,17 +84,17 @@ export default defineTool({
         assignee_id: assignees[0] ?? null,
         created_by: userId,
       })
-      .select("id, title, status, priority, start_date, due_date, total_effort_hours, sprint_id, project_id")
+      .select(
+        "id, title, status, priority, start_date, due_date, total_effort_hours, sprint_id, project_id",
+      )
       .single();
     if (error) return fail(error.message);
 
     if (assignees.length > 0) {
-      await sb
-        .from("task_assignees")
-        .upsert(
-          assignees.map((u) => ({ task_id: task.id, user_id: u, is_primary: false })),
-          { onConflict: "task_id,user_id", ignoreDuplicates: true },
-        );
+      await sb.from("task_assignees").upsert(
+        assignees.map((u) => ({ task_id: task.id, user_id: u, is_primary: false })),
+        { onConflict: "task_id,user_id", ignoreDuplicates: true },
+      );
     }
 
     return ok({ task, assignees }, { task, assignees });

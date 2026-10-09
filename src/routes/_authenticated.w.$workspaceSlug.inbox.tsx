@@ -111,10 +111,7 @@ function InboxPage() {
         ) : listQ.isLoading ? (
           <div className="text-sm text-muted-foreground">Cargando eventos…</div>
         ) : !listQ.data || listQ.data.length === 0 ? (
-          <EmptyZero
-            onSync={() => syncMut.mutate()}
-            syncing={syncMut.isPending}
-          />
+          <EmptyZero onSync={() => syncMut.mutate()} syncing={syncMut.isPending} />
         ) : (
           <EventsList events={listQ.data} workspaceId={ws.id} />
         )}
@@ -130,10 +127,7 @@ function EmptyConnect({ workspaceSlug }: { workspaceSlug: string }) {
       <p className="text-sm text-muted-foreground mb-3">
         Conecta Google Calendar para empezar a clasificar tus reuniones.
       </p>
-      <a
-        href={`/w/${workspaceSlug}/settings`}
-        className="text-sm text-primary hover:underline"
-      >
+      <a href={`/w/${workspaceSlug}/settings`} className="text-sm text-primary hover:underline">
         Ir a Configuración
       </a>
     </div>
@@ -148,9 +142,7 @@ function EmptyZero({ onSync, syncing }: { onSync: () => void; syncing: boolean }
         No hay eventos pendientes por clasificar.
       </p>
       <Button size="sm" variant="outline" onClick={onSync} disabled={syncing}>
-        <RefreshCcw
-          className={`w-3.5 h-3.5 mr-1.5 ${syncing ? "animate-spin" : ""}`}
-        />
+        <RefreshCcw className={`w-3.5 h-3.5 mr-1.5 ${syncing ? "animate-spin" : ""}`} />
         Sincronizar ahora
       </Button>
     </div>
@@ -179,13 +171,7 @@ type EventRow = {
   preclassified: Preclassified;
 };
 
-function EventsList({
-  events,
-  workspaceId,
-}: {
-  events: EventRow[];
-  workspaceId: string;
-}) {
+function EventsList({ events, workspaceId }: { events: EventRow[]; workspaceId: string }) {
   const fetchProjects = useServerFn(listMyCalendarProjects);
   const projectsQ = useQuery({
     queryKey: ["my-calendar-projects"],
@@ -255,10 +241,7 @@ function EventCard({
 
   const realMinutes = Math.max(
     1,
-    Math.round(
-      (new Date(event.end_at).getTime() - new Date(event.start_at).getTime()) /
-        60000,
-    ),
+    Math.round((new Date(event.end_at).getTime() - new Date(event.start_at).getTime()) / 60000),
   );
 
   const isPast = new Date(event.end_at).getTime() <= Date.now();
@@ -337,8 +320,7 @@ function EventCard({
 
   const start = new Date(event.start_at);
   const end = new Date(event.end_at);
-  const fmt = (d: Date) =>
-    d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const fmt = (d: Date) => d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   const time = event.is_all_day ? "Todo el día" : `${fmt(start)} – ${fmt(end)}`;
 
   const isCustom = !DURATION_PRESETS.includes(minutes);
@@ -348,9 +330,7 @@ function EventCard({
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="text-sm font-medium truncate">
-              {event.title ?? "(Sin título)"}
-            </h3>
+            <h3 className="text-sm font-medium truncate">{event.title ?? "(Sin título)"}</h3>
             {event.google_recurring_event_id && (
               <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
                 Recurrente
@@ -378,9 +358,7 @@ function EventCard({
                 {event.attendees_count}
               </span>
             )}
-            {event.organizer_email && (
-              <span className="truncate">por {event.organizer_email}</span>
-            )}
+            {event.organizer_email && <span className="truncate">por {event.organizer_email}</span>}
             {event.html_link && (
               <a
                 href={event.html_link}
@@ -430,10 +408,7 @@ function EventCard({
           </SelectTrigger>
           <SelectContent>
             {(() => {
-              const byWs = new Map<
-                string,
-                { name: string; items: typeof projects }
-              >();
+              const byWs = new Map<string, { name: string; items: typeof projects }>();
               for (const p of projects) {
                 if (!byWs.has(p.workspace_id)) {
                   byWs.set(p.workspace_id, {
@@ -480,11 +455,7 @@ function EventCard({
           anchorsQ.data.sprints.length > 0 &&
           (() => {
             const evDate = new Date(event.start_at);
-            const evDay = new Date(
-              evDate.getFullYear(),
-              evDate.getMonth(),
-              evDate.getDate(),
-            );
+            const evDay = new Date(evDate.getFullYear(), evDate.getMonth(), evDate.getDate());
             const sprints = anchorsQ.data.sprints;
             const inRange = sprints.filter((s) => {
               const sd = new Date(s.start_date);
@@ -493,8 +464,7 @@ function EventCard({
             });
             const outRange = sprints.filter((s) => !inRange.includes(s));
             const selectedSprint = sprints.find((s) => s.id === sprintId);
-            const isOutOfRange =
-              !!selectedSprint && !inRange.includes(selectedSprint);
+            const isOutOfRange = !!selectedSprint && !inRange.includes(selectedSprint);
             return (
               <div className="flex items-center gap-1 flex-1 min-w-[160px]">
                 <Select value={sprintId} onValueChange={setSprintId}>
@@ -504,8 +474,7 @@ function EventCard({
                   <SelectContent>
                     {inRange.map((s) => (
                       <SelectItem key={s.id} value={s.id}>
-                        ✓ Sprint {s.sprint_number} ·{" "}
-                        {formatDateCL(s.start_date)} –{" "}
+                        ✓ Sprint {s.sprint_number} · {formatDateCL(s.start_date)} –{" "}
                         {formatDateCL(s.end_date)}
                       </SelectItem>
                     ))}
@@ -516,8 +485,7 @@ function EventCard({
                     )}
                     {outRange.map((s) => (
                       <SelectItem key={s.id} value={s.id}>
-                        Sprint {s.sprint_number} ·{" "}
-                        {formatDateCL(s.start_date)} –{" "}
+                        Sprint {s.sprint_number} · {formatDateCL(s.start_date)} –{" "}
                         {formatDateCL(s.end_date)}
                       </SelectItem>
                     ))}
@@ -585,9 +553,7 @@ function EventCard({
                   min={1}
                   max={1440}
                   value={minutes}
-                  onChange={(e) =>
-                    setMinutes(Math.max(1, parseInt(e.target.value || "0", 10)))
-                  }
+                  onChange={(e) => setMinutes(Math.max(1, parseInt(e.target.value || "0", 10)))}
                   className="h-8 text-xs w-20"
                 />
                 <span className="text-[11px] text-muted-foreground">min</span>
@@ -608,9 +574,7 @@ function EventCard({
           disabled={!projectId || confirmMut.isPending}
         >
           <Check className="w-3.5 h-3.5 mr-1" />
-          {isPast
-            ? `Confirmar ${formatMinutes(minutes)}`
-            : `Agendar ${formatMinutes(minutes)}`}
+          {isPast ? `Confirmar ${formatMinutes(minutes)}` : `Agendar ${formatMinutes(minutes)}`}
         </Button>
         {isPast && (
           <Button

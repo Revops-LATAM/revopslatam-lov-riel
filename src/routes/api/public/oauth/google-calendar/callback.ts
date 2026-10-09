@@ -25,9 +25,7 @@ function verifyState(state: string): {
 }
 
 function htmlPage(title: string, message: string, redirectUrl?: string) {
-  const meta = redirectUrl
-    ? `<meta http-equiv="refresh" content="2;url=${redirectUrl}" />`
-    : "";
+  const meta = redirectUrl ? `<meta http-equiv="refresh" content="2;url=${redirectUrl}" />` : "";
   return new Response(
     `<!doctype html><html><head><meta charset="utf-8"/>${meta}<title>${title}</title>
 <style>body{font-family:system-ui,sans-serif;background:#0b0b0c;color:#e7e7ea;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
@@ -41,9 +39,7 @@ ${redirectUrl ? `<p style="margin-top:12px"><a href="${redirectUrl}">Volver</a><
   );
 }
 
-export const Route = createFileRoute(
-  "/api/public/oauth/google-calendar/callback",
-)({
+export const Route = createFileRoute("/api/public/oauth/google-calendar/callback")({
   server: {
     handlers: {
       GET: async ({ request }) => {
@@ -99,15 +95,11 @@ export const Route = createFileRoute(
         };
 
         // Get user email
-        const uiRes = await fetch(
-          "https://www.googleapis.com/oauth2/v2/userinfo",
-          { headers: { Authorization: `Bearer ${tokens.access_token}` } },
-        );
+        const uiRes = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+          headers: { Authorization: `Bearer ${tokens.access_token}` },
+        });
         if (!uiRes.ok) {
-          return htmlPage(
-            "Error de Google",
-            "No se pudo leer el email de la cuenta.",
-          );
+          return htmlPage("Error de Google", "No se pudo leer el email de la cuenta.");
         }
         const userInfo = (await uiRes.json()) as { email: string };
 
@@ -116,30 +108,26 @@ export const Route = createFileRoute(
           process.env.SUPABASE_SERVICE_ROLE_KEY!,
         );
 
-        const expiresAt = new Date(
-          Date.now() + (tokens.expires_in - 60) * 1000,
-        ).toISOString();
+        const expiresAt = new Date(Date.now() + (tokens.expires_in - 60) * 1000).toISOString();
         const scopes = tokens.scope.split(" ").filter(Boolean);
 
         // Upsert connection
-        const { error: upErr } = await admin
-          .from("user_calendar_connections")
-          .upsert(
-            {
-              user_id: payload.uid,
-              workspace_id: payload.ws,
-              provider: "google",
-              google_account_email: userInfo.email,
-              access_token: tokens.access_token,
-              refresh_token: tokens.refresh_token ?? null,
-              token_expires_at: expiresAt,
-              scopes,
-              status: "active",
-              sync_token: null,
-              last_synced_at: null,
-            },
-            { onConflict: "workspace_id,user_id,provider" },
-          );
+        const { error: upErr } = await admin.from("user_calendar_connections").upsert(
+          {
+            user_id: payload.uid,
+            workspace_id: payload.ws,
+            provider: "google",
+            google_account_email: userInfo.email,
+            access_token: tokens.access_token,
+            refresh_token: tokens.refresh_token ?? null,
+            token_expires_at: expiresAt,
+            scopes,
+            status: "active",
+            sync_token: null,
+            last_synced_at: null,
+          },
+          { onConflict: "workspace_id,user_id,provider" },
+        );
 
         if (upErr) {
           return htmlPage("Error al guardar", upErr.message);

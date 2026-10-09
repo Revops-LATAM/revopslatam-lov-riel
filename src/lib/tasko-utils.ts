@@ -66,4 +66,3 @@ export function formatMoney(
   }).format(n);
   return `${cur} ${formatted}`;
 }
-

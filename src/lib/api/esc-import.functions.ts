@@ -78,20 +78,23 @@ function normalizeFolder(raw: string | null | undefined): string | null {
     .toUpperCase();
 }
 
-const STATUS_MAP: Record<string, "nueva" | "planificada" | "en_curso" | "en_pausa" | "completada" | "cancelada"> = {
-  "COMPLETED": "completada",
-  "REALIZADA": "completada",
-  "NEW": "nueva",
-  "NUEVA": "nueva",
-  "AGENDADA": "nueva",
+const STATUS_MAP: Record<
+  string,
+  "nueva" | "planificada" | "en_curso" | "en_pausa" | "completada" | "cancelada"
+> = {
+  COMPLETED: "completada",
+  REALIZADA: "completada",
+  NEW: "nueva",
+  NUEVA: "nueva",
+  AGENDADA: "nueva",
   "POR AGENDAR": "nueva",
-  "PLANIFICADA": "planificada",
-  "PLANIFICADO": "planificada",
+  PLANIFICADA: "planificada",
+  PLANIFICADO: "planificada",
   "IN PROGRESS": "en_curso",
   "EN PAUSA": "en_pausa",
-  "SUSPENDIDA": "en_pausa",
-  "CANCELLED": "cancelada",
-  "CANCELADA": "cancelada",
+  SUSPENDIDA: "en_pausa",
+  CANCELLED: "cancelada",
+  CANCELADA: "cancelada",
 };
 
 function mapStatus(customStatus: string | null, wrikeStatus: string | null): string {
@@ -100,7 +103,9 @@ function mapStatus(customStatus: string | null, wrikeStatus: string | null): str
 }
 
 // Parsea "Nombre <email>, Otro <email2>" → [{name,email}, ...]
-function parseAssignees(raw: string | null | undefined): Array<{ name: string; email: string | null }> {
+function parseAssignees(
+  raw: string | null | undefined,
+): Array<{ name: string; email: string | null }> {
   if (!raw) return [];
   return raw
     .split(",")
@@ -204,7 +209,9 @@ export const setupEscContractAndProject = createServerFn({ method: "POST" })
     // Verify contract exists and belongs to workspace
     const { data: contract, error: cErr } = await supabase
       .from("contracts")
-      .select("id, workspace_id, account_id, name, type, currency, start_date, end_date, hours_per_sprint, sprint_cadence")
+      .select(
+        "id, workspace_id, account_id, name, type, currency, start_date, end_date, hours_per_sprint, sprint_cadence",
+      )
       .eq("id", data.contractId)
       .maybeSingle();
     if (cErr) throw new Error(cErr.message);
@@ -212,7 +219,6 @@ export const setupEscContractAndProject = createServerFn({ method: "POST" })
     if (contract.workspace_id !== data.workspaceId) {
       throw new Error("Contrato no pertenece al workspace destino");
     }
-
 
     const sprints = buildSprints2026();
 
@@ -365,7 +371,6 @@ export const importEscTasksFromXlsx = createServerFn({ method: "POST" })
     }
 
     const XLSX = await import("xlsx");
-
 
     // 1) Parse XLSX
     const wb = XLSX.read(data.fileBase64, { type: "base64", cellDates: true });
@@ -539,7 +544,7 @@ export const importEscTasksFromXlsx = createServerFn({ method: "POST" })
         const n = folderToSprintNumber.get(folderKey);
         if (n) sprintNumber = n;
       }
-      const sprintId = sprintNumber ? sprintByNumber.get(sprintNumber) ?? null : null;
+      const sprintId = sprintNumber ? (sprintByNumber.get(sprintNumber) ?? null) : null;
       const statusKey = mapStatus(r.customStatus, r.wrikeStatus);
       const statusId = statusByKey.get(statusKey) ?? null;
 
@@ -586,9 +591,7 @@ export const importEscTasksFromXlsx = createServerFn({ method: "POST" })
         return acc;
       }, {}),
       withPrimaryAssignee: plans.filter((p) => p.primaryUserId).length,
-      unmatchedAssignees: Array.from(
-        new Set(plans.flatMap((p) => p.unmatched)),
-      ).sort(),
+      unmatchedAssignees: Array.from(new Set(plans.flatMap((p) => p.unmatched))).sort(),
       withTimeSpent: plans.filter((p) => (p.timeSpentHours ?? 0) > 0).length,
     };
 
@@ -768,17 +771,15 @@ export const createEscGhostUser = createServerFn({ method: "POST" })
       userId = existing.id as string;
     } else {
       // El trigger handle_new_user exige invitación pre-existente. Insertamos una para el ghost.
-      await supabaseAdmin
-        .from("workspace_invitations")
-        .upsert(
-          {
-            workspace_id: WORKSPACE_ID_DEFAULT,
-            email: data.email,
-            role: "member",
-            invited_by: context.userId,
-          },
-          { onConflict: "workspace_id,email" },
-        );
+      await supabaseAdmin.from("workspace_invitations").upsert(
+        {
+          workspace_id: WORKSPACE_ID_DEFAULT,
+          email: data.email,
+          role: "member",
+          invited_by: context.userId,
+        },
+        { onConflict: "workspace_id,email" },
+      );
 
       const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
         email: data.email,
@@ -792,10 +793,7 @@ export const createEscGhostUser = createServerFn({ method: "POST" })
       if (createErr) throw new Error(`No se pudo crear el ghost: ${createErr.message}`);
       userId = created.user!.id;
       // El trigger on_auth_user_created inserta el profile; forzamos full_name.
-      await supabaseAdmin
-        .from("profiles")
-        .update({ full_name: data.fullName })
-        .eq("id", userId);
+      await supabaseAdmin.from("profiles").update({ full_name: data.fullName }).eq("id", userId);
     }
 
     // 2) Asegurar membresía en el workspace ESC (Revops LATAM operations).

@@ -10,11 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Calendar, CheckCircle2, AlertCircle, Unplug } from "lucide-react";
 
-export function CalendarConnectionSection({
-  workspaceId,
-}: {
-  workspaceId: string;
-}) {
+export function CalendarConnectionSection({ workspaceId }: { workspaceId: string }) {
   const qc = useQueryClient();
   const startOAuth = useServerFn(startGoogleCalendarOAuth);
   const fetchConn = useServerFn(getMyCalendarConnection);
@@ -66,10 +62,9 @@ export function CalendarConnectionSection({
         <div className="flex-1 min-w-0">
           <h2 className="text-sm font-semibold">Google Calendar</h2>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Conecta tu agenda para que Riel descuente las reuniones de tu
-            capacidad y te muestre en el Inbox las que aún no están asociadas a
-            un proyecto. Solo se leen eventos públicos —los marcados como{" "}
-            <span className="text-foreground">Privado</span> en Google Calendar
+            Conecta tu agenda para que Riel descuente las reuniones de tu capacidad y te muestre en
+            el Inbox las que aún no están asociadas a un proyecto. Solo se leen eventos públicos
+            —los marcados como <span className="text-foreground">Privado</span> en Google Calendar
             se ignoran por completo.
           </p>
         </div>
@@ -108,21 +103,13 @@ export function CalendarConnectionSection({
             <AlertCircle className="h-4 w-4 text-amber-500" />
             <span>Necesita reautorizar: {c.google_account_email}</span>
           </div>
-          <Button
-            size="sm"
-            onClick={() => connectMut.mutate()}
-            disabled={connectMut.isPending}
-          >
+          <Button size="sm" onClick={() => connectMut.mutate()} disabled={connectMut.isPending}>
             Reconectar
           </Button>
         </div>
       ) : (
         <div className="pt-2 border-t border-border">
-          <Button
-            size="sm"
-            onClick={() => connectMut.mutate()}
-            disabled={connectMut.isPending}
-          >
+          <Button size="sm" onClick={() => connectMut.mutate()} disabled={connectMut.isPending}>
             <Calendar className="h-3.5 w-3.5 mr-1.5" />
             Conectar Google Calendar
           </Button>

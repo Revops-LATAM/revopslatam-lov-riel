@@ -71,7 +71,9 @@ function MePreferences() {
           <div className="space-y-1.5">
             <Label className="text-xs">Tema</Label>
             <Select value={theme} onValueChange={(v) => setTheme(v as typeof theme)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="system">Sistema</SelectItem>
                 <SelectItem value="light">Claro</SelectItem>
@@ -82,7 +84,9 @@ function MePreferences() {
           <div className="space-y-1.5">
             <Label className="text-xs">Idioma</Label>
             <Select value={language} onValueChange={setLanguage}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="es">Español</SelectItem>
                 <SelectItem value="en">English</SelectItem>

@@ -29,8 +29,7 @@ function MarketingProjectsList() {
   });
   const projectsQ = useQuery({
     queryKey: ["marketing-projects", wsQ.data?.id, showArchived],
-    queryFn: () =>
-      listFn({ data: { workspaceId: wsQ.data!.id, includeArchived: showArchived } }),
+    queryFn: () => listFn({ data: { workspaceId: wsQ.data!.id, includeArchived: showArchived } }),
     enabled: !!wsQ.data?.id,
   });
 

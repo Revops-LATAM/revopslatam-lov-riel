@@ -18,9 +18,7 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
         const isLast = i === items.length - 1;
         return (
           <Fragment key={i}>
-            {i > 0 && (
-              <ChevronRight className="w-3 h-3 shrink-0 opacity-50" aria-hidden />
-            )}
+            {i > 0 && <ChevronRight className="w-3 h-3 shrink-0 opacity-50" aria-hidden />}
             {item.to && !isLast ? (
               <Link
                 to={item.to}

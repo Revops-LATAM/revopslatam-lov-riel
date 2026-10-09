@@ -127,10 +127,17 @@ function AsanaConfigBody({ projectId, onClose }: { projectId: string; onClose: (
   const [initialized, setInitialized] = useState(false);
 
   if (cfg && !initialized) {
-    setStatusMode(((cfg.config as { status_mode?: StatusMode } | null)?.status_mode ?? "completed_only") as StatusMode);
-    setFieldGid((cfg.config as { asana_status_field_gid?: string } | null)?.asana_status_field_gid ?? "");
+    setStatusMode(
+      ((cfg.config as { status_mode?: StatusMode } | null)?.status_mode ??
+        "completed_only") as StatusMode,
+    );
+    setFieldGid(
+      (cfg.config as { asana_status_field_gid?: string } | null)?.asana_status_field_gid ?? "",
+    );
     setPushEnabled((cfg.config as { push_enabled?: boolean } | null)?.push_enabled ?? true);
-    setCommentsEnabled((cfg.config as { comments_enabled?: boolean } | null)?.comments_enabled ?? true);
+    setCommentsEnabled(
+      (cfg.config as { comments_enabled?: boolean } | null)?.comments_enabled ?? true,
+    );
     setInitialized(true);
   }
 
@@ -207,7 +214,9 @@ function AsanaConfigBody({ projectId, onClose }: { projectId: string; onClose: (
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>Cerrar</Button>
+          <Button variant="outline" onClick={onClose}>
+            Cerrar
+          </Button>
           <Button onClick={handleSaveGeneral}>Guardar</Button>
         </DialogFooter>
       </TabsContent>
@@ -251,7 +260,8 @@ function AsanaConfigBody({ projectId, onClose }: { projectId: string; onClose: (
       <TabsContent value="webhook" className="space-y-4 pt-4">
         <div className="space-y-2">
           <p className="text-sm text-muted-foreground">
-            Activa el webhook para recibir cambios de Asana en tiempo real (sin esperar el sync de 15 min).
+            Activa el webhook para recibir cambios de Asana en tiempo real (sin esperar el sync de
+            15 min).
           </p>
           <div className="flex items-center gap-2">
             <Badge variant={cfg.webhook?.active ? "default" : "outline"}>
@@ -456,7 +466,8 @@ function StatusMappingEditor({
   return (
     <div className="space-y-3">
       <p className="text-xs text-muted-foreground">
-        Cada estado de Riel se mapea a {statusMode === "sections" ? "una sección" : "una opción del campo"} en Asana.
+        Cada estado de Riel se mapea a{" "}
+        {statusMode === "sections" ? "una sección" : "una opción del campo"} en Asana.
       </p>
       {(statusesQ.data ?? []).map((s) => (
         <div key={s.id} className="grid grid-cols-2 gap-2 items-center">
@@ -522,7 +533,8 @@ function UserMappingEditor({
         .select("user_id")
         .eq("workspace_id", workspaceId);
       const ids = (members ?? []).map((m) => m.user_id);
-      if (ids.length === 0) return [] as Array<{ user_id: string; full_name: string | null; email: string }>;
+      if (ids.length === 0)
+        return [] as Array<{ user_id: string; full_name: string | null; email: string }>;
       const { data: profs } = await supabase
         .from("profiles")
         .select("id, full_name, email")
@@ -582,9 +594,7 @@ function UserMappingEditor({
       </p>
       {(membersQ.data ?? []).map((m) => (
         <div key={m.user_id} className="grid grid-cols-2 gap-2 items-center">
-          <div className="text-sm truncate">
-            {m.full_name ?? m.email}
-          </div>
+          <div className="text-sm truncate">{m.full_name ?? m.email}</div>
           <Select
             value={mapping[m.user_id] ?? ""}
             onValueChange={(v) => setMapping({ ...mapping, [m.user_id]: v })}

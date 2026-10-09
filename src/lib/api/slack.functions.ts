@@ -40,9 +40,7 @@ export const updateProjectTicketSlack = createServerFn({ method: "POST" })
 
 export const testSlackTicketNotification = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ channelId: z.string().trim().min(1).max(40) }).parse(input),
-  )
+  .inputValidator((input) => z.object({ channelId: z.string().trim().min(1).max(40) }).parse(input))
   .handler(async ({ data }) => {
     const { postTicketToSlack } = await import("@/lib/slack/notify.server");
     try {
@@ -55,7 +53,8 @@ export const testSlackTicketNotification = createServerFn({ method: "POST" })
         area: "—",
         requestType: "requerimiento",
         severity: "normal",
-        description: "Esta es una notificación de prueba enviada desde la configuración del portal de tickets.",
+        description:
+          "Esta es una notificación de prueba enviada desde la configuración del portal de tickets.",
         ticketUrl: null,
       });
       return { ok: true as const };

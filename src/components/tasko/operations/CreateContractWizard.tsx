@@ -1,16 +1,24 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { createContract, upsertContractFinancials, createPhase } from "@/lib/api/tasko.functions";
 import {
-  createContract,
-  upsertContractFinancials,
-  createPhase,
-} from "@/lib/api/tasko.functions";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Check, Plus, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -38,7 +46,7 @@ export function CreateContractWizard({
   const qc = useQueryClient();
   const create = useServerFn(createContract);
   const upsertFin = useServerFn(upsertContractFinancials);
-  
+
   const addPhase = useServerFn(createPhase);
 
   const [step, setStep] = useState(0);
@@ -56,7 +64,11 @@ export function CreateContractWizard({
   const [hoursPerSprint, setHoursPerSprint] = useState("80");
 
   // step 2 (implementation / project)
-  const [phaseNames, setPhaseNames] = useState<string[]>(["Discovery", "Implementación", "Go-live"]);
+  const [phaseNames, setPhaseNames] = useState<string[]>([
+    "Discovery",
+    "Implementación",
+    "Go-live",
+  ]);
 
   // step 3
   const [currency, setCurrency] = useState("USD");
@@ -111,11 +123,7 @@ export function CreateContractWizard({
   const mutation = useMutation({
     mutationFn: async () => {
       const cadence: "monthly" | "biweekly" | null =
-        type === "implementation"
-          ? null
-          : Number(sprintDays) === 30
-            ? "monthly"
-            : "biweekly";
+        type === "implementation" ? null : Number(sprintDays) === 30 ? "monthly" : "biweekly";
       const contract = await create({
         data: {
           workspaceId,
@@ -148,8 +156,7 @@ export function CreateContractWizard({
 
       // financials
       if (canSeeFinancials && contract?.id) {
-        const hasFin =
-          feeTotal || monthlyFee || internalHourlyCost || hoursPerSprint;
+        const hasFin = feeTotal || monthlyFee || internalHourlyCost || hoursPerSprint;
         if (hasFin) {
           await upsertFin({
             data: {
@@ -223,10 +230,14 @@ export function CreateContractWizard({
             <div>
               <Label>Cliente</Label>
               <Select value={accountId} onValueChange={setAccountId}>
-                <SelectTrigger><SelectValue placeholder="Selecciona un cliente" /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona un cliente" />
+                </SelectTrigger>
                 <SelectContent>
                   {accounts.map((a) => (
-                    <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+                    <SelectItem key={a.id} value={a.id}>
+                      {a.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -234,7 +245,11 @@ export function CreateContractWizard({
             <div className="grid grid-cols-3 gap-2">
               <div className="col-span-2">
                 <Label>Nombre</Label>
-                <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Contrato 2026" />
+                <Input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Contrato 2026"
+                />
               </div>
               <div>
                 <Label>Código</Label>
@@ -244,7 +259,9 @@ export function CreateContractWizard({
             <div>
               <Label>Tipo</Label>
               <Select value={type} onValueChange={(v) => setType(v as ContractType)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="implementation">Proyecto</SelectItem>
                   <SelectItem value="recurrente">Recurrente</SelectItem>
@@ -254,7 +271,11 @@ export function CreateContractWizard({
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <Label>Fecha inicio</Label>
-                <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                <Input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
               </div>
               <div>
                 <Label>Duración (meses)</Label>
@@ -279,7 +300,8 @@ export function CreateContractWizard({
               <div className="space-y-2">
                 <Label>Fases del proyecto</Label>
                 <p className="text-xs text-muted-foreground">
-                  Define las fases iniciales. Podrás editarlas o agregar hitos desde el detalle del contrato.
+                  Define las fases iniciales. Podrás editarlas o agregar hitos desde el detalle del
+                  contrato.
                 </p>
                 <div className="space-y-1.5">
                   {phaseNames.map((n, i) => (
@@ -290,7 +312,9 @@ export function CreateContractWizard({
                       <Input
                         value={n}
                         onChange={(e) =>
-                          setPhaseNames((arr) => arr.map((v, idx) => (idx === i ? e.target.value : v)))
+                          setPhaseNames((arr) =>
+                            arr.map((v, idx) => (idx === i ? e.target.value : v)),
+                          )
                         }
                         placeholder={`Fase ${i + 1}`}
                       />
@@ -344,11 +368,13 @@ export function CreateContractWizard({
                 </div>
                 <div className="rounded-md bg-muted/30 border border-border p-3 text-xs space-y-1">
                   <div>
-                    Los sprints se crearán automáticamente cuando Operaciones defina la <strong>fecha de inicio del primer sprint</strong> en el plan de delivery.
+                    Los sprints se crearán automáticamente cuando Operaciones defina la{" "}
+                    <strong>fecha de inicio del primer sprint</strong> en el plan de delivery.
                   </div>
                   <div className="text-muted-foreground">
                     Estimación: <strong>{sprintCount}</strong> sprints ·{" "}
-                    <strong>{(sprintCount * Number(hoursPerSprint || 0)).toFixed(1)} h</strong> totales
+                    <strong>{(sprintCount * Number(hoursPerSprint || 0)).toFixed(1)} h</strong>{" "}
+                    totales
                   </div>
                 </div>
               </>
@@ -362,7 +388,9 @@ export function CreateContractWizard({
               <div>
                 <Label>Moneda</Label>
                 <Select value={currency} onValueChange={setCurrency}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="USD">USD · Dólar</SelectItem>
                     <SelectItem value="CLP">CLP · Peso chileno</SelectItem>
@@ -372,8 +400,13 @@ export function CreateContractWizard({
               </div>
               <div>
                 <Label>Modelo de cobro</Label>
-                <Select value={billingModel} onValueChange={(v) => setBillingModel(v as BillingModel)}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                <Select
+                  value={billingModel}
+                  onValueChange={(v) => setBillingModel(v as BillingModel)}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="fixed">Fijo</SelectItem>
                     <SelectItem value="monthly">Mensual</SelectItem>
@@ -416,9 +449,13 @@ export function CreateContractWizard({
                 value={paymentScheduleType}
                 onValueChange={(v) => setPaymentScheduleType(v as PaymentScheduleType)}
               >
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="monthly_fixed">Mensual fijo (genera pagos automáticos)</SelectItem>
+                  <SelectItem value="monthly_fixed">
+                    Mensual fijo (genera pagos automáticos)
+                  </SelectItem>
                   <SelectItem value="per_milestone">Por hito</SelectItem>
                   <SelectItem value="mixed">Mixto</SelectItem>
                   <SelectItem value="none">Sin calendario</SelectItem>
@@ -442,13 +479,21 @@ export function CreateContractWizard({
         <DialogFooter className="flex items-center justify-between">
           <div className="flex gap-2">
             {step > 0 && (
-              <Button variant="ghost" onClick={() => setStep((s) => s - 1)} disabled={mutation.isPending}>
+              <Button
+                variant="ghost"
+                onClick={() => setStep((s) => s - 1)}
+                disabled={mutation.isPending}
+              >
                 Atrás
               </Button>
             )}
           </div>
           <div className="flex gap-2">
-            <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={mutation.isPending}>
+            <Button
+              variant="ghost"
+              onClick={() => onOpenChange(false)}
+              disabled={mutation.isPending}
+            >
               Cancelar
             </Button>
             {step < lastStep ? (

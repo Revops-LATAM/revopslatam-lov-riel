@@ -28,7 +28,6 @@ export const Route = createFileRoute("/api/public/cron/invoice-reminders")({
         const url = process.env.SUPABASE_URL!;
         const admin = createClient(url, serviceKey);
 
-
         // Workspaces with cobranza activa
         const { data: emisores, error: eErr } = await admin
           .from("workspace_emisor")
@@ -91,9 +90,10 @@ export const Route = createFileRoute("/api/public/cron/invoice-reminders")({
             const element = React.createElement(reminderTemplate.component, props);
             const html = await render(element);
             const text = await render(element, { plainText: true });
-            const subject = typeof reminderTemplate.subject === "function"
-              ? reminderTemplate.subject(props)
-              : reminderTemplate.subject;
+            const subject =
+              typeof reminderTemplate.subject === "function"
+                ? reminderTemplate.subject(props)
+                : reminderTemplate.subject;
 
             const recipients = [to, ...ccList];
             for (const r of recipients) {

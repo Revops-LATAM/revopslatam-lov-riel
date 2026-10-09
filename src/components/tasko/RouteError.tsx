@@ -30,14 +30,18 @@ export function RouteError({ error, reset }: ErrorComponentProps) {
   );
 }
 
-export function RouteNotFound({ title = "No encontrado", description }: { title?: string; description?: string }) {
+export function RouteNotFound({
+  title = "No encontrado",
+  description,
+}: {
+  title?: string;
+  description?: string;
+}) {
   const router = useRouter();
   return (
     <div className="flex flex-col items-center justify-center text-center px-6 py-16 h-full">
       <h3 className="text-sm font-medium">{title}</h3>
-      {description && (
-        <p className="text-sm text-muted-foreground mt-1 max-w-md">{description}</p>
-      )}
+      {description && <p className="text-sm text-muted-foreground mt-1 max-w-md">{description}</p>}
       <Button size="sm" variant="outline" className="mt-4" onClick={() => router.history.back()}>
         Volver
       </Button>

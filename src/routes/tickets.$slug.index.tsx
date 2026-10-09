@@ -8,10 +8,7 @@ import { Loader2, LogIn, Mail, CheckCircle2, AlertTriangle, Ticket } from "lucid
 export const Route = createFileRoute("/tickets/$slug/")({
   ssr: false,
   head: () => ({
-    meta: [
-      { title: "Portal de tickets" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Portal de tickets" }, { name: "robots", content: "noindex" }],
   }),
   component: PortalLogin,
 });
@@ -82,7 +79,8 @@ function PortalLogin() {
           </div>
           <h1 className="text-2xl font-semibold">Ingresa a tu portal</h1>
           <p className="text-sm text-muted-foreground">
-            Envía nuevos tickets y consulta el estado de los actuales. Te enviaremos un enlace de acceso a tu correo autorizado.
+            Envía nuevos tickets y consulta el estado de los actuales. Te enviaremos un enlace de
+            acceso a tu correo autorizado.
           </p>
         </div>
 
@@ -99,10 +97,17 @@ function PortalLogin() {
               <CheckCircle2 className="w-5 h-5" /> Revisa tu correo
             </div>
             <p className="text-sm text-muted-foreground">
-              Si <strong>{email}</strong> está autorizado, recibirás un enlace de acceso en los próximos minutos.
-              El enlace expira en 30 minutos.
+              Si <strong>{email}</strong> está autorizado, recibirás un enlace de acceso en los
+              próximos minutos. El enlace expira en 30 minutos.
             </p>
-            <Button variant="ghost" size="sm" onClick={() => { setStatus("idle"); setEmail(""); }}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setStatus("idle");
+                setEmail("");
+              }}
+            >
               Usar otro correo
             </Button>
           </div>
@@ -128,9 +133,13 @@ function PortalLogin() {
             {errorMsg && <p className="text-sm text-destructive">{errorMsg}</p>}
             <Button type="submit" className="w-full" disabled={status === "loading" || !email}>
               {status === "loading" ? (
-                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Enviando…</>
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Enviando…
+                </>
               ) : (
-                <><LogIn className="w-4 h-4 mr-2" /> Enviar enlace de acceso</>
+                <>
+                  <LogIn className="w-4 h-4 mr-2" /> Enviar enlace de acceso
+                </>
               )}
             </Button>
           </form>

@@ -39,9 +39,7 @@ function NotificationsSettingsPage() {
 
   const [handle, setHandle] = useState("");
   const [slackId, setSlackId] = useState("");
-  const [desktopPerm, setDesktopPerm] = useState<NotificationPermission | "unsupported">(
-    "default",
-  );
+  const [desktopPerm, setDesktopPerm] = useState<NotificationPermission | "unsupported">("default");
 
   useEffect(() => {
     if (profileQ.data) {
@@ -127,8 +125,8 @@ function NotificationsSettingsPage() {
               placeholder="U01ABC2DEF"
             />
             <p className="text-xs text-muted-foreground">
-              Por defecto tu Slack se resuelve por tu email ({profileQ.data?.email}). Configura
-              este ID solo si tu email de Slack es diferente.
+              Por defecto tu Slack se resuelve por tu email ({profileQ.data?.email}). Configura este
+              ID solo si tu email de Slack es diferente.
             </p>
           </div>
           <Button onClick={saveProfile} size="sm">

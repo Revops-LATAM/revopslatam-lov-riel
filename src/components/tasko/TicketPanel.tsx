@@ -3,7 +3,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { format, parseISO, formatDistanceToNowStrict } from "date-fns";
 import { es } from "date-fns/locale";
-import { Mail, AlertTriangle, Clock, CheckCircle2, MessageCircleQuestion, Check, X } from "lucide-react";
+import {
+  Mail,
+  AlertTriangle,
+  Clock,
+  CheckCircle2,
+  MessageCircleQuestion,
+  Check,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,7 +36,6 @@ import {
   notifyTicketQuestion,
 } from "@/lib/api/ticket-notifications.functions";
 import { updateTask } from "@/lib/api/tasks.functions";
-
 
 type TicketTask = {
   id: string;
@@ -221,7 +228,9 @@ export function TicketPanel({ task, isResolved }: { task: TicketTask; isResolved
               className="truncate text-left flex-1 hover:underline decoration-dotted"
               title="Editar solicitante"
             >
-              {task.submitter_email ?? <span className="text-muted-foreground italic">Agregar…</span>}
+              {task.submitter_email ?? (
+                <span className="text-muted-foreground italic">Agregar…</span>
+              )}
             </button>
           )}
         </div>
@@ -268,14 +277,18 @@ export function TicketPanel({ task, isResolved }: { task: TicketTask; isResolved
         </div>
 
         {response && (
-          <div className={`flex items-center gap-2 px-3 py-2 border rounded-md text-xs ${TONE_CLASS[response.tone]}`}>
+          <div
+            className={`flex items-center gap-2 px-3 py-2 border rounded-md text-xs ${TONE_CLASS[response.tone]}`}
+          >
             <Clock className="w-3.5 h-3.5" />
             <span className="font-medium">1ª respuesta:</span>
             <span>{response.label}</span>
           </div>
         )}
         {resolution && (
-          <div className={`flex items-center gap-2 px-3 py-2 border rounded-md text-xs ${TONE_CLASS[resolution.tone]}`}>
+          <div
+            className={`flex items-center gap-2 px-3 py-2 border rounded-md text-xs ${TONE_CLASS[resolution.tone]}`}
+          >
             <CheckCircle2 className="w-3.5 h-3.5" />
             <span className="font-medium">Resolución:</span>
             <span>{resolution.label}</span>
@@ -309,7 +322,8 @@ export function TicketPanel({ task, isResolved }: { task: TicketTask; isResolved
           <DialogHeader>
             <DialogTitle>Preguntar al cliente</DialogTitle>
             <DialogDescription>
-              Se enviará por email a {task.submitter_email} y quedará como comentario visible para el cliente.
+              Se enviará por email a {task.submitter_email} y quedará como comentario visible para
+              el cliente.
             </DialogDescription>
           </DialogHeader>
           <Textarea
@@ -322,10 +336,7 @@ export function TicketPanel({ task, isResolved }: { task: TicketTask; isResolved
             <Button variant="ghost" onClick={() => setAskOpen(false)}>
               Cancelar
             </Button>
-            <Button
-              onClick={() => askMut.mutate()}
-              disabled={!question.trim() || askMut.isPending}
-            >
+            <Button onClick={() => askMut.mutate()} disabled={!question.trim() || askMut.isPending}>
               Enviar pregunta
             </Button>
           </DialogFooter>

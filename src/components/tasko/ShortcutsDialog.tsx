@@ -26,9 +26,7 @@ const SHORTCUTS: Array<{ group: string; items: Array<{ keys: string[]; label: st
   },
   {
     group: "Tareas",
-    items: [
-      { keys: ["c"], label: "Nueva tarea (en proyecto)" },
-    ],
+    items: [{ keys: ["c"], label: "Nueva tarea (en proyecto)" }],
   },
 ];
 
@@ -54,10 +52,7 @@ export function ShortcutsDialog({
               </div>
               <div className="space-y-1.5">
                 {g.items.map((it) => (
-                  <div
-                    key={it.label}
-                    className="flex items-center justify-between text-sm py-1"
-                  >
+                  <div key={it.label} className="flex items-center justify-between text-sm py-1">
                     <span className="text-foreground">{it.label}</span>
                     <div className="flex gap-1">
                       {it.keys.map((k, i) => (

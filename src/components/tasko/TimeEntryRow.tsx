@@ -50,8 +50,12 @@ export function TimeEntryRow({
   };
 
   const updateMut = useMutation({
-    mutationFn: (vars: { startedAt: string; endedAt: string; note: string | null; isBillable: boolean }) =>
-      updateFn({ data: { id: entry.id, ...vars } }),
+    mutationFn: (vars: {
+      startedAt: string;
+      endedAt: string;
+      note: string | null;
+      isBillable: boolean;
+    }) => updateFn({ data: { id: entry.id, ...vars } }),
     onSuccess: () => {
       toast.success("Entrada actualizada");
       setEditing(false);

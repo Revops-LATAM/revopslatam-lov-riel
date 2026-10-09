@@ -88,7 +88,9 @@ function EmisorPage() {
       const { cobranza_cc_emails_text: _omit, ...rest } = form;
       void _omit;
       const normalizedRut = rest.rut ? formatRut(rest.rut) : rest.rut;
-      await save({ data: { workspaceId: ws.id, ...rest, rut: normalizedRut, cobranza_cc_emails: cc } });
+      await save({
+        data: { workspaceId: ws.id, ...rest, rut: normalizedRut, cobranza_cc_emails: cc },
+      });
       toast.success("Datos del emisor guardados");
       qc.invalidateQueries({ queryKey: ["emisor", ws.id] });
     } catch (e) {
@@ -98,8 +100,8 @@ function EmisorPage() {
     }
   };
 
-  const set = (k: keyof typeof form) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+  const set =
+    (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setForm((f) => ({ ...f, [k]: e.target.value }));
 
   return (
@@ -125,11 +127,11 @@ function EmisorPage() {
               onBlur={() => setForm((f) => ({ ...f, rut: f.rut ? formatRut(f.rut) : "" }))}
               placeholder="76.123.456-7"
               aria-invalid={!rutValid}
-              className={!rutValid ? "border-destructive focus-visible:ring-destructive" : undefined}
+              className={
+                !rutValid ? "border-destructive focus-visible:ring-destructive" : undefined
+              }
             />
-            {!rutValid && (
-              <p className="mt-1 text-xs text-destructive">RUT inválido</p>
-            )}
+            {!rutValid && <p className="mt-1 text-xs text-destructive">RUT inválido</p>}
           </div>
           <div>
             <Label className="text-xs">Razón social</Label>
@@ -183,7 +185,12 @@ function EmisorPage() {
           </div>
           <div>
             <Label className="text-xs">Email de finanzas</Label>
-            <Input type="email" value={form.email_finanzas} onChange={set("email_finanzas")} placeholder="finanzas@empresa.com" />
+            <Input
+              type="email"
+              value={form.email_finanzas}
+              onChange={set("email_finanzas")}
+              placeholder="finanzas@empresa.com"
+            />
           </div>
         </div>
       </section>
@@ -197,9 +204,7 @@ function EmisorPage() {
             checked={form.cobranza_activa}
             onCheckedChange={(v) => setForm((f) => ({ ...f, cobranza_activa: v }))}
           />
-          <span className="text-xs">
-            Enviar recordatorios automáticos de facturas vencidas
-          </span>
+          <span className="text-xs">Enviar recordatorios automáticos de facturas vencidas</span>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>

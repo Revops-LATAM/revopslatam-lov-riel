@@ -82,10 +82,7 @@ export function CreateMarketingItemMenu({
         />
       )}
       {mode === "piece" && (
-        <CreatePieceDialog
-          workspaceId={workspaceId}
-          onClose={() => setMode(null)}
-        />
+        <CreatePieceDialog workspaceId={workspaceId} onClose={() => setMode(null)} />
       )}
       {mode === "project" && (
         <CreateMarketingProjectDialog

@@ -113,9 +113,7 @@ function ProjectsList() {
         header: "Descripción",
         sortable: true,
         accessor: (p) => p.description ?? "",
-        cell: (p) => (
-          <span className="text-muted-foreground truncate">{p.description ?? "—"}</span>
-        ),
+        cell: (p) => <span className="text-muted-foreground truncate">{p.description ?? "—"}</span>,
         width: 420,
       },
       {

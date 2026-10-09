@@ -50,9 +50,7 @@ export function buildWindow(anchor: Date, zoom: Zoom): WindowSpec {
       const colEnd = addDays(colStart, 6);
       const startK = format(colStart, "yyyy-MM-dd");
       const endK = format(colEnd, "yyyy-MM-dd");
-      const days = Array.from({ length: 7 }, (_, j) =>
-        format(addDays(colStart, j), "yyyy-MM-dd"),
-      );
+      const days = Array.from({ length: 7 }, (_, j) => format(addDays(colStart, j), "yyyy-MM-dd"));
       return {
         key: startK,
         label: `S${getISOWeek(colStart)}`,
@@ -70,9 +68,7 @@ export function buildWindow(anchor: Date, zoom: Zoom): WindowSpec {
     const colEnd = addDays(colStart, 6);
     const startK = format(colStart, "yyyy-MM-dd");
     const endK = format(colEnd, "yyyy-MM-dd");
-    const days = Array.from({ length: 7 }, (_, j) =>
-      format(addDays(colStart, j), "yyyy-MM-dd"),
-    );
+    const days = Array.from({ length: 7 }, (_, j) => format(addDays(colStart, j), "yyyy-MM-dd"));
     return {
       key: startK,
       label: `S${getISOWeek(colStart)}`,

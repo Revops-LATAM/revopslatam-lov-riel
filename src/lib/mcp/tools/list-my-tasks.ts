@@ -12,7 +12,8 @@ function sb(ctx: ToolContext) {
 export default defineTool({
   name: "list_my_tasks",
   title: "List my tasks",
-  description: "List tasks assigned to the signed-in user, optionally filtered by status or sprint. Includes the sprint of each task.",
+  description:
+    "List tasks assigned to the signed-in user, optionally filtered by status or sprint. Includes the sprint of each task.",
   inputSchema: {
     status: z
       .enum([
@@ -29,7 +30,11 @@ export default defineTool({
       ])
       .optional()
       .describe("Optional task status filter (Spanish enum values from task_status)."),
-    sprintId: z.string().uuid().optional().describe("Optional sprint filter (use list_sprints first)."),
+    sprintId: z
+      .string()
+      .uuid()
+      .optional()
+      .describe("Optional sprint filter (use list_sprints first)."),
     limit: z.number().int().min(1).max(200).optional().describe("Max rows to return (default 50)."),
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
@@ -39,7 +44,9 @@ export default defineTool({
     }
     let q = sb(ctx)
       .from("tasks")
-      .select("id, title, status, priority, due_date, project_id, sprint_id, sprints(sprint_number, start_date, end_date, status)")
+      .select(
+        "id, title, status, priority, due_date, project_id, sprint_id, sprints(sprint_number, start_date, end_date, status)",
+      )
       .eq("assignee_id", ctx.getUserId())
       .order("due_date", { ascending: true, nullsFirst: false })
       .limit(limit ?? 50);

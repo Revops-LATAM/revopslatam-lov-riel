@@ -8,10 +8,25 @@ export default defineTool({
   description:
     "Full detail of one Riel task for analysis: description, status, dates, estimated vs logged hours, assignees, comments (conversation, including client portal replies) and attachments.",
   inputSchema: {
-    taskId: z.string().uuid().describe("Task id (UUID). Use list_my_tasks or get_project_overview first."),
-    includeComments: z.boolean().optional().describe("Include the conversation thread (default true)."),
-    commentLimit: z.number().int().min(1).max(500).optional().describe("Max comments to return (default 100)."),
-    includeTimeEntries: z.boolean().optional().describe("Include individual time entries (default false)."),
+    taskId: z
+      .string()
+      .uuid()
+      .describe("Task id (UUID). Use list_my_tasks or get_project_overview first."),
+    includeComments: z
+      .boolean()
+      .optional()
+      .describe("Include the conversation thread (default true)."),
+    commentLimit: z
+      .number()
+      .int()
+      .min(1)
+      .max(500)
+      .optional()
+      .describe("Max comments to return (default 100)."),
+    includeTimeEntries: z
+      .boolean()
+      .optional()
+      .describe("Include individual time entries (default false)."),
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async ({ taskId, includeComments, commentLimit, includeTimeEntries }, ctx) => {
@@ -60,7 +75,10 @@ export default defineTool({
     }
 
     // Profiles for assignees + comment authors
-    const profileById = new Map<string, { id: string; full_name: string | null; email: string | null }>();
+    const profileById = new Map<
+      string,
+      { id: string; full_name: string | null; email: string | null }
+    >();
     if (userIds.size > 0) {
       const { data: profiles } = await sb
         .from("profiles")
@@ -84,7 +102,8 @@ export default defineTool({
     const loggedByUser: Record<string, number> = {};
     for (const e of entries ?? []) {
       const key = profileById.get(e.user_id)?.full_name ?? e.user_id;
-      loggedByUser[key] = Math.round(((loggedByUser[key] ?? 0) + (e.duration_minutes ?? 0) / 60) * 100) / 100;
+      loggedByUser[key] =
+        Math.round(((loggedByUser[key] ?? 0) + (e.duration_minutes ?? 0) / 60) * 100) / 100;
     }
 
     const { data: attachments } = await sb
@@ -99,7 +118,11 @@ export default defineTool({
         shortId: String(task.id).slice(0, 8),
       },
       assignees: [...userIds]
-        .filter((id) => (assigneeRows ?? []).some((r: { user_id: string }) => r.user_id === id) || id === task.assignee_id)
+        .filter(
+          (id) =>
+            (assigneeRows ?? []).some((r: { user_id: string }) => r.user_id === id) ||
+            id === task.assignee_id,
+        )
         .map((id) => profileById.get(id) ?? { id, full_name: null, email: null }),
       hours: {
         estimated: task.total_effort_hours,
@@ -117,7 +140,7 @@ export default defineTool({
         visibleToClient: c.is_client_visible,
         body: c.body,
       })),
-      timeEntries: includeTimeEntries ? entries ?? [] : undefined,
+      timeEntries: includeTimeEntries ? (entries ?? []) : undefined,
       attachments: attachments ?? [],
     });
   },

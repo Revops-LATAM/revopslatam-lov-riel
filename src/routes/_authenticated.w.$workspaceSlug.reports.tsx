@@ -44,7 +44,9 @@ function ReportsLayout() {
               params={{ workspaceSlug }}
               activeOptions={{ exact: "exact" in t }}
               className="text-xs px-2 py-1 rounded text-muted-foreground hover:bg-muted/50"
-              activeProps={{ className: "text-xs px-2 py-1 rounded bg-muted text-foreground font-medium" }}
+              activeProps={{
+                className: "text-xs px-2 py-1 rounded bg-muted text-foreground font-medium",
+              }}
             >
               {t.label}
             </Link>

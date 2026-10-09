@@ -131,7 +131,10 @@ export const getFinanceDashboard = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     const j = (row ?? {}) as {
       byStatus?: Record<string, number>;
-      byCurrency?: Record<string, { scheduled: number | string; paid: number | string; overdue: number | string }>;
+      byCurrency?: Record<
+        string,
+        { scheduled: number | string; paid: number | string; overdue: number | string }
+      >;
       overdueCount?: number;
       upcomingCount?: number;
     };

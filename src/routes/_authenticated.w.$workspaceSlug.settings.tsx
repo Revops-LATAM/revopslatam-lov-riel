@@ -12,7 +12,7 @@ function SettingsLayout() {
 
   const tabs = [
     { to: base, label: "General", exact: true },
-    
+
     { to: `${base}/partners`, label: "Partners" },
     { to: `${base}/service-types`, label: "Tipos de servicio" },
     { to: `${base}/task-types`, label: "Tipos de tarea y estados" },
@@ -20,10 +20,6 @@ function SettingsLayout() {
     { to: `/w/${workspaceSlug}/time-settings`, label: "Tiempo y capacidad" },
     { to: `${base}/trash`, label: "Papelera" },
   ];
-
-
-
-
 
   return (
     <div className="flex flex-col h-full">

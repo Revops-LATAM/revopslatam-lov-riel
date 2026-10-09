@@ -10,7 +10,10 @@ export default defineTool({
   description:
     "Update fields of an existing Riel task: title, description, status, priority, dates, estimated hours, sprint or assignees. Only the provided fields change.",
   inputSchema: {
-    taskId: z.string().uuid().describe("Task id (use list_my_tasks or get_project_overview first)."),
+    taskId: z
+      .string()
+      .uuid()
+      .describe("Task id (use list_my_tasks or get_project_overview first)."),
     title: z.string().min(1).max(200).optional(),
     description: z.string().max(5000).optional(),
     status: z
@@ -32,14 +35,24 @@ export default defineTool({
     startDate: dateStr.nullable().optional().describe("Start date YYYY-MM-DD, or null to clear."),
     dueDate: dateStr.nullable().optional().describe("Due date YYYY-MM-DD, or null to clear."),
     estimatedHours: z.number().min(0).max(999).nullable().optional(),
-    sprintId: z.string().uuid().nullable().optional().describe("Move to sprint, or null to move to backlog."),
+    sprintId: z
+      .string()
+      .uuid()
+      .nullable()
+      .optional()
+      .describe("Move to sprint, or null to move to backlog."),
     assigneeIds: z
       .array(z.string().uuid())
       .max(20)
       .optional()
       .describe("Replace the full assignee list with these user ids."),
   },
-  annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  annotations: {
+    readOnlyHint: false,
+    destructiveHint: false,
+    idempotentHint: true,
+    openWorldHint: false,
+  },
   handler: async (input, ctx) => {
     if (!ctx.isAuthenticated()) return notAuthed();
     const sb = sbForUser(ctx);
@@ -64,7 +77,9 @@ export default defineTool({
       .from("tasks")
       .update(patch)
       .eq("id", input.taskId)
-      .select("id, title, status, priority, start_date, due_date, total_effort_hours, sprint_id, project_id")
+      .select(
+        "id, title, status, priority, start_date, due_date, total_effort_hours, sprint_id, project_id",
+      )
       .maybeSingle();
     if (error) return fail(error.message);
     if (!task) return fail("Task not found or you don't have permission to edit it.");
@@ -72,15 +87,14 @@ export default defineTool({
     if (input.assigneeIds !== undefined) {
       const ids = Array.from(new Set(input.assigneeIds));
       const del = sb.from("task_assignees").delete().eq("task_id", input.taskId);
-      const { error: dErr } = ids.length > 0 ? await del.not("user_id", "in", `(${ids.join(",")})`) : await del;
+      const { error: dErr } =
+        ids.length > 0 ? await del.not("user_id", "in", `(${ids.join(",")})`) : await del;
       if (dErr) return fail(dErr.message);
       if (ids.length > 0) {
-        const { error: aErr } = await sb
-          .from("task_assignees")
-          .upsert(
-            ids.map((u) => ({ task_id: input.taskId, user_id: u, is_primary: false })),
-            { onConflict: "task_id,user_id", ignoreDuplicates: true },
-          );
+        const { error: aErr } = await sb.from("task_assignees").upsert(
+          ids.map((u) => ({ task_id: input.taskId, user_id: u, is_primary: false })),
+          { onConflict: "task_id,user_id", ignoreDuplicates: true },
+        );
         if (aErr) return fail(aErr.message);
       }
     }

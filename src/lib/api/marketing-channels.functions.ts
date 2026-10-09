@@ -32,7 +32,11 @@ export const upsertMarketingChannel = createServerFn({ method: "POST" })
       .object({
         id: z.string().uuid().optional(),
         workspaceId: z.string().uuid(),
-        key: z.string().min(1).max(40).regex(/^[a-z0-9_-]+$/),
+        key: z
+          .string()
+          .min(1)
+          .max(40)
+          .regex(/^[a-z0-9_-]+$/),
         label: z.string().min(1).max(60),
         color: z.string().max(20).optional(),
         sortOrder: z.number().int().optional(),

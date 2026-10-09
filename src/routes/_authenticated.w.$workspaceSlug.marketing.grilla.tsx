@@ -71,7 +71,7 @@ function GrillaRoute() {
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth() + 1);
-  
+
   const [showGenerate, setShowGenerate] = useState(false);
   const [showHubspot, setShowHubspot] = useState(false);
   const [syncingId, setSyncingId] = useState<string | null>(null);
@@ -119,10 +119,7 @@ function GrillaRoute() {
     return m;
   }, [pillars]);
 
-  const invalidate = useCallback(
-    () => qc.invalidateQueries({ queryKey: ["grid"] }),
-    [qc],
-  );
+  const invalidate = useCallback(() => qc.invalidateQueries({ queryKey: ["grid"] }), [qc]);
 
   /** Optimistic in-place patch of a piece — avoids full refetch on every edit. */
   const applyLocalPatch = useCallback(
@@ -140,9 +137,9 @@ function GrillaRoute() {
           if (patch.status !== undefined) merged.status = patch.status;
           if (patch.assetUrl !== undefined) merged.asset_url = patch.assetUrl;
           if (patch.channelAssets !== undefined) {
-            const current =
-              ((merged as unknown as { channel_assets?: Record<string, string | null> })
-                .channel_assets ?? {}) as Record<string, string>;
+            const current = ((
+              merged as unknown as { channel_assets?: Record<string, string | null> }
+            ).channel_assets ?? {}) as Record<string, string>;
             const next: Record<string, string> = { ...current };
             for (const [k, v] of Object.entries(patch.channelAssets)) {
               if (v === null) delete next[k];
@@ -183,7 +180,8 @@ function GrillaRoute() {
       const prev = qc.getQueryData<GridData>(gridKey);
       const piece = prev?.pieces.find((p) => p.id === id);
       const hadHs =
-        piece && Object.keys((piece.hubspot_broadcast_ids ?? {}) as Record<string, string>).length > 0;
+        piece &&
+        Object.keys((piece.hubspot_broadcast_ids ?? {}) as Record<string, string>).length > 0;
       qc.setQueryData<GridData>(gridKey, (curr) =>
         curr ? { ...curr, pieces: curr.pieces.filter((p) => p.id !== id) } : curr,
       );
@@ -232,7 +230,8 @@ function GrillaRoute() {
       }),
       {
         loading: "Sincronizando piezas programadas…",
-        success: (r) => `HubSpot: ${r.ok}/${r.total} sincronizadas${r.failed ? `, ${r.failed} con error` : ""}`,
+        success: (r) =>
+          `HubSpot: ${r.ok}/${r.total} sincronizadas${r.failed ? `, ${r.failed} con error` : ""}`,
         error: (e: Error) => e.message,
       },
     );
@@ -245,12 +244,16 @@ function GrillaRoute() {
   });
 
   const prevMonth = () => {
-    if (month === 1) { setYear((y) => y - 1); setMonth(12); }
-    else setMonth((m) => m - 1);
+    if (month === 1) {
+      setYear((y) => y - 1);
+      setMonth(12);
+    } else setMonth((m) => m - 1);
   };
   const nextMonth = () => {
-    if (month === 12) { setYear((y) => y + 1); setMonth(1); }
-    else setMonth((m) => m + 1);
+    if (month === 12) {
+      setYear((y) => y + 1);
+      setMonth(1);
+    } else setMonth((m) => m + 1);
   };
 
   const pieces = gridQ.data?.pieces ?? [];
@@ -269,8 +272,6 @@ function GrillaRoute() {
     return PIECE_CHANNELS.filter((c) => s.has(c));
   }, [pieces]);
 
-  
-
   const createBlankPiece = () => {
     const iso = new Date(year, month - 1, 1, 9, 0).toISOString();
     createMut.mutate({
@@ -286,8 +287,13 @@ function GrillaRoute() {
           className="relative overflow-hidden rounded-2xl px-6 py-5 flex items-center justify-between shadow-sm"
           style={{ background: "var(--gradient-grilla-banner)" }}
         >
-          <div className="absolute inset-0 opacity-30 pointer-events-none"
-               style={{ background: "radial-gradient(circle at 85% 20%, rgba(255,255,255,0.25), transparent 55%)" }} />
+          <div
+            className="absolute inset-0 opacity-30 pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(circle at 85% 20%, rgba(255,255,255,0.25), transparent 55%)",
+            }}
+          />
           <div className="relative">
             <div className="text-[11px] uppercase tracking-[0.2em] font-semibold text-white/70">
               Plan RRSS
@@ -316,7 +322,8 @@ function GrillaRoute() {
           <div className="relative flex items-center gap-2">
             <div className="hidden md:flex items-center gap-1 mr-2 bg-white/10 backdrop-blur-sm rounded-lg p-1">
               <Button
-                variant="ghost" size="icon"
+                variant="ghost"
+                size="icon"
                 className="h-7 w-7 text-white hover:bg-white/15 hover:text-white"
                 onClick={prevMonth}
               >
@@ -333,7 +340,8 @@ function GrillaRoute() {
                 Hoy
               </button>
               <Button
-                variant="ghost" size="icon"
+                variant="ghost"
+                size="icon"
                 className="h-7 w-7 text-white hover:bg-white/15 hover:text-white"
                 onClick={nextMonth}
               >
@@ -341,7 +349,8 @@ function GrillaRoute() {
               </Button>
             </div>
             <Button
-              size="sm" variant="secondary"
+              size="sm"
+              variant="secondary"
               className="h-8 text-xs bg-white/10 hover:bg-white/20 text-white border border-white/20"
               onClick={() => setShowHubspot(true)}
               title="Configurar canales de HubSpot"
@@ -349,7 +358,8 @@ function GrillaRoute() {
               <Link2 className="w-3.5 h-3.5 mr-1" /> HubSpot
             </Button>
             <Button
-              size="sm" variant="secondary"
+              size="sm"
+              variant="secondary"
               className="h-8 text-xs bg-white/10 hover:bg-white/20 text-white border border-white/20"
               onClick={onSyncMonth}
               title="Sincronizar piezas programadas del mes con HubSpot"
@@ -357,7 +367,8 @@ function GrillaRoute() {
               <CloudUpload className="w-3.5 h-3.5 mr-1" /> Sync mes
             </Button>
             <Button
-              size="sm" variant="secondary"
+              size="sm"
+              variant="secondary"
               className="h-8 text-xs bg-white/95 hover:bg-white text-slate-900"
               onClick={() => setShowGenerate(true)}
             >
@@ -415,7 +426,7 @@ function GrillaRoute() {
               </thead>
               <tbody>
                 {pieces.map((p, i) => {
-                  const pillar = p.pillar_id ? pillarMap.get(p.pillar_id) ?? null : null;
+                  const pillar = p.pillar_id ? (pillarMap.get(p.pillar_id) ?? null) : null;
                   const isOpen = openRowId === p.id;
                   return (
                     <Fragment key={p.id}>

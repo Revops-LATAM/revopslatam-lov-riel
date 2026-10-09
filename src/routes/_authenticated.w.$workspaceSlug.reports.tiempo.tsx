@@ -51,7 +51,13 @@ function TimeReportPage() {
 
   const exportCsv = () => {
     const header = [
-      groupBy === "project" ? "Proyecto" : groupBy === "member" ? "Miembro" : groupBy === "phase" ? "Fase / Línea" : "Cliente",
+      groupBy === "project"
+        ? "Proyecto"
+        : groupBy === "member"
+          ? "Miembro"
+          : groupBy === "phase"
+            ? "Fase / Línea"
+            : "Cliente",
       "Horas",
       "Horas facturables",
       "Monto",
@@ -64,10 +70,12 @@ function TimeReportPage() {
         (r.minutes / 60).toFixed(2),
         (r.billableMinutes / 60).toFixed(2),
         r.amount.toFixed(2),
-        r.mixedCurrency ? "MIXED" : r.currency ?? "",
+        r.mixedCurrency ? "MIXED" : (r.currency ?? ""),
       ]);
     }
-    const csv = rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const csv = rows
+      .map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
     const a = document.createElement("a");
     a.href = url;
@@ -81,11 +89,21 @@ function TimeReportPage() {
       <div className="flex flex-wrap items-end gap-3 border border-border rounded-md p-3">
         <div>
           <Label className="text-xs">Desde</Label>
-          <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="h-8 text-sm w-40" />
+          <Input
+            type="date"
+            value={from}
+            onChange={(e) => setFrom(e.target.value)}
+            className="h-8 text-sm w-40"
+          />
         </div>
         <div>
           <Label className="text-xs">Hasta</Label>
-          <Input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="h-8 text-sm w-40" />
+          <Input
+            type="date"
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+            className="h-8 text-sm w-40"
+          />
         </div>
         <div className="flex items-center gap-2 pb-1">
           {[7, 30, 90].map((d) => (
@@ -104,10 +122,19 @@ function TimeReportPage() {
           ))}
         </div>
         <label className="text-xs inline-flex items-center gap-1.5 pb-1.5">
-          <input type="checkbox" checked={billableOnly} onChange={(e) => setBillableOnly(e.target.checked)} />
+          <input
+            type="checkbox"
+            checked={billableOnly}
+            onChange={(e) => setBillableOnly(e.target.checked)}
+          />
           Sólo facturables
         </label>
-        <Button size="sm" variant="outline" onClick={exportCsv} className="h-7 text-xs gap-1 ml-auto">
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={exportCsv}
+          className="h-7 text-xs gap-1 ml-auto"
+        >
           <Download className="w-3 h-3" /> CSV
         </Button>
       </div>
@@ -131,7 +158,9 @@ function TimeReportPage() {
         </span>
         <span>
           Total:{" "}
-          <span className="text-foreground font-semibold">{formatMinutes(reportQ.data?.totals.minutes ?? 0)}</span>
+          <span className="text-foreground font-semibold">
+            {formatMinutes(reportQ.data?.totals.minutes ?? 0)}
+          </span>
         </span>
         <span>
           Facturable:{" "}
@@ -146,7 +175,13 @@ function TimeReportPage() {
           <thead className="bg-muted/30 text-xs uppercase tracking-wider text-muted-foreground">
             <tr>
               <th className="text-left p-2">
-                {groupBy === "project" ? "Proyecto" : groupBy === "member" ? "Miembro" : groupBy === "phase" ? "Fase / Línea" : "Cliente"}
+                {groupBy === "project"
+                  ? "Proyecto"
+                  : groupBy === "member"
+                    ? "Miembro"
+                    : groupBy === "phase"
+                      ? "Fase / Línea"
+                      : "Cliente"}
               </th>
               <th className="p-2 text-right w-28">Horas</th>
               <th className="p-2 text-right w-32">Facturable</th>
@@ -163,7 +198,10 @@ function TimeReportPage() {
                   <td className="p-2">
                     <div className="flex items-center gap-2">
                       {r.color && (
-                        <div className="w-2 h-2 rounded-full shrink-0" style={{ background: r.color }} />
+                        <div
+                          className="w-2 h-2 rounded-full shrink-0"
+                          style={{ background: r.color }}
+                        />
                       )}
                       <span className="truncate">{r.label}</span>
                     </div>
@@ -183,7 +221,9 @@ function TimeReportPage() {
                       <span className="text-muted-foreground/40">—</span>
                     )}
                   </td>
-                  <td className="p-2 text-right tabular-nums text-muted-foreground">{pct.toFixed(0)}%</td>
+                  <td className="p-2 text-right tabular-nums text-muted-foreground">
+                    {pct.toFixed(0)}%
+                  </td>
                 </tr>
               );
             })}

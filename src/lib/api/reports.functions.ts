@@ -43,7 +43,8 @@ export const getTimeReport = createServerFn({ method: "GET" })
 
     const projects = projectsRes.data ?? [];
     const projectIds = projects.map((p) => p.id);
-    if (projectIds.length === 0) return { tz, rows: [], totals: { minutes: 0, billableMinutes: 0 } };
+    if (projectIds.length === 0)
+      return { tz, rows: [], totals: { minutes: 0, billableMinutes: 0 } };
 
     const members = membersRes.data ?? [];
     const memberIds = members.map((m) => m.user_id);
@@ -220,9 +221,7 @@ export const getProjectTimeHealth = createServerFn({ method: "GET" })
 /** Rollup map for a list of tasks (used to render chips inline in kanban/lists). */
 export const getEstimateRollups = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ projectId: z.string().uuid() }).parse(input),
-  )
+  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows } = await supabase
@@ -243,9 +242,7 @@ export const getEstimateRollups = createServerFn({ method: "GET" })
 /** Per-project estimate vs logged rollup across an entire workspace (aggregated in Postgres). */
 export const getWorkspaceProjectHealth = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ workspaceId: z.string().uuid() }).parse(input),
-  )
+  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows } = await supabase.rpc("get_workspace_project_health", {
@@ -321,7 +318,13 @@ export const getPlanVsActualReport = createServerFn({ method: "GET" })
         .in("id", memberIds.length ? memberIds : ["00000000-0000-0000-0000-000000000000"]),
       contractIds.length
         ? supabase.from("contracts").select("id, name, accounts(name)").in("id", contractIds)
-        : Promise.resolve({ data: [] as Array<{ id: string; name: string; accounts: { name: string } | { name: string }[] | null }> }),
+        : Promise.resolve({
+            data: [] as Array<{
+              id: string;
+              name: string;
+              accounts: { name: string } | { name: string }[] | null;
+            }>,
+          }),
     ]);
     const profileById = new Map((profilesRes.data ?? []).map((p) => [p.id, p]));
     const typeById = new Map((typesRes.data ?? []).map((t) => [t.id, t]));
@@ -395,7 +398,8 @@ export const getPlanVsActualReport = createServerFn({ method: "GET" })
     }
 
     // Time entries in range
-    const entries: Array<{ user_id: string; task_id: string; duration_minutes: number | null }> = [];
+    const entries: Array<{ user_id: string; task_id: string; duration_minutes: number | null }> =
+      [];
     for (const ids of chunk(taskIds, 150)) {
       let page = 0;
       for (;;) {
@@ -434,8 +438,7 @@ export const getPlanVsActualReport = createServerFn({ method: "GET" })
       extra?: { sublabel?: string | null; color?: string | null },
     ) => {
       const cur =
-        rows.get(key) ??
-        ({ key, label, estimateHours: 0, loggedHours: 0, ...extra } as Row);
+        rows.get(key) ?? ({ key, label, estimateHours: 0, loggedHours: 0, ...extra } as Row);
       cur.estimateHours += patch.estimateHours ?? 0;
       cur.loggedHours += patch.loggedHours ?? 0;
       rows.set(key, cur);

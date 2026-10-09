@@ -12,7 +12,9 @@ export const listSlas = createServerFn({ method: "GET" })
     const { supabase } = context;
     const { data: slas, error } = await supabase
       .from("slas")
-      .select("id, name, is_system, active, created_at, sla_targets(id, ticket_type, level, target_minutes, response_target_minutes, business_hours)")
+      .select(
+        "id, name, is_system, active, created_at, sla_targets(id, ticket_type, level, target_minutes, response_target_minutes, business_hours)",
+      )
       .eq("workspace_id", data.workspaceId)
       .order("is_system", { ascending: false })
       .order("name");
@@ -85,9 +87,7 @@ export const deleteSla = createServerFn({ method: "POST" })
       .eq("sla_id", data.slaId);
     if (cErr) throw new Error(cErr.message);
     if ((count ?? 0) > 0) {
-      throw new Error(
-        "Este SLA está asignado a contratos. Desactívalo en lugar de eliminarlo.",
-      );
+      throw new Error("Este SLA está asignado a contratos. Desactívalo en lugar de eliminarlo.");
     }
     const { error } = await supabase.from("slas").delete().eq("id", data.slaId);
     if (error) throw new Error(error.message);

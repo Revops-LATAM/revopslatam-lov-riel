@@ -1,5 +1,14 @@
 import * as React from "react";
-import { Body, Container, Head, Heading, Html, Preview, Section, Text } from "@react-email/components";
+import {
+  Body,
+  Container,
+  Head,
+  Heading,
+  Html,
+  Preview,
+  Section,
+  Text,
+} from "@react-email/components";
 import type { TemplateEntry } from "./registry";
 
 interface Props {
@@ -24,7 +33,8 @@ const TicketClientReply = ({
       <Container style={container}>
         <Heading style={h1}>Nueva respuesta del cliente</Heading>
         <Text style={p}>
-          <strong>{client_email}</strong> respondió en el ticket <span style={mono}>#{ticket_id.slice(0, 8)}</span>
+          <strong>{client_email}</strong> respondió en el ticket{" "}
+          <span style={mono}>#{ticket_id.slice(0, 8)}</span>
           {title ? ` · ${title}` : ""}.
         </Text>
         <Section style={box}>
@@ -32,7 +42,9 @@ const TicketClientReply = ({
         </Section>
         {ticket_url && (
           <Text style={p}>
-            <a href={ticket_url} style={link}>Abrir ticket en Riel →</a>
+            <a href={ticket_url} style={link}>
+              Abrir ticket en Riel →
+            </a>
           </Text>
         )}
       </Container>
@@ -53,7 +65,10 @@ export const template = {
   },
 } satisfies TemplateEntry;
 
-const main = { backgroundColor: "#ffffff", fontFamily: "system-ui, -apple-system, Segoe UI, Arial, sans-serif" };
+const main = {
+  backgroundColor: "#ffffff",
+  fontFamily: "system-ui, -apple-system, Segoe UI, Arial, sans-serif",
+};
 const container = { padding: "28px 28px", maxWidth: 640, margin: "0 auto" };
 const h1 = { fontSize: 20, color: "#0f172a", margin: "0 0 12px" };
 const p = { fontSize: 15, color: "#334155", lineHeight: "22px", margin: "0 0 12px" };

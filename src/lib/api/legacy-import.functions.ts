@@ -2,8 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const LEGACY_ENDPOINT =
-  "https://vdsckstviqqqlkahrpmb.supabase.co/functions/v1/export-legacy";
+const LEGACY_ENDPOINT = "https://vdsckstviqqqlkahrpmb.supabase.co/functions/v1/export-legacy";
 
 type LegacyCliente = {
   id: string;
@@ -28,7 +27,6 @@ type LegacyCliente = {
   sitio_web?: string | null;
 };
 
-
 type LegacyContrato = {
   id: string;
   cliente: string;
@@ -39,7 +37,6 @@ type LegacyContrato = {
   monto_clp: number | null;
   moneda: "UF" | "CLP" | string;
 };
-
 
 type LegacyFactura = {
   id: string;
@@ -59,7 +56,6 @@ type LegacyFactura = {
   dte_pdf_url: string | null;
   observaciones: string | null;
 };
-
 
 type LegacyHito = {
   id: string;
@@ -105,30 +101,42 @@ function buildUfLookup(valores: LegacyUF[]) {
 }
 
 function latestUfDate(valores: LegacyUF[]): string | null {
-  return valores
-    .map((v) => v.fecha.slice(0, 10))
-    .filter(Boolean)
-    .sort()
-    .slice(-1)[0] ?? null;
+  return (
+    valores
+      .map((v) => v.fecha.slice(0, 10))
+      .filter(Boolean)
+      .sort()
+      .slice(-1)[0] ?? null
+  );
 }
 
 function slugify(s: string): string {
-  return s
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "")
-    .slice(0, 60) || "cliente";
+  return (
+    s
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "")
+      .slice(0, 60) || "cliente"
+  );
 }
 
 const MES_TO_NUM: Record<string, number> = {
-  enero: 1, febrero: 2, marzo: 3, abril: 4, mayo: 5, junio: 6,
-  julio: 7, agosto: 8, septiembre: 9, setiembre: 9, octubre: 10,
-  noviembre: 11, diciembre: 12,
+  enero: 1,
+  febrero: 2,
+  marzo: 3,
+  abril: 4,
+  mayo: 5,
+  junio: 6,
+  julio: 7,
+  agosto: 8,
+  septiembre: 9,
+  setiembre: 9,
+  octubre: 10,
+  noviembre: 11,
+  diciembre: 12,
 };
-
-
 
 export const importLegacyData = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -176,19 +184,18 @@ export const importLegacyData = createServerFn({ method: "POST" })
     const todayISO = new Date().toISOString().slice(0, 10);
     const ufHoy = ufValor(todayISO);
 
-
     if (dryRun) {
       const clientes = new Set(contratos.map((c) => c.cliente?.trim()).filter(Boolean));
       const maxISO = (arr: string[]) =>
-        arr.filter(Boolean).map((s) => s.slice(0, 10)).sort().slice(-1)[0] ?? null;
+        arr
+          .filter(Boolean)
+          .map((s) => s.slice(0, 10))
+          .sort()
+          .slice(-1)[0] ?? null;
       const ultimaFactura = maxISO(facturas.map((f) => f.fecha_facturacion));
-      const ultimoDteEmitido = maxISO(
-        facturas.map((f) => f.dte_emitido_at ?? "").filter(Boolean),
-      );
+      const ultimoDteEmitido = maxISO(facturas.map((f) => f.dte_emitido_at ?? "").filter(Boolean));
       const ultimoContratoInicio = maxISO(contratos.map((c) => c.fecha_inicio));
-      const ultimoHito = maxISO(
-        hitos.map((h) => h.fecha_cumplimiento ?? h.fecha_estimada ?? ""),
-      );
+      const ultimoHito = maxISO(hitos.map((h) => h.fecha_cumplimiento ?? h.fecha_estimada ?? ""));
       const ultimaUf = latestUfDate(valoresUf);
       return {
         dryRun: true,
@@ -208,9 +215,7 @@ export const importLegacyData = createServerFn({ method: "POST" })
           ufHoy,
         },
       };
-
     }
-
 
     // Use admin client to bypass RLS for bulk import (caller already authorized)
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -302,19 +307,16 @@ export const importLegacyData = createServerFn({ method: "POST" })
         legal_name: cli.razon_social?.trim() || null,
         tax_id: cli.rut?.trim() || null,
         business_activity: cli.giro?.trim() || null,
-        billing_email:
-          cli.email_envio_dte?.trim() || cli.email_facturacion?.trim() || null,
+        billing_email: cli.email_envio_dte?.trim() || cli.email_facturacion?.trim() || null,
         address: [cli.direccion, cli.ciudad].filter(Boolean).join(", ") || null,
         commune: cli.comuna?.trim() || null,
-        primary_contact_name:
-          cli.contacto_principal?.trim() || cli.contacto_nombre?.trim() || null,
+        primary_contact_name: cli.contacto_principal?.trim() || cli.contacto_nombre?.trim() || null,
         primary_contact_email:
           cli.contacto_principal_email?.trim() || cli.contacto_email?.trim() || null,
         secondary_contacts: contactosSec as never,
         website: cli.sitio_web?.trim() || null,
         notes: [cli.notas?.trim(), notesTag].filter(Boolean).join("\n"),
       };
-
 
       if (existingId) {
         const { error: upErr } = await supabaseAdmin
@@ -350,16 +352,13 @@ export const importLegacyData = createServerFn({ method: "POST" })
         accountByName.set(name.toLowerCase(), inserted.id);
         accountsCreated += 1;
       }
-
     }
 
     // 1b) Ensure name-only accounts exist for any cliente referenced by
     //     contratos/facturas that didn't come in the clientes[] payload.
     const clienteNames = Array.from(
       new Set(
-        [...contratos, ...facturas]
-          .map((c) => c.cliente?.trim())
-          .filter((s): s is string => !!s),
+        [...contratos, ...facturas].map((c) => c.cliente?.trim()).filter((s): s is string => !!s),
       ),
     );
     for (const name of clienteNames) {
@@ -396,7 +395,6 @@ export const importLegacyData = createServerFn({ method: "POST" })
       return key ? accountByName.get(key) : undefined;
     }
 
-
     // ---- 2) Upsert contracts (idempotent by code = legacy id) ----
     const { data: existingContracts, error: cErr } = await supabaseAdmin
       .from("contracts")
@@ -409,8 +407,6 @@ export const importLegacyData = createServerFn({ method: "POST" })
     for (const c of existingContracts ?? []) {
       if (c.code) contractByLegacyId.set(c.code, c.id);
     }
-
-
 
     for (const cont of contratos) {
       const accountId = resolveAccountId(cont.cliente_id ?? null, cont.cliente);
@@ -468,22 +464,17 @@ export const importLegacyData = createServerFn({ method: "POST" })
       }
 
       // Set monthly fee in contract_financials if monto present
-      const monthlyFee =
-        currency === "UF"
-          ? cont.monto_uf ?? 0
-          : cont.monto_clp ?? 0;
+      const monthlyFee = currency === "UF" ? (cont.monto_uf ?? 0) : (cont.monto_clp ?? 0);
       if (monthlyFee > 0) {
         const ourContractId = contractByLegacyId.get(cont.id)!;
-        const { error: finErr } = await supabaseAdmin
-          .from("contract_financials")
-          .upsert(
-            {
-              contract_id: ourContractId,
-              monthly_fee: monthlyFee,
-              fee_total: monthlyFee,
-            },
-            { onConflict: "contract_id" },
-          );
+        const { error: finErr } = await supabaseAdmin.from("contract_financials").upsert(
+          {
+            contract_id: ourContractId,
+            monthly_fee: monthlyFee,
+            fee_total: monthlyFee,
+          },
+          { onConflict: "contract_id" },
+        );
         if (finErr) errors.push(`financials ${cont.id}: ${finErr.message}`);
       }
     }
@@ -504,7 +495,7 @@ export const importLegacyData = createServerFn({ method: "POST" })
     for (const fac of facturas) {
       const cliente = fac.cliente?.trim();
       const accountId = resolveAccountId(fac.cliente_id ?? null, cliente) ?? null;
-      let contractId = fac.contrato_id ? contractByLegacyId.get(fac.contrato_id) ?? null : null;
+      let contractId = fac.contrato_id ? (contractByLegacyId.get(fac.contrato_id) ?? null) : null;
 
       if (!contractId && accountId) {
         const syntheticCode = `legacy-invoices:${cliente?.toLowerCase()}`;
@@ -542,10 +533,10 @@ export const importLegacyData = createServerFn({ method: "POST" })
       const currency = fac.moneda === "UF" ? "UF" : "CLP";
       const isEmitted = fac.estado?.toLowerCase() === "facturado";
       const estado: "emitted" | "draft" = isEmitted ? "emitted" : "draft";
-      const mesNum = fac.mes ? MES_TO_NUM[fac.mes.toLowerCase()] ?? null : null;
+      const mesNum = fac.mes ? (MES_TO_NUM[fac.mes.toLowerCase()] ?? null) : null;
 
       // Amount in the invoice's own currency (UF or CLP).
-      const amountInCurrency = currency === "UF" ? fac.monto_uf ?? 0 : fac.monto_clp ?? 0;
+      const amountInCurrency = currency === "UF" ? (fac.monto_uf ?? 0) : (fac.monto_clp ?? 0);
       // monto_clp mirrors the commercial system's GestionFacturas rule:
       //  - CLP invoices: stored monto_clp.
       //  - UF "Facturado": stored monto_clp (fixed value at emission time);
@@ -554,14 +545,14 @@ export const importLegacyData = createServerFn({ method: "POST" })
       //    fecha_facturacion — that's how the commercial billing view shows it.
       const montoClp =
         currency === "CLP"
-          ? fac.monto_clp ?? 0
+          ? (fac.monto_clp ?? 0)
           : isEmitted
-            ? fac.monto_clp ?? Math.round((fac.monto_uf ?? 0) * ufValor(fac.fecha_facturacion))
+            ? (fac.monto_clp ?? Math.round((fac.monto_uf ?? 0) * ufValor(fac.fecha_facturacion)))
             : Math.round((fac.monto_uf ?? 0) * ufHoy);
       // fecha_emision = actual emission date. Only populated when the invoice was
       // really emitted ("Facturado"); drafts/scheduled keep it null and use due_date.
       const fechaEmisionReal = isEmitted
-        ? fac.dte_emitido_at?.slice(0, 10) ?? fac.fecha_facturacion
+        ? (fac.dte_emitido_at?.slice(0, 10) ?? fac.fecha_facturacion)
         : null;
 
       const fields = {
@@ -633,7 +624,6 @@ export const importLegacyData = createServerFn({ method: "POST" })
       if (delErr) errors.push(`delete scheduled payments: ${delErr.message}`);
       paymentsDeleted = deleted?.length ?? 0;
 
-
       type PaymentInsert = {
         contract_id: string;
         kind: "monthly" | "milestone";
@@ -657,10 +647,13 @@ export const importLegacyData = createServerFn({ method: "POST" })
         if (!contractId) continue;
         const invoiceId = invoiceByLegacyId.get(fac.id) ?? null;
         const currency = fac.moneda === "UF" ? "UF" : "CLP";
-        const amount = currency === "UF" ? fac.monto_uf ?? 0 : fac.monto_clp ?? 0;
+        const amount = currency === "UF" ? (fac.monto_uf ?? 0) : (fac.monto_clp ?? 0);
         if (amount <= 0) continue;
-        const mesNum = fac.mes ? MES_TO_NUM[fac.mes.toLowerCase()] ?? null : null;
-        const period = fac.anio && mesNum ? `${fac.anio}-${String(mesNum).padStart(2, "0")}` : fac.fecha_facturacion.slice(0, 7);
+        const mesNum = fac.mes ? (MES_TO_NUM[fac.mes.toLowerCase()] ?? null) : null;
+        const period =
+          fac.anio && mesNum
+            ? `${fac.anio}-${String(mesNum).padStart(2, "0")}`
+            : fac.fecha_facturacion.slice(0, 7);
         toInsert.push({
           contract_id: contractId,
           kind: "monthly",
@@ -683,7 +676,7 @@ export const importLegacyData = createServerFn({ method: "POST" })
         const contractId = contractByLegacyId.get(hito.contrato_id);
         if (!contractId) continue;
         const currency = hito.moneda === "UF" ? "UF" : "CLP";
-        const amount = currency === "UF" ? hito.monto_uf ?? 0 : hito.monto_clp ?? 0;
+        const amount = currency === "UF" ? (hito.monto_uf ?? 0) : (hito.monto_clp ?? 0);
         if (amount <= 0) continue;
         const period = hito.fecha_estimada.slice(0, 7);
         toInsert.push({
@@ -699,12 +692,9 @@ export const importLegacyData = createServerFn({ method: "POST" })
         });
       }
 
-
       for (let i = 0; i < toInsert.length; i += 200) {
         const chunk = toInsert.slice(i, i + 200);
-        const { error: insErr } = await supabaseAdmin
-          .from("contract_payments")
-          .insert(chunk);
+        const { error: insErr } = await supabaseAdmin.from("contract_payments").insert(chunk);
         if (insErr) errors.push(`payments insert chunk ${i}: ${insErr.message}`);
         else paymentsCreated += chunk.length;
       }

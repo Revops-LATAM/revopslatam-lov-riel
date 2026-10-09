@@ -63,23 +63,38 @@ function GrillaRowInner({
   const rowBg = index % 2 === 0 ? "var(--grilla-paper)" : "var(--grilla-paper-alt)";
   const stripe = pillar?.color ?? "transparent";
 
-  const patchPillar = useCallback((v: string | null) => onPatch(p.id, { pillarId: v }), [p.id, onPatch]);
-  const patchTitle = useCallback((v: string) => onPatch(p.id, { title: v }), [p.id, onPatch]);
-  const patchDate = useCallback((v: string | null) => onPatch(p.id, { publishAt: v }), [p.id, onPatch]);
-  const patchFormat = useCallback((v: PieceFormat) => onPatch(p.id, { format: v }), [p.id, onPatch]);
-  const patchChannels = useCallback((v: PieceChannel[]) => onPatch(p.id, { channels: v }), [p.id, onPatch]);
-  const patchContent = useCallback((v: string) => onPatch(p.id, { content: v }), [p.id, onPatch]);
-  const patchStatus = useCallback((v: PieceStatus) => onPatch(p.id, { status: v }), [p.id, onPatch]);
-  const patchAsset = useCallback((v: string | null) => onPatch(p.id, { assetUrl: v }), [p.id, onPatch]);
-  const patchChannelAsset = useCallback(
-    (channel: string, v: string | null) =>
-      onPatch(p.id, { channelAssets: { [channel]: v } }),
+  const patchPillar = useCallback(
+    (v: string | null) => onPatch(p.id, { pillarId: v }),
     [p.id, onPatch],
   );
-  const channelAssets =
-    ((p as unknown as { channel_assets?: Record<string, string | null> }).channel_assets ??
-      {}) as Record<string, string | null>;
-
+  const patchTitle = useCallback((v: string) => onPatch(p.id, { title: v }), [p.id, onPatch]);
+  const patchDate = useCallback(
+    (v: string | null) => onPatch(p.id, { publishAt: v }),
+    [p.id, onPatch],
+  );
+  const patchFormat = useCallback(
+    (v: PieceFormat) => onPatch(p.id, { format: v }),
+    [p.id, onPatch],
+  );
+  const patchChannels = useCallback(
+    (v: PieceChannel[]) => onPatch(p.id, { channels: v }),
+    [p.id, onPatch],
+  );
+  const patchContent = useCallback((v: string) => onPatch(p.id, { content: v }), [p.id, onPatch]);
+  const patchStatus = useCallback(
+    (v: PieceStatus) => onPatch(p.id, { status: v }),
+    [p.id, onPatch],
+  );
+  const patchAsset = useCallback(
+    (v: string | null) => onPatch(p.id, { assetUrl: v }),
+    [p.id, onPatch],
+  );
+  const patchChannelAsset = useCallback(
+    (channel: string, v: string | null) => onPatch(p.id, { channelAssets: { [channel]: v } }),
+    [p.id, onPatch],
+  );
+  const channelAssets = ((p as unknown as { channel_assets?: Record<string, string | null> })
+    .channel_assets ?? {}) as Record<string, string | null>;
 
   return (
     <tr
@@ -98,16 +113,36 @@ function GrillaRowInner({
           className="text-muted-foreground/60 hover:text-foreground"
           title="Ver copies"
         >
-          <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isOpen ? "" : "-rotate-90"}`} />
+          <ChevronDown
+            className={`w-3.5 h-3.5 transition-transform ${isOpen ? "" : "-rotate-90"}`}
+          />
         </button>
       </td>
-      <Td><PillarChip pillar={pillar ?? null} allPillars={allPillars} onChange={patchPillar} /></Td>
-      <Td><InlineText value={p.title ?? ""} placeholder="Título de la pieza…" onCommit={patchTitle} /></Td>
-      <Td><DateCell iso={p.publish_at ?? null} onChange={patchDate} /></Td>
-      <Td><FormatPill format={p.format as PieceFormat} onChange={patchFormat} /></Td>
-      <Td><ChannelPicker channels={p.channels ?? []} onChange={patchChannels} /></Td>
-      <Td><InlineTextarea value={p.content ?? ""} placeholder="Describí el contenido…" onCommit={patchContent} /></Td>
-      <Td><StatusPill status={p.status as PieceStatus} onChange={patchStatus} /></Td>
+      <Td>
+        <PillarChip pillar={pillar ?? null} allPillars={allPillars} onChange={patchPillar} />
+      </Td>
+      <Td>
+        <InlineText value={p.title ?? ""} placeholder="Título de la pieza…" onCommit={patchTitle} />
+      </Td>
+      <Td>
+        <DateCell iso={p.publish_at ?? null} onChange={patchDate} />
+      </Td>
+      <Td>
+        <FormatPill format={p.format as PieceFormat} onChange={patchFormat} />
+      </Td>
+      <Td>
+        <ChannelPicker channels={p.channels ?? []} onChange={patchChannels} />
+      </Td>
+      <Td>
+        <InlineTextarea
+          value={p.content ?? ""}
+          placeholder="Describí el contenido…"
+          onCommit={patchContent}
+        />
+      </Td>
+      <Td>
+        <StatusPill status={p.status as PieceStatus} onChange={patchStatus} />
+      </Td>
       <Td className="text-center">
         <AssetCell
           pieceId={p.id}

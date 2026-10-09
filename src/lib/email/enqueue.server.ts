@@ -43,11 +43,11 @@ export async function enqueueTransactionalEmailServer({
 
   // Route ticket-*, portal-* and notification-* templates through the soporte mailbox with no finanzas BCC.
   const tn = String(templateName);
-  const isTicket = tn.startsWith("ticket-") || tn.startsWith("portal-") || tn.startsWith("notification-");
+  const isTicket =
+    tn.startsWith("ticket-") || tn.startsWith("portal-") || tn.startsWith("notification-");
   const fromLocal = isTicket ? TICKETS_FROM_LOCAL : DEFAULT_FROM_LOCAL;
   const effectiveFromName = fromName ?? (isTicket ? TICKETS_FROM_NAME : DEFAULT_FROM_NAME);
-  const effectiveReplyTo =
-    replyTo ?? (isTicket ? TICKETS_FALLBACK_REPLY_TO : DEFAULT_REPLY_TO);
+  const effectiveReplyTo = replyTo ?? (isTicket ? TICKETS_FALLBACK_REPLY_TO : DEFAULT_REPLY_TO);
   const bccAddress = isTicket ? null : DEFAULT_BCC;
 
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -63,8 +63,7 @@ export async function enqueueTransactionalEmailServer({
   const element = React.createElement(entry.component, templateData);
   const html = await render(element);
   const text = await render(element, { plainText: true });
-  const subject =
-    typeof entry.subject === "function" ? entry.subject(templateData) : entry.subject;
+  const subject = typeof entry.subject === "function" ? entry.subject(templateData) : entry.subject;
 
   const messageId = crypto.randomUUID();
   await supabaseAdmin.from("email_send_log").insert({

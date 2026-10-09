@@ -16,10 +16,7 @@ import { CheckCircle2, Ticket, Loader2, Paperclip, X, ArrowLeft } from "lucide-r
 export const Route = createFileRoute("/tickets/$slug/new")({
   ssr: false,
   head: () => ({
-    meta: [
-      { title: "Nuevo ticket" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Nuevo ticket" }, { name: "robots", content: "noindex" }],
   }),
   component: NewTicketPage,
 });
@@ -27,7 +24,9 @@ export const Route = createFileRoute("/tickets/$slug/new")({
 type FieldCfg = { label?: string; required?: boolean };
 type FormSchema = {
   areas?: string[];
-  fields?: Partial<Record<"title" | "request_type" | "area" | "severity" | "description", FieldCfg>>;
+  fields?: Partial<
+    Record<"title" | "request_type" | "area" | "severity" | "description", FieldCfg>
+  >;
 };
 
 const DEFAULT_AREAS = ["Marketing", "Ventas", "Servicio", "Operaciones"];
@@ -181,7 +180,8 @@ function NewTicketPage() {
             <CheckCircle2 className="w-10 h-10 mx-auto text-green-600" />
             <h2 className="text-base font-semibold">¡Ticket recibido!</h2>
             <p className="text-sm text-muted-foreground">
-              ID: <span className="font-mono text-foreground">#{sent.slice(0, 8)}</span>. Te avisaremos por email cuando haya novedades.
+              ID: <span className="font-mono text-foreground">#{sent.slice(0, 8)}</span>. Te
+              avisaremos por email cuando haya novedades.
             </p>
             <div className="flex gap-2">
               <Button variant="outline" className="flex-1" onClick={() => setSent(null)}>
@@ -225,7 +225,9 @@ function NewTicketPage() {
                     setSeverity("normal");
                   }}
                 >
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="incidencia">Incidencia</SelectItem>
                     <SelectItem value="requerimiento">Requerimiento</SelectItem>
@@ -244,10 +246,14 @@ function NewTicketPage() {
                   {cfgArea.required && <span className="text-destructive"> *</span>}
                 </Label>
                 <Select value={area} onValueChange={setArea}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     {areas.map((a) => (
-                      <SelectItem key={a} value={a}>{a}</SelectItem>
+                      <SelectItem key={a} value={a}>
+                        {a}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -260,7 +266,9 @@ function NewTicketPage() {
                 {cfgSev.required && <span className="text-destructive"> *</span>}
               </Label>
               <Select value={severity} onValueChange={(v) => setSeverity(v as typeof severity)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="normal">Normal</SelectItem>
                   <SelectItem value="urgente_critico">
@@ -286,7 +294,12 @@ function NewTicketPage() {
             </div>
 
             <div className="space-y-1.5">
-              <Label>Adjuntos <span className="text-muted-foreground font-normal">(opcional, hasta {MAX_FILES} archivos · 10MB c/u)</span></Label>
+              <Label>
+                Adjuntos{" "}
+                <span className="text-muted-foreground font-normal">
+                  (opcional, hasta {MAX_FILES} archivos · 10MB c/u)
+                </span>
+              </Label>
               <label className="flex items-center justify-center gap-2 text-xs text-muted-foreground border border-dashed border-border rounded-md px-3 py-3 cursor-pointer hover:bg-muted/50 transition">
                 <Paperclip className="w-3.5 h-3.5" />
                 <span>{files.length >= MAX_FILES ? "Máximo alcanzado" : "Agregar archivos"}</span>
@@ -304,8 +317,16 @@ function NewTicketPage() {
               {files.length > 0 && (
                 <ul className="space-y-1">
                   {files.map((f, i) => (
-                    <li key={`${f.name}-${i}`} className="flex items-center justify-between text-xs bg-muted/50 rounded px-2 py-1">
-                      <span className="truncate mr-2">{f.name} <span className="text-muted-foreground">({(f.size / 1024).toFixed(0)} KB)</span></span>
+                    <li
+                      key={`${f.name}-${i}`}
+                      className="flex items-center justify-between text-xs bg-muted/50 rounded px-2 py-1"
+                    >
+                      <span className="truncate mr-2">
+                        {f.name}{" "}
+                        <span className="text-muted-foreground">
+                          ({(f.size / 1024).toFixed(0)} KB)
+                        </span>
+                      </span>
                       <button
                         type="button"
                         onClick={() => removeFile(i)}

@@ -103,8 +103,6 @@ export type DataGridProps<TRow> = {
   onRowDragEnd?: (row: TRow, e: React.DragEvent<HTMLTableRowElement>) => void;
 };
 
-
-
 export function DataGrid<TRow>({
   viewKey,
   columns,
@@ -131,8 +129,6 @@ export function DataGrid<TRow>({
   onRowDragStart,
   onRowDragEnd,
 }: DataGridProps<TRow>) {
-
-
   const persisted = React.useMemo(() => loadView(viewKey), [viewKey]);
   const [hiddenState, setHiddenState] = React.useState<Record<string, boolean>>(() => {
     const base: Record<string, boolean> = {};
@@ -142,7 +138,10 @@ export function DataGrid<TRow>({
   const hidden = hiddenProp ?? hiddenState;
   const setHidden: React.Dispatch<React.SetStateAction<Record<string, boolean>>> = (updater) => {
     if (hiddenProp && onHiddenChange) {
-      const next = typeof updater === "function" ? (updater as (h: Record<string, boolean>) => Record<string, boolean>)(hiddenProp) : updater;
+      const next =
+        typeof updater === "function"
+          ? (updater as (h: Record<string, boolean>) => Record<string, boolean>)(hiddenProp)
+          : updater;
       onHiddenChange(next);
     } else {
       setHiddenState(updater);
@@ -156,9 +155,7 @@ export function DataGrid<TRow>({
     const t = window.setTimeout(() => setQDebounced(q), 150);
     return () => window.clearTimeout(t);
   }, [q]);
-  const [widths, setWidths] = React.useState<Record<string, number>>(
-    () => persisted?.widths ?? {},
-  );
+  const [widths, setWidths] = React.useState<Record<string, number>>(() => persisted?.widths ?? {});
   const [selected, setSelected] = React.useState<Set<string>>(() => new Set());
 
   React.useEffect(() => {
@@ -167,7 +164,11 @@ export function DataGrid<TRow>({
 
   // Column resize: pointer-driven, persists width by column id.
   const resizingRef = React.useRef<{ id: string; startX: number; startW: number } | null>(null);
-  const onResizeStart = (e: React.PointerEvent<HTMLDivElement>, colId: string, currentW: number) => {
+  const onResizeStart = (
+    e: React.PointerEvent<HTMLDivElement>,
+    colId: string,
+    currentW: number,
+  ) => {
     e.preventDefault();
     e.stopPropagation();
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
@@ -181,7 +182,11 @@ export function DataGrid<TRow>({
   };
   const onResizeEnd = (e: React.PointerEvent<HTMLDivElement>) => {
     if (resizingRef.current) {
-      try { (e.target as HTMLElement).releasePointerCapture(e.pointerId); } catch { /* ignore */ }
+      try {
+        (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
       resizingRef.current = null;
     }
   };
@@ -243,10 +248,6 @@ export function DataGrid<TRow>({
     overscan: 12,
   });
 
-
-
-
-
   const toggleSort = (col: ColumnDef<TRow>) => {
     if (!col.sortable) return;
     setSort((prev) => {
@@ -258,82 +259,75 @@ export function DataGrid<TRow>({
 
   return (
     <div className={cn("flex flex-col", autoHeight ? "" : "h-full")}>
-
       {!hideToolbar && (
-      <div className="border-b border-border px-4 py-2 flex items-center gap-2 flex-wrap">
-        {searchable && (
-          <div className="relative">
-            <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-            <Input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Buscar..."
-              className="h-7 w-56 pl-7 pr-7 text-xs"
-            />
-            {q && (
-              <button
-                aria-label="Limpiar búsqueda"
-                onClick={() => setQ("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            )}
-          </div>
-        )}
-        {toolbarLeft}
-        <div className="ml-auto flex items-center gap-2">
-          {selected.size > 0 && (
-            <>
-              <span className="text-[11px] text-muted-foreground">
-                {selected.size} seleccionada{selected.size === 1 ? "" : "s"}
-              </span>
-              {renderSelectionActions?.(
-                sorted.filter((r) => selected.has(rowKey(r))),
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-7 text-xs"
-                onClick={() => setSelected(new Set())}
-              >
-                Limpiar
-              </Button>
-            </>
-          )}
-          {toolbarRight}
-          <span className="text-[11px] text-muted-foreground">
-            {sorted.length} {sorted.length === 1 ? "fila" : "filas"}
-          </span>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5">
-                <Columns3 className="w-3.5 h-3.5" /> Columnas
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52">
-              <DropdownMenuLabel className="text-xs">Mostrar columnas</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {columns.map((c) => (
-                <DropdownMenuCheckboxItem
-                  key={c.id}
-                  checked={!hidden[c.id]}
-                  disabled={c.required}
-                  onCheckedChange={(checked) =>
-                    setHidden((h) => ({ ...h, [c.id]: !checked }))
-                  }
-                  className="text-xs"
+        <div className="border-b border-border px-4 py-2 flex items-center gap-2 flex-wrap">
+          {searchable && (
+            <div className="relative">
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+              <Input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Buscar..."
+                className="h-7 w-56 pl-7 pr-7 text-xs"
+              />
+              {q && (
+                <button
+                  aria-label="Limpiar búsqueda"
+                  onClick={() => setQ("")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
-                  {c.header}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+          )}
+          {toolbarLeft}
+          <div className="ml-auto flex items-center gap-2">
+            {selected.size > 0 && (
+              <>
+                <span className="text-[11px] text-muted-foreground">
+                  {selected.size} seleccionada{selected.size === 1 ? "" : "s"}
+                </span>
+                {renderSelectionActions?.(sorted.filter((r) => selected.has(rowKey(r))))}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 text-xs"
+                  onClick={() => setSelected(new Set())}
+                >
+                  Limpiar
+                </Button>
+              </>
+            )}
+            {toolbarRight}
+            <span className="text-[11px] text-muted-foreground">
+              {sorted.length} {sorted.length === 1 ? "fila" : "filas"}
+            </span>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5">
+                  <Columns3 className="w-3.5 h-3.5" /> Columnas
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-52">
+                <DropdownMenuLabel className="text-xs">Mostrar columnas</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {columns.map((c) => (
+                  <DropdownMenuCheckboxItem
+                    key={c.id}
+                    checked={!hidden[c.id]}
+                    disabled={c.required}
+                    onCheckedChange={(checked) => setHidden((h) => ({ ...h, [c.id]: !checked }))}
+                    className="text-xs"
+                  >
+                    {c.header}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
-      </div>
       )}
-
-
 
       <div ref={scrollRef} className={autoHeight ? "" : "flex-1 overflow-auto"}>
         {sorted.length === 0 ? (
@@ -350,136 +344,130 @@ export function DataGrid<TRow>({
               color: "var(--table-text)",
             }}
           >
-
             {!hideHeader && (
-            <thead className="sticky top-0 z-10 bg-background">
-              <tr>
-                {selectable && (
-                  <th
-                    className="px-2 align-middle bg-background"
-                    style={{
-                      height: "var(--table-header-h)",
-                      width: 32,
-                      borderBottom: "1px solid var(--table-divider)",
-                    }}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Checkbox
-                      aria-label="Seleccionar todo"
-                      checked={
-                        sorted.length > 0 &&
-                        sorted.every((r) => selected.has(rowKey(r)))
-                      }
-                      onCheckedChange={(checked) => {
-                        setSelected((prev) => {
-                          const next = new Set(prev);
-                          if (checked) {
-                            for (const r of sorted) next.add(rowKey(r));
-                          } else {
-                            for (const r of sorted) next.delete(rowKey(r));
-                          }
-                          return next;
-                        });
-                      }}
-                    />
-                  </th>
-                )}
-                {showRowNumbers && (
-                  <th
-                    className="px-2 text-right align-middle font-normal bg-background select-none"
-                    style={{
-                      height: "var(--table-header-h)",
-                      width: 40,
-                      fontSize: "12px",
-                      color: "var(--table-text-muted)",
-                      borderBottom: "1px solid var(--table-divider)",
-                    }}
-                  >
-                    #
-                  </th>
-                )}
-                {visibleColumns.map((c) => {
-                  const isSorted = sort?.id === c.id;
-                  const baseW =
-                    widths[c.id] ??
-                    (typeof c.width === "number" ? c.width : undefined);
-                  return (
+              <thead className="sticky top-0 z-10 bg-background">
+                <tr>
+                  {selectable && (
                     <th
-                      key={c.id}
+                      className="px-2 align-middle bg-background"
                       style={{
-                        width: baseW ?? c.width,
-                        minWidth: 60,
                         height: "var(--table-header-h)",
-                        color: "var(--table-text-muted)",
+                        width: 32,
                         borderBottom: "1px solid var(--table-divider)",
-                        fontSize: "12px",
-                        letterSpacing: "0.04em",
-                        textTransform: "uppercase",
-                        fontWeight: 600,
                       }}
-                      className={cn(
-                        "relative px-2 text-left align-middle bg-background select-none",
-                        c.align === "right" && "text-right",
-                        c.align === "center" && "text-center",
-                        c.sortable && "cursor-pointer hover:text-foreground",
-                      )}
-
-                      onClick={() => toggleSort(c)}
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      <span className="inline-flex items-center gap-1">
-                        {c.header}
-                        {c.sortable &&
-                          (isSorted ? (
-                            sort.dir === "asc" ? (
-                              <ArrowUp className="w-3 h-3" />
-                            ) : (
-                              <ArrowDown className="w-3 h-3" />
-                            )
-                          ) : (
-                            <ArrowUpDown className="w-3 h-3 opacity-30" />
-                          ))}
-                      </span>
-                      <div
-                        role="separator"
-                        aria-orientation="vertical"
-                        aria-label={`Redimensionar columna ${c.header}`}
-                        title="Arrastra para redimensionar"
-                        onPointerDown={(e) => {
-                          const measured =
-                            baseW ??
-                            (e.currentTarget.parentElement as HTMLElement)?.offsetWidth ??
-                            120;
-                          onResizeStart(e, c.id, measured);
-                        }}
-                        onPointerMove={onResizeMove}
-                        onPointerUp={onResizeEnd}
-                        onPointerCancel={onResizeEnd}
-                        onClick={(e) => e.stopPropagation()}
-                        onDoubleClick={(e) => {
-                          e.stopPropagation();
-                          setWidths((w) => {
-                            const next = { ...w };
-                            delete next[c.id];
+                      <Checkbox
+                        aria-label="Seleccionar todo"
+                        checked={sorted.length > 0 && sorted.every((r) => selected.has(rowKey(r)))}
+                        onCheckedChange={(checked) => {
+                          setSelected((prev) => {
+                            const next = new Set(prev);
+                            if (checked) {
+                              for (const r of sorted) next.add(rowKey(r));
+                            } else {
+                              for (const r of sorted) next.delete(rowKey(r));
+                            }
                             return next;
                           });
                         }}
-                        className="absolute top-0 right-0 h-full w-1.5 cursor-col-resize select-none hover:bg-primary/40 active:bg-primary/60"
                       />
                     </th>
-                  );
-                })}
-                {rowActions && (
-                  <th
-                    className="bg-background"
-                    style={{
-                      height: "var(--table-header-h)",
-                      width: 40,
-                      borderBottom: "1px solid var(--table-divider)",
-                    }}
-                  />
-                )}
-              </tr>
-            </thead>
+                  )}
+                  {showRowNumbers && (
+                    <th
+                      className="px-2 text-right align-middle font-normal bg-background select-none"
+                      style={{
+                        height: "var(--table-header-h)",
+                        width: 40,
+                        fontSize: "12px",
+                        color: "var(--table-text-muted)",
+                        borderBottom: "1px solid var(--table-divider)",
+                      }}
+                    >
+                      #
+                    </th>
+                  )}
+                  {visibleColumns.map((c) => {
+                    const isSorted = sort?.id === c.id;
+                    const baseW =
+                      widths[c.id] ?? (typeof c.width === "number" ? c.width : undefined);
+                    return (
+                      <th
+                        key={c.id}
+                        style={{
+                          width: baseW ?? c.width,
+                          minWidth: 60,
+                          height: "var(--table-header-h)",
+                          color: "var(--table-text-muted)",
+                          borderBottom: "1px solid var(--table-divider)",
+                          fontSize: "12px",
+                          letterSpacing: "0.04em",
+                          textTransform: "uppercase",
+                          fontWeight: 600,
+                        }}
+                        className={cn(
+                          "relative px-2 text-left align-middle bg-background select-none",
+                          c.align === "right" && "text-right",
+                          c.align === "center" && "text-center",
+                          c.sortable && "cursor-pointer hover:text-foreground",
+                        )}
+                        onClick={() => toggleSort(c)}
+                      >
+                        <span className="inline-flex items-center gap-1">
+                          {c.header}
+                          {c.sortable &&
+                            (isSorted ? (
+                              sort.dir === "asc" ? (
+                                <ArrowUp className="w-3 h-3" />
+                              ) : (
+                                <ArrowDown className="w-3 h-3" />
+                              )
+                            ) : (
+                              <ArrowUpDown className="w-3 h-3 opacity-30" />
+                            ))}
+                        </span>
+                        <div
+                          role="separator"
+                          aria-orientation="vertical"
+                          aria-label={`Redimensionar columna ${c.header}`}
+                          title="Arrastra para redimensionar"
+                          onPointerDown={(e) => {
+                            const measured =
+                              baseW ??
+                              (e.currentTarget.parentElement as HTMLElement)?.offsetWidth ??
+                              120;
+                            onResizeStart(e, c.id, measured);
+                          }}
+                          onPointerMove={onResizeMove}
+                          onPointerUp={onResizeEnd}
+                          onPointerCancel={onResizeEnd}
+                          onClick={(e) => e.stopPropagation()}
+                          onDoubleClick={(e) => {
+                            e.stopPropagation();
+                            setWidths((w) => {
+                              const next = { ...w };
+                              delete next[c.id];
+                              return next;
+                            });
+                          }}
+                          className="absolute top-0 right-0 h-full w-1.5 cursor-col-resize select-none hover:bg-primary/40 active:bg-primary/60"
+                        />
+                      </th>
+                    );
+                  })}
+                  {rowActions && (
+                    <th
+                      className="bg-background"
+                      style={{
+                        height: "var(--table-header-h)",
+                        width: 40,
+                        borderBottom: "1px solid var(--table-divider)",
+                      }}
+                    />
+                  )}
+                </tr>
+              </thead>
             )}
             <tbody>
               {(() => {
@@ -505,15 +493,13 @@ export function DataGrid<TRow>({
                         onDragStart={onRowDragStart}
                         onDragEnd={onRowDragEnd}
                       />
-
                     );
                   });
                 }
                 const items = virtualizer.getVirtualItems();
                 const total = virtualizer.getTotalSize();
                 const paddingTop = items.length > 0 ? items[0].start : 0;
-                const paddingBottom =
-                  items.length > 0 ? total - items[items.length - 1].end : 0;
+                const paddingBottom = items.length > 0 ? total - items[items.length - 1].end : 0;
                 return (
                   <>
                     {paddingTop > 0 && (
@@ -543,7 +529,6 @@ export function DataGrid<TRow>({
                           onDragStart={onRowDragStart}
                           onDragEnd={onRowDragEnd}
                         />
-
                       );
                     })}
                     {paddingBottom > 0 && (
@@ -555,7 +540,6 @@ export function DataGrid<TRow>({
                 );
               })()}
             </tbody>
-
           </table>
         )}
       </div>
@@ -580,7 +564,6 @@ type DataGridRowProps<TRow> = {
   onDragStart?: (row: TRow, e: React.DragEvent<HTMLTableRowElement>) => void;
   onDragEnd?: (row: TRow, e: React.DragEvent<HTMLTableRowElement>) => void;
 };
-
 
 function DataGridRowInner<TRow>({
   rowKey,
@@ -618,14 +601,12 @@ function DataGridRowInner<TRow>({
         (onRowClick || onRowOpen) && "cursor-pointer",
         draggable && "cursor-grab active:cursor-grabbing",
       )}
-
       style={{
         height: "var(--table-row-h)",
         backgroundColor: isSelected ? "var(--table-hover)" : undefined,
       }}
       onMouseEnter={(e) => {
-        if (!isSelected)
-          e.currentTarget.style.backgroundColor = "var(--table-hover)";
+        if (!isSelected) e.currentTarget.style.backgroundColor = "var(--table-hover)";
       }}
       onMouseLeave={(e) => {
         if (!isSelected) e.currentTarget.style.backgroundColor = "";
@@ -704,4 +685,3 @@ function DataGridRowInner<TRow>({
 }
 
 const DataGridRow = React.memo(DataGridRowInner) as typeof DataGridRowInner;
-

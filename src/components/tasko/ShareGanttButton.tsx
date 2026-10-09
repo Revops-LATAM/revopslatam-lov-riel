@@ -29,9 +29,7 @@ export function ShareGanttButton({ projectId }: { projectId: string }) {
         <Share2 className="w-4 h-4 mr-1.5" />
         Compartir
       </Button>
-      {open && (
-        <ShareGanttDialog projectId={projectId} open={open} onOpenChange={setOpen} />
-      )}
+      {open && <ShareGanttDialog projectId={projectId} open={open} onOpenChange={setOpen} />}
     </>
   );
 }
@@ -102,8 +100,8 @@ function ShareGanttDialog({
         <DialogHeader>
           <DialogTitle>Compartir vista Gantt</DialogTitle>
           <DialogDescription>
-            Genera un enlace público de solo lectura para compartir la Gantt con clientes o
-            personas externas.
+            Genera un enlace público de solo lectura para compartir la Gantt con clientes o personas
+            externas.
           </DialogDescription>
         </DialogHeader>
 
@@ -120,10 +118,7 @@ function ShareGanttDialog({
               onChange={(e) => setExpiresInDays(e.target.value)}
             />
           </div>
-          <Button
-            onClick={() => createMut.mutate()}
-            disabled={createMut.isPending}
-          >
+          <Button onClick={() => createMut.mutate()} disabled={createMut.isPending}>
             Crear enlace
           </Button>
         </div>

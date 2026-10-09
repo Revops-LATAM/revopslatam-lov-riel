@@ -37,7 +37,9 @@ export const listDeletedTasks = createServerFn({ method: "GET" })
 
     let query = supabase
       .from("deleted_tasks")
-      .select("id, task_id, title, project_id, project_name, deleted_at, deleted_by, restored_at, assignee_ids")
+      .select(
+        "id, task_id, title, project_id, project_name, deleted_at, deleted_by, restored_at, assignee_ids",
+      )
       .eq("workspace_id", data.workspaceId)
       .gte("deleted_at", since)
       .order("deleted_at", { ascending: false })
@@ -73,7 +75,11 @@ export const listDeletedTasks = createServerFn({ method: "GET" })
         .from("profiles")
         .select("id, full_name, email")
         .in("id", userIds);
-      for (const p of (profiles ?? []) as Array<{ id: string; full_name: string | null; email: string | null }>) {
+      for (const p of (profiles ?? []) as Array<{
+        id: string;
+        full_name: string | null;
+        email: string | null;
+      }>) {
         nameById.set(p.id, p.full_name || p.email || "—");
       }
     }

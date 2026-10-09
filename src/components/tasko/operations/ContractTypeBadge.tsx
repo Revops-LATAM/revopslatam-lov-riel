@@ -12,9 +12,7 @@ const COLOR: Record<ContractType, string> = {
 
 export function ContractTypeBadge({ type }: { type: ContractType }) {
   return (
-    <span
-      className={`text-[10px] uppercase rounded px-1.5 py-0.5 border ${COLOR[type]}`}
-    >
+    <span className={`text-[10px] uppercase rounded px-1.5 py-0.5 border ${COLOR[type]}`}>
       {LABEL[type]}
     </span>
   );

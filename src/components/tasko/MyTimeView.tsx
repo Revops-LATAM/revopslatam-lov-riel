@@ -6,22 +6,19 @@ import { format, addDays, startOfWeek, differenceInCalendarDays } from "date-fns
 import { es } from "date-fns/locale";
 import { getMyWeeklyTime, getMyTasksInRange } from "@/lib/api/workload.functions";
 import { Button } from "@/components/ui/button";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Download,
-  CalendarDays,
-  GanttChartSquare,
-  
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, CalendarDays, GanttChartSquare } from "lucide-react";
 import { formatMinutes } from "./TimeTab";
 import { TimeEntryRow, type EditableEntry } from "./TimeEntryRow";
 import { buildWindow, ZOOMS, type Zoom } from "./workloadWindow";
-import { packTasks, ganttRowHeight, WorkloadGanttBar, STATUS_LEGEND, type ColorMode } from "./WorkloadGanttBar";
+import {
+  packTasks,
+  ganttRowHeight,
+  WorkloadGanttBar,
+  STATUS_LEGEND,
+  type ColorMode,
+} from "./WorkloadGanttBar";
 import { TaskDetailDrawer } from "./TaskDetailDrawer";
 import { cn } from "@/lib/utils";
-
-
 
 type Props = {
   /** When omitted, view aggregates across all workspaces. */
@@ -71,17 +68,13 @@ export function MyTimeView({ workspaceId, extraInvalidateKeys = [] }: Props) {
     [weekStart],
   );
 
-  const navStep = viewMode === "timeline"
-    ? zoom === "day" ? 7 : zoom === "week" ? 28 : 56
-    : 7;
+  const navStep = viewMode === "timeline" ? (zoom === "day" ? 7 : zoom === "week" ? 28 : 56) : 7;
 
   const todayPct = useMemo(() => {
     const diff = differenceInCalendarDays(new Date(), win.start);
     if (diff < 0 || diff >= win.totalDays) return null;
     return ((diff + 0.5) / win.totalDays) * 100;
   }, [win.start, win.totalDays]);
-
-
 
   type Entry = NonNullable<typeof myQ.data>["entries"][number];
 
@@ -159,9 +152,7 @@ export function MyTimeView({ workspaceId, extraInvalidateKeys = [] }: Props) {
       ];
       rows.push(base);
     }
-    const csv = rows
-      .map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(","))
-      .join("\n");
+    const csv = rows.map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
     const a = document.createElement("a");
     a.href = url;
@@ -194,7 +185,12 @@ export function MyTimeView({ workspaceId, extraInvalidateKeys = [] }: Props) {
               TZ {myQ.data.tz}
             </span>
           )}
-          <Button size="icon" variant="ghost" className="w-7 h-7" onClick={() => setAnchor(addDays(anchor, -navStep))}>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="w-7 h-7"
+            onClick={() => setAnchor(addDays(anchor, -navStep))}
+          >
             <ChevronLeft className="w-4 h-4" />
           </Button>
           <span className="text-xs text-muted-foreground tabular-nums min-w-[200px] text-center">
@@ -210,7 +206,12 @@ export function MyTimeView({ workspaceId, extraInvalidateKeys = [] }: Props) {
               </>
             )}
           </span>
-          <Button size="icon" variant="ghost" className="w-7 h-7" onClick={() => setAnchor(addDays(anchor, navStep))}>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="w-7 h-7"
+            onClick={() => setAnchor(addDays(anchor, navStep))}
+          >
             <ChevronRight className="w-4 h-4" />
           </Button>
           {/* botón Hoy eliminado */}
@@ -240,7 +241,9 @@ export function MyTimeView({ workspaceId, extraInvalidateKeys = [] }: Props) {
               type="button"
               onClick={() => setViewMode("timeline")}
               className={`px-2 h-7 text-xs inline-flex items-center gap-1 ${
-                viewMode === "timeline" ? "bg-accent text-foreground" : "text-muted-foreground hover:bg-accent/50"
+                viewMode === "timeline"
+                  ? "bg-accent text-foreground"
+                  : "text-muted-foreground hover:bg-accent/50"
               }`}
               aria-pressed={viewMode === "timeline"}
             >
@@ -250,7 +253,9 @@ export function MyTimeView({ workspaceId, extraInvalidateKeys = [] }: Props) {
               type="button"
               onClick={() => setViewMode("day")}
               className={`px-2 h-7 text-xs inline-flex items-center gap-1 border-l border-border ${
-                viewMode === "day" ? "bg-accent text-foreground" : "text-muted-foreground hover:bg-accent/50"
+                viewMode === "day"
+                  ? "bg-accent text-foreground"
+                  : "text-muted-foreground hover:bg-accent/50"
               }`}
               aria-pressed={viewMode === "day"}
             >
@@ -260,8 +265,6 @@ export function MyTimeView({ workspaceId, extraInvalidateKeys = [] }: Props) {
           <Button size="sm" variant="outline" onClick={exportCsv} className="h-7 text-xs gap-1">
             <Download className="w-3 h-3" /> CSV
           </Button>
-
-
         </div>
       </header>
 
@@ -280,247 +283,252 @@ export function MyTimeView({ workspaceId, extraInvalidateKeys = [] }: Props) {
             setSelectedTaskWs(wsId);
           }}
         />
-
       ) : (
-      <div className="flex-1 overflow-auto p-6 space-y-6">
-
-        <div className="grid grid-cols-7 gap-3">
-          {days.map((d) => {
-            const k = format(d, "yyyy-MM-dd");
-            const realMin = totalsByDay.get(k)?.total ?? 0;
-            const estMin = estimateMinutesByDay.get(k) ?? 0;
-            const dow = d.getDay();
-            const isWeekend = dow === 0 || dow === 6;
-            const isToday = todayKey === k;
-            const isSelected = resolvedSelectedDay === k;
-            const isPast = k < todayKey;
-            const isFuture = k > todayKey;
-
-            const capacityPct = Math.min(100, (realMin / DAILY_CAPACITY_MIN) * 100);
-
-            let badge: { label: string; cls: string } | null = null;
-            if (isToday) {
-              badge = {
-                label: `${Math.round((realMin / DAILY_CAPACITY_MIN) * 100)}%`,
-                cls: "bg-primary/15 text-primary",
-              };
-            } else if (isPast && !isWeekend && estMin > 0) {
-              const pct = Math.round((realMin / estMin) * 100);
-              const cls =
-                pct >= 90
-                  ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300"
-                  : pct >= 60
-                  ? "bg-amber-500/15 text-amber-700 dark:text-amber-300"
-                  : "bg-destructive/15 text-destructive";
-              badge = { label: `${pct}%`, cls };
-            }
-
-            const containerCls = isSelected
-              ? "border-2 border-primary bg-primary/5 shadow-sm"
-              : isWeekend || isFuture
-              ? "border border-border opacity-60 hover:opacity-100 hover:bg-muted/40"
-              : "border border-border bg-muted/30 hover:bg-muted/60";
-
-            return (
-              <button
-                type="button"
-                key={k}
-                onClick={() => setSelectedDayKey(k)}
-                className={`text-left p-3 rounded-xl flex flex-col gap-2 transition-colors ${containerCls}`}
-                aria-pressed={isSelected}
-              >
-                <div className="flex justify-between items-start">
-                  <span
-                    className={`text-[10px] font-bold uppercase tracking-wider ${
-                      isSelected ? "text-primary" : "text-muted-foreground"
-                    }`}
-                  >
-                    {format(d, "EEE d", { locale: es })}
-                  </span>
-                  {badge && (
-                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${badge.cls}`}>
-                      {badge.label}
-                    </span>
-                  )}
-                </div>
-                <div className="flex flex-col">
-                  <span
-                    className={`text-lg font-bold tabular-nums ${
-                      realMin > 0 ? "text-foreground" : "text-muted-foreground/60"
-                    }`}
-                  >
-                    {realMin > 0 ? formatMinutes(realMin) : isWeekend ? "—" : "0h"}
-                  </span>
-                  <div className="w-full h-1.5 bg-muted rounded-full mt-1 overflow-hidden">
-                    <div
-                      className="h-full bg-primary rounded-full transition-[width] duration-500 ease-out"
-                      style={{ width: `${capacityPct}%` }}
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-between text-[10px] font-medium text-muted-foreground tabular-nums">
-                  <span>Est: {estMin > 0 ? formatMinutes(estMin) : "—"}</span>
-                  <span>Real: {realMin > 0 ? formatMinutes(realMin) : "—"}</span>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        {(() => {
-          const est = myQ.data?.estimateByArea ?? { billable: 0, nonBillable: 0, total: 0 };
-          const logged = myQ.data?.loggedByArea ?? { billable: 0, nonBillable: 0, total: 0 };
-          return (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="rounded-xl border border-border bg-muted/30 p-4">
-                <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
-                  Estimado (semana)
-                </div>
-                <div className="flex items-baseline gap-4 flex-wrap">
-                  <span className="text-2xl font-bold tabular-nums text-foreground">
-                    {formatMinutes(est.total)}
-                  </span>
-                  <div className="flex gap-3 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-muted-foreground/40" />
-                      Clientes:{" "}
-                      <span className="text-foreground font-semibold">
-                        {formatMinutes(est.billable)}
-                      </span>
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-muted-foreground/40" />
-                      Interno:{" "}
-                      <span className="text-foreground font-semibold">
-                        {formatMinutes(est.nonBillable)}
-                      </span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="rounded-xl border border-border bg-muted/30 p-4">
-                <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
-                  Registrado (semana)
-                </div>
-                <div className="flex items-baseline gap-4 flex-wrap">
-                  <span className="text-2xl font-bold tabular-nums text-foreground">
-                    {formatMinutes(logged.total)}
-                  </span>
-                  <div className="flex gap-3 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-primary" />
-                      Clientes:{" "}
-                      <span className="text-foreground font-semibold">
-                        {formatMinutes(logged.billable)}
-                      </span>
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-primary/40" />
-                      Interno:{" "}
-                      <span className="text-foreground font-semibold">
-                        {formatMinutes(logged.nonBillable)}
-                      </span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })()}
-
-        <div className="space-y-4">
-          {viewMode === "day" &&
-            (() => {
-              const k = resolvedSelectedDay;
-              const d = days.find((x) => format(x, "yyyy-MM-dd") === k) ?? days[0];
-              const list = entriesByDay.get(k) ?? [];
-              const ests = (myQ.data?.estimateItems ?? []).filter((i) => i.day === k);
+        <div className="flex-1 overflow-auto p-6 space-y-6">
+          <div className="grid grid-cols-7 gap-3">
+            {days.map((d) => {
+              const k = format(d, "yyyy-MM-dd");
               const realMin = totalsByDay.get(k)?.total ?? 0;
+              const estMin = estimateMinutesByDay.get(k) ?? 0;
               const dow = d.getDay();
               const isWeekend = dow === 0 || dow === 6;
-              const available = Math.max(0, DAILY_CAPACITY_MIN - realMin);
+              const isToday = todayKey === k;
+              const isSelected = resolvedSelectedDay === k;
+              const isPast = k < todayKey;
+              const isFuture = k > todayKey;
+
+              const capacityPct = Math.min(100, (realMin / DAILY_CAPACITY_MIN) * 100);
+
+              let badge: { label: string; cls: string } | null = null;
+              if (isToday) {
+                badge = {
+                  label: `${Math.round((realMin / DAILY_CAPACITY_MIN) * 100)}%`,
+                  cls: "bg-primary/15 text-primary",
+                };
+              } else if (isPast && !isWeekend && estMin > 0) {
+                const pct = Math.round((realMin / estMin) * 100);
+                const cls =
+                  pct >= 90
+                    ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300"
+                    : pct >= 60
+                      ? "bg-amber-500/15 text-amber-700 dark:text-amber-300"
+                      : "bg-destructive/15 text-destructive";
+                badge = { label: `${pct}%`, cls };
+              }
+
+              const containerCls = isSelected
+                ? "border-2 border-primary bg-primary/5 shadow-sm"
+                : isWeekend || isFuture
+                  ? "border border-border opacity-60 hover:opacity-100 hover:bg-muted/40"
+                  : "border border-border bg-muted/30 hover:bg-muted/60";
+
               return (
-                <section>
-                  <div className="flex items-center justify-between mb-3">
-                    <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                      Detalle: {format(d, "EEEE d 'de' MMMM", { locale: es })}
-                    </h2>
-                    {!isWeekend && (
-                      <span className="text-xs font-medium text-muted-foreground">
-                        Capacidad disponible:{" "}
-                        <span className="text-foreground font-semibold">
-                          {formatMinutes(available)}
-                        </span>
+                <button
+                  type="button"
+                  key={k}
+                  onClick={() => setSelectedDayKey(k)}
+                  className={`text-left p-3 rounded-xl flex flex-col gap-2 transition-colors ${containerCls}`}
+                  aria-pressed={isSelected}
+                >
+                  <div className="flex justify-between items-start">
+                    <span
+                      className={`text-[10px] font-bold uppercase tracking-wider ${
+                        isSelected ? "text-primary" : "text-muted-foreground"
+                      }`}
+                    >
+                      {format(d, "EEE d", { locale: es })}
+                    </span>
+                    {badge && (
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${badge.cls}`}>
+                        {badge.label}
                       </span>
                     )}
                   </div>
-                  {ests.length > 0 && (
-                    <div className="space-y-1 mb-2">
-                      {ests.map((it) => (
-                        <div
-                          key={`est-${it.taskId}-${it.day}`}
-                          className="flex items-center gap-2 text-xs px-3 py-2 rounded-lg border border-dashed border-border bg-muted/30"
-                        >
-                          <span
-                            className="w-2 h-2 rounded-full shrink-0"
-                            style={{ background: it.projectColor ?? "#8b5cf6" }}
-                          />
-                          <span className="flex-1 truncate">
-                            {it.projectId && it.workspaceSlug ? (
-                              <Link
-                                to="/w/$workspaceSlug/projects/$projectId"
-                                params={{ workspaceSlug: it.workspaceSlug, projectId: it.projectId }}
-                                search={{ task: it.taskId }}
-                                className="text-foreground font-medium hover:underline"
-                              >
-                                {it.title}
-                              </Link>
-                            ) : (
-                              <span className="text-foreground font-medium">{it.title}</span>
-                            )}
-                            <span className="text-muted-foreground/70">
-                              {" "}· {it.projectName}
-                              {showWorkspaceCol && it.workspaceName ? ` · ${it.workspaceName}` : ""}
-                            </span>
-                          </span>
-                          <span
-                            className={`text-[10px] px-1.5 py-0.5 rounded ${
-                              it.isBillable
-                                ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
-                                : "bg-blue-500/10 text-blue-700 dark:text-blue-300"
-                            }`}
-                          >
-                            {it.isBillable ? "Cliente" : "Interno"}
-                          </span>
-                          <span className="tabular-nums text-muted-foreground">
-                            est. {formatMinutes(it.minutes)}
-                          </span>
-                        </div>
-                      ))}
+                  <div className="flex flex-col">
+                    <span
+                      className={`text-lg font-bold tabular-nums ${
+                        realMin > 0 ? "text-foreground" : "text-muted-foreground/60"
+                      }`}
+                    >
+                      {realMin > 0 ? formatMinutes(realMin) : isWeekend ? "—" : "0h"}
+                    </span>
+                    <div className="w-full h-1.5 bg-muted rounded-full mt-1 overflow-hidden">
+                      <div
+                        className="h-full bg-primary rounded-full transition-[width] duration-500 ease-out"
+                        style={{ width: `${capacityPct}%` }}
+                      />
                     </div>
-                  )}
-                  {list.length > 0 ? (
-                    <div className="space-y-1">{list.map(renderRow)}</div>
-                  ) : ests.length === 0 ? (
-                    <p className="text-sm text-muted-foreground italic px-3 py-4 rounded-lg border border-dashed border-border bg-muted/20">
-                      Sin registros para este día.
-                    </p>
-                  ) : null}
-                </section>
+                  </div>
+                  <div className="flex justify-between text-[10px] font-medium text-muted-foreground tabular-nums">
+                    <span>Est: {estMin > 0 ? formatMinutes(estMin) : "—"}</span>
+                    <span>Real: {realMin > 0 ? formatMinutes(realMin) : "—"}</span>
+                  </div>
+                </button>
               );
-            })()}
-          {/* Project/task grouping modes removed. */}
-          {(myQ.data?.entries ?? []).length === 0 && (myQ.data?.estimateItems ?? []).length === 0 && (
-            <p className="text-sm text-muted-foreground italic">
-              Sin registros de tiempo esta semana.{" "}
-              <Link to="/my-tasks" className="underline">
-                Ir a mis tareas
-              </Link>
-              .
-            </p>
-          )}
+            })}
+          </div>
+
+          {(() => {
+            const est = myQ.data?.estimateByArea ?? { billable: 0, nonBillable: 0, total: 0 };
+            const logged = myQ.data?.loggedByArea ?? { billable: 0, nonBillable: 0, total: 0 };
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="rounded-xl border border-border bg-muted/30 p-4">
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
+                    Estimado (semana)
+                  </div>
+                  <div className="flex items-baseline gap-4 flex-wrap">
+                    <span className="text-2xl font-bold tabular-nums text-foreground">
+                      {formatMinutes(est.total)}
+                    </span>
+                    <div className="flex gap-3 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <span className="w-2 h-2 rounded-full bg-muted-foreground/40" />
+                        Clientes:{" "}
+                        <span className="text-foreground font-semibold">
+                          {formatMinutes(est.billable)}
+                        </span>
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <span className="w-2 h-2 rounded-full bg-muted-foreground/40" />
+                        Interno:{" "}
+                        <span className="text-foreground font-semibold">
+                          {formatMinutes(est.nonBillable)}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="rounded-xl border border-border bg-muted/30 p-4">
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
+                    Registrado (semana)
+                  </div>
+                  <div className="flex items-baseline gap-4 flex-wrap">
+                    <span className="text-2xl font-bold tabular-nums text-foreground">
+                      {formatMinutes(logged.total)}
+                    </span>
+                    <div className="flex gap-3 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <span className="w-2 h-2 rounded-full bg-primary" />
+                        Clientes:{" "}
+                        <span className="text-foreground font-semibold">
+                          {formatMinutes(logged.billable)}
+                        </span>
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <span className="w-2 h-2 rounded-full bg-primary/40" />
+                        Interno:{" "}
+                        <span className="text-foreground font-semibold">
+                          {formatMinutes(logged.nonBillable)}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
+          <div className="space-y-4">
+            {viewMode === "day" &&
+              (() => {
+                const k = resolvedSelectedDay;
+                const d = days.find((x) => format(x, "yyyy-MM-dd") === k) ?? days[0];
+                const list = entriesByDay.get(k) ?? [];
+                const ests = (myQ.data?.estimateItems ?? []).filter((i) => i.day === k);
+                const realMin = totalsByDay.get(k)?.total ?? 0;
+                const dow = d.getDay();
+                const isWeekend = dow === 0 || dow === 6;
+                const available = Math.max(0, DAILY_CAPACITY_MIN - realMin);
+                return (
+                  <section>
+                    <div className="flex items-center justify-between mb-3">
+                      <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                        Detalle: {format(d, "EEEE d 'de' MMMM", { locale: es })}
+                      </h2>
+                      {!isWeekend && (
+                        <span className="text-xs font-medium text-muted-foreground">
+                          Capacidad disponible:{" "}
+                          <span className="text-foreground font-semibold">
+                            {formatMinutes(available)}
+                          </span>
+                        </span>
+                      )}
+                    </div>
+                    {ests.length > 0 && (
+                      <div className="space-y-1 mb-2">
+                        {ests.map((it) => (
+                          <div
+                            key={`est-${it.taskId}-${it.day}`}
+                            className="flex items-center gap-2 text-xs px-3 py-2 rounded-lg border border-dashed border-border bg-muted/30"
+                          >
+                            <span
+                              className="w-2 h-2 rounded-full shrink-0"
+                              style={{ background: it.projectColor ?? "#8b5cf6" }}
+                            />
+                            <span className="flex-1 truncate">
+                              {it.projectId && it.workspaceSlug ? (
+                                <Link
+                                  to="/w/$workspaceSlug/projects/$projectId"
+                                  params={{
+                                    workspaceSlug: it.workspaceSlug,
+                                    projectId: it.projectId,
+                                  }}
+                                  search={{ task: it.taskId }}
+                                  className="text-foreground font-medium hover:underline"
+                                >
+                                  {it.title}
+                                </Link>
+                              ) : (
+                                <span className="text-foreground font-medium">{it.title}</span>
+                              )}
+                              <span className="text-muted-foreground/70">
+                                {" "}
+                                · {it.projectName}
+                                {showWorkspaceCol && it.workspaceName
+                                  ? ` · ${it.workspaceName}`
+                                  : ""}
+                              </span>
+                            </span>
+                            <span
+                              className={`text-[10px] px-1.5 py-0.5 rounded ${
+                                it.isBillable
+                                  ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+                                  : "bg-blue-500/10 text-blue-700 dark:text-blue-300"
+                              }`}
+                            >
+                              {it.isBillable ? "Cliente" : "Interno"}
+                            </span>
+                            <span className="tabular-nums text-muted-foreground">
+                              est. {formatMinutes(it.minutes)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {list.length > 0 ? (
+                      <div className="space-y-1">{list.map(renderRow)}</div>
+                    ) : ests.length === 0 ? (
+                      <p className="text-sm text-muted-foreground italic px-3 py-4 rounded-lg border border-dashed border-border bg-muted/20">
+                        Sin registros para este día.
+                      </p>
+                    ) : null}
+                  </section>
+                );
+              })()}
+            {/* Project/task grouping modes removed. */}
+            {(myQ.data?.entries ?? []).length === 0 &&
+              (myQ.data?.estimateItems ?? []).length === 0 && (
+                <p className="text-sm text-muted-foreground italic">
+                  Sin registros de tiempo esta semana.{" "}
+                  <Link to="/my-tasks" className="underline">
+                    Ir a mis tareas
+                  </Link>
+                  .
+                </p>
+              )}
+          </div>
         </div>
-      </div>
       )}
 
       {selectedTaskId && selectedTaskWs && (
@@ -602,7 +610,6 @@ function TimelineBody({
   onTaskClick,
   colorMode,
 }: TimelineProps) {
-
   const NAME_COL = 240;
   const gridTemplate = `${NAME_COL}px repeat(${win.columns.length}, minmax(0, 1fr))`;
 
@@ -672,7 +679,6 @@ function TimelineBody({
     return Array.from(m.values()).sort((a, b) => a.projectName.localeCompare(b.projectName));
   }, [tasks]);
 
-
   return (
     <div className="flex-1 overflow-auto p-6 space-y-4">
       <div className="border border-border rounded-md overflow-hidden bg-card">
@@ -734,8 +740,8 @@ function TimelineBody({
               delta > 0
                 ? "text-emerald-600 dark:text-emerald-400"
                 : delta < 0
-                ? "text-destructive"
-                : "text-muted-foreground/70";
+                  ? "text-destructive"
+                  : "text-muted-foreground/70";
             const fmt = (m: number) => `${(m / 60).toFixed(m % 60 === 0 ? 0 : 1)}h`;
             return (
               <div
@@ -761,9 +767,7 @@ function TimelineBody({
                           <span className="text-muted-foreground/40">·</span>
                         )}
                         {internal > 0 && (
-                          <span className="text-blue-700 dark:text-blue-400">
-                            {fmt(internal)}
-                          </span>
+                          <span className="text-blue-700 dark:text-blue-400">{fmt(internal)}</span>
                         )}
                       </div>
                     )}
@@ -772,8 +776,7 @@ function TimelineBody({
                         est {fmt(est)}{" "}
                         <span className={cn("font-semibold", deltaCls)}>
                           {delta >= 0 ? "+" : ""}
-                          {fmt(Math.abs(delta)).replace("h", "")}
-                          h
+                          {fmt(Math.abs(delta)).replace("h", "")}h
                         </span>
                       </div>
                     )}
@@ -785,7 +788,6 @@ function TimelineBody({
             );
           })}
         </div>
-
 
         {/* Project rows with gantt bars */}
         {isLoading ? (
@@ -830,9 +832,7 @@ function TimelineBody({
                     <div className="text-[10px] text-muted-foreground">
                       {g.tasks.length} tarea{g.tasks.length === 1 ? "" : "s"}
                       {overflowCount > 0 && (
-                        <span className="ml-1 text-status-in-progress">
-                          +{overflowCount} más
-                        </span>
+                        <span className="ml-1 text-status-in-progress">+{overflowCount} más</span>
                       )}
                     </div>
                     {(() => {
@@ -848,16 +848,20 @@ function TimelineBody({
                         delta > 0
                           ? "text-emerald-600 dark:text-emerald-400"
                           : delta < 0
-                          ? "text-destructive"
-                          : "text-muted-foreground/70";
+                            ? "text-destructive"
+                            : "text-muted-foreground/70";
                       const fmt = (m: number) => `${(m / 60).toFixed(m % 60 === 0 ? 0 : 1)}h`;
                       return (
                         <div className="mt-1 space-y-0.5 text-[10px] tabular-nums">
                           <div className="flex items-center gap-1.5">
-                            <span className="text-foreground font-semibold">{fmt(logged.total)}</span>
+                            <span className="text-foreground font-semibold">
+                              {fmt(logged.total)}
+                            </span>
                             {estMin > 0 && (
                               <>
-                                <span className="text-muted-foreground/60">/ est {fmt(estMin)}</span>
+                                <span className="text-muted-foreground/60">
+                                  / est {fmt(estMin)}
+                                </span>
                                 <span className={cn("font-semibold", deltaCls)}>
                                   ({delta >= 0 ? "+" : ""}
                                   {fmt(Math.abs(delta))})
@@ -885,10 +889,7 @@ function TimelineBody({
                   </div>
                 </div>
 
-                <div
-                  className="relative"
-                  style={{ gridColumn: `2 / -1`, height: rowH }}
-                >
+                <div className="relative" style={{ gridColumn: `2 / -1`, height: rowH }}>
                   {/* Column separators + weekend/today tint */}
                   <div
                     className="absolute inset-0 grid pointer-events-none"
@@ -957,15 +958,13 @@ function TimelineBody({
           <span className="w-2 h-2 rounded-full bg-blue-500" /> Interno
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="text-emerald-600 dark:text-emerald-400 font-semibold">+</span> sobre estimado ·{" "}
-          <span className="text-destructive font-semibold">−</span> bajo estimado
+          <span className="text-emerald-600 dark:text-emerald-400 font-semibold">+</span> sobre
+          estimado · <span className="text-destructive font-semibold">−</span> bajo estimado
         </span>
         <span className="inline-flex items-center gap-1.5">
           Click barra → abre detalle de tarea
         </span>
       </div>
-
     </div>
   );
 }
-

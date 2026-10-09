@@ -1,12 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import {
-  dayInTz,
-  weekDays,
-  weekdayMondayBased,
-  utcFromTzWall,
-} from "@/lib/time-tz";
+import { dayInTz, weekDays, weekdayMondayBased, utcFromTzWall } from "@/lib/time-tz";
 
 // Weekly workload: per-member capacity, allocated (from estimates distributed),
 // logged minutes, plus "unplanned" bucket (estimates with no date range).
@@ -35,14 +30,19 @@ function expandWorkDays(start: string, end: string): string[] {
 }
 
 type WorkloadStatusCategory = "abierta" | "en_progreso" | "bloqueada" | "completada" | "cancelada";
-type WorkloadStatusJoin = { category?: string | null; color?: string | null; name?: string | null; key?: string | null };
+type WorkloadStatusJoin = {
+  category?: string | null;
+  color?: string | null;
+  name?: string | null;
+  key?: string | null;
+};
 
-function pickTaskStatusJoin(
-  task: { task_statuses?: WorkloadStatusJoin | WorkloadStatusJoin[] | null },
-): WorkloadStatusJoin | null {
+function pickTaskStatusJoin(task: {
+  task_statuses?: WorkloadStatusJoin | WorkloadStatusJoin[] | null;
+}): WorkloadStatusJoin | null {
   const joined = task.task_statuses;
   if (!joined) return null;
-  return Array.isArray(joined) ? joined[0] ?? null : joined;
+  return Array.isArray(joined) ? (joined[0] ?? null) : joined;
 }
 
 function taskStatusCategory(task: {
@@ -74,7 +74,6 @@ function isClosedForPlannedLoad(task: {
   return category === "completada" || category === "cancelada";
 }
 
-
 // Chunk an array into fixed-size slices. Used to keep PostgREST `id.in.(...)`
 // URLs under Cloudflare Workers / PostgREST length limits when a user has
 // hundreds/thousands of task_assignees rows.
@@ -84,7 +83,6 @@ function chunk<T>(arr: T[], size = 150): T[][] {
   return out;
 }
 
-
 export const getWeeklyWorkload = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
@@ -92,8 +90,14 @@ export const getWeeklyWorkload = createServerFn({ method: "GET" })
       .object({
         workspaceId: z.string().uuid(),
         weekStart: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), // monday, used when no range
-        rangeStart: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-        rangeEnd: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+        rangeStart: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .optional(),
+        rangeEnd: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .optional(),
         projectIds: z.array(z.string().uuid()).optional(),
         billableOnly: z.boolean().optional(),
         excludeInternal: z.boolean().optional(),
@@ -130,7 +134,12 @@ export const getWeeklyWorkload = createServerFn({ method: "GET" })
         ? projsQuery.in("id", data.projectIds)
         : projsQuery;
 
-    const [wsRes, membersRes, capsRes, projsRes] = await Promise.all([wsP, membersP, capsP, projsP]);
+    const [wsRes, membersRes, capsRes, projsRes] = await Promise.all([
+      wsP,
+      membersP,
+      capsP,
+      projsP,
+    ]);
     if (wsRes.error) throw new Error(wsRes.error.message);
 
     const tz = wsRes.data?.timezone ?? "UTC";
@@ -226,7 +235,6 @@ export const getWeeklyWorkload = createServerFn({ method: "GET" })
       entriesP,
     ]);
 
-
     const profileById = new Map((profilesRes.data ?? []).map((p) => [p.id, p]));
     const holidayByDay = new Map<string, { all: boolean; users: Set<string> }>();
     for (const h of holidaysRes.data ?? []) {
@@ -253,7 +261,9 @@ export const getWeeklyWorkload = createServerFn({ method: "GET" })
     const allTasks: RawTask[] = (tasksRes.data as RawTask[] | null) ?? [];
     const EXCLUDED_AREAS = new Set(["internal", "marketing"]);
     const tasks: RawTask[] = data.excludeInternal
-      ? allTasks.filter((t) => !EXCLUDED_AREAS.has(t.area ?? "operations") && !isClosedForPlannedLoad(t))
+      ? allTasks.filter(
+          (t) => !EXCLUDED_AREAS.has(t.area ?? "operations") && !isClosedForPlannedLoad(t),
+        )
       : allTasks.filter((t) => !isClosedForPlannedLoad(t));
     const excludedTaskIds = data.excludeInternal
       ? new Set(allTasks.filter((t) => EXCLUDED_AREAS.has(t.area ?? "operations")).map((t) => t.id))
@@ -307,7 +317,6 @@ export const getWeeklyWorkload = createServerFn({ method: "GET" })
       }
     }
 
-
     // Group workspace members by role for role-placeholder distribution
     const usersByRole = new Map<string, string[]>();
     for (const m of membersRes.data ?? []) {
@@ -347,7 +356,6 @@ export const getWeeklyWorkload = createServerFn({ method: "GET" })
       const isHol = !!holEntry && (holEntry.all || holEntry.users.has(userId));
       return { mins: isHol ? 0 : Math.round(baseHours * 60), holiday: isHol };
     }
-
 
     for (const uid of memberIds) {
       result[uid] = {};
@@ -413,8 +421,7 @@ export const getWeeklyWorkload = createServerFn({ method: "GET" })
       }
       const workable = range.filter((day) => dayCapacityMinutes(userId, day).mins > 0);
       const effectiveMode: EffortMode | "fit_capacity" | "spread" | "due_date" =
-        modeOverride ??
-        (strategy as "fit_capacity" | "spread" | "due_date");
+        modeOverride ?? (strategy as "fit_capacity" | "spread" | "due_date");
 
       if (effectiveMode === "fixed_daily" && dailyMin && dailyMin > 0) {
         for (const day of workable) {
@@ -483,7 +490,6 @@ export const getWeeklyWorkload = createServerFn({ method: "GET" })
       }
     }
 
-
     // Helper: expand a single estimate into one or more (userId, hours, dailyHours) targets.
     // - user_id set    → straight to that user
     // - role set       → split evenly across workspace members with that role
@@ -501,8 +507,7 @@ export const getWeeklyWorkload = createServerFn({ method: "GET" })
         const uids = usersByRole.get(est.role) ?? [];
         if (uids.length === 0) return [];
         const share = Number(est.hours) / uids.length;
-        const dailyShare =
-          est.daily_hours != null ? Number(est.daily_hours) / uids.length : null;
+        const dailyShare = est.daily_hours != null ? Number(est.daily_hours) / uids.length : null;
         return uids.map((uid) => ({ uid, hours: share, daily: dailyShare }));
       }
       return [];
@@ -563,7 +568,11 @@ export const getWeeklyWorkload = createServerFn({ method: "GET" })
                 project_id: t?.project_id ?? "",
                 project_name: proj?.name ?? "",
                 color: proj?.color ?? null,
-                area: (t?.area ?? "operations") as "operations" | "marketing" | "finance" | "internal",
+                area: (t?.area ?? "operations") as
+                  | "operations"
+                  | "marketing"
+                  | "finance"
+                  | "internal",
                 start_date: t?.start_date ?? null,
                 due_date: t?.due_date ?? null,
                 status: t?.status ?? "",
@@ -671,10 +680,15 @@ export const getMyWeeklyTime = createServerFn({ method: "GET" })
     const estCols =
       "id, title, project_id, assignee_id, area, start_date, due_date, total_effort_hours, status, task_statuses(category)";
     type EstRow = {
-      id: string; title: string | null; project_id: string; assignee_id: string | null;
+      id: string;
+      title: string | null;
+      project_id: string;
+      assignee_id: string | null;
       area: string | null;
-      start_date: string | null; due_date: string | null;
-      total_effort_hours: number | null; status: string | null;
+      start_date: string | null;
+      due_date: string | null;
+      total_effort_hours: number | null;
+      status: string | null;
       task_statuses?: WorkloadStatusJoin | WorkloadStatusJoin[] | null;
     };
     const estRowsAcc = new Map<string, EstRow>();
@@ -703,9 +717,7 @@ export const getMyWeeklyTime = createServerFn({ method: "GET" })
     }
     await Promise.all([loadEst("primary"), loadEst("co")]);
 
-
     const estTasksRaw = Array.from(estRowsAcc.values());
-
 
     // Need project→workspace map for area + workspace filtering
     const estProjectIds = Array.from(
@@ -793,7 +805,6 @@ export const getMyWeeklyTime = createServerFn({ method: "GET" })
       const share = 1 / (assigneeCountByTask.get(t.id) ?? 1);
       const perDayMin = (totalH * 60 * share) / range.length;
 
-
       const ws = wsById.get(proj.workspace_id) ?? null;
       const billable = isBillableArea(t.area);
       for (const d of range) {
@@ -842,9 +853,9 @@ export const getMyWeeklyTime = createServerFn({ method: "GET" })
         total: loggedByArea.billable + loggedByArea.nonBillable,
       },
       entries: filtered.map((e) => {
-        const task = e.task_id ? taskById.get(e.task_id) ?? null : null;
-        const project = task ? projectById.get(task.project_id) ?? null : null;
-        const ws = project ? wsById.get(project.workspace_id) ?? null : null;
+        const task = e.task_id ? (taskById.get(e.task_id) ?? null) : null;
+        const project = task ? (projectById.get(task.project_id) ?? null) : null;
+        const ws = project ? (wsById.get(project.workspace_id) ?? null) : null;
         return {
           ...e,
           day: dayInTz(e.started_at, tz),
@@ -865,7 +876,6 @@ export const getMyWeeklyTime = createServerFn({ method: "GET" })
       }),
     };
   });
-
 
 /**
  * Tasks that contribute to a single user × day cell in the workload grid.
@@ -907,11 +917,16 @@ export const getWorkloadCellTasks = createServerFn({ method: "GET" })
       .eq("user_id", data.userId);
     const coIds = Array.from(new Set((coRows ?? []).map((r) => r.task_id)));
     // Split into primary + chunked co-id queries to keep URLs short.
-    const tCols = "id, title, project_id, start_date, due_date, status, assignee_id, total_effort_hours, task_statuses(category)";
+    const tCols =
+      "id, title, project_id, start_date, due_date, status, assignee_id, total_effort_hours, task_statuses(category)";
     type PlannedRow = {
-      id: string; title: string; project_id: string;
-      start_date: string | null; due_date: string | null;
-      status: string | null; assignee_id: string | null;
+      id: string;
+      title: string;
+      project_id: string;
+      start_date: string | null;
+      due_date: string | null;
+      status: string | null;
+      assignee_id: string | null;
       total_effort_hours: number | null;
       task_statuses?: WorkloadStatusJoin | WorkloadStatusJoin[] | null;
     };
@@ -938,7 +953,6 @@ export const getWorkloadCellTasks = createServerFn({ method: "GET" })
     }
     const tasks = Array.from(tasksAcc.values());
 
-
     // Split estimate by number of assignees for each planned task
     const plannedIds = (tasks ?? []).map((t) => t.id);
     const assigneeCount = new Map<string, number>();
@@ -958,7 +972,12 @@ export const getWorkloadCellTasks = createServerFn({ method: "GET" })
     }
 
     const planned = (tasks ?? [])
-      .filter((t) => t.total_effort_hours != null && Number(t.total_effort_hours) > 0 && !isClosedForPlannedLoad(t))
+      .filter(
+        (t) =>
+          t.total_effort_hours != null &&
+          Number(t.total_effort_hours) > 0 &&
+          !isClosedForPlannedLoad(t),
+      )
       .filter((t) => {
         const start = t.start_date ?? t.due_date;
         const end = t.due_date ?? t.start_date;
@@ -976,10 +995,11 @@ export const getWorkloadCellTasks = createServerFn({ method: "GET" })
           project: projectById.get(t.project_id) ?? null,
           start_date: t.start_date,
           due_date: t.due_date,
-          estimateMin: Math.round((Number(t.total_effort_hours) * 60) / n / Math.max(1, spreadDays)),
+          estimateMin: Math.round(
+            (Number(t.total_effort_hours) * 60) / n / Math.max(1, spreadDays),
+          ),
         };
       });
-
 
     // Logged: time entries on this TZ-day
     const startUtc = utcFromTzWall(data.day, "00:00:00", tz);
@@ -1012,7 +1032,7 @@ export const getWorkloadCellTasks = createServerFn({ method: "GET" })
           entry_id: e.id,
           task_id: e.task_id as string,
           title: t?.title ?? "—",
-          project: t ? projectById.get(t.project_id) ?? null : null,
+          project: t ? (projectById.get(t.project_id) ?? null) : null,
           minutes: e.duration_minutes ?? 0,
           note: e.note,
         };
@@ -1069,10 +1089,15 @@ export const getMyTasksInRange = createServerFn({ method: "GET" })
     const tCols =
       "id, title, project_id, start_date, due_date, status, area, assignee_id, total_effort_hours, task_statuses(category, color, name, key)";
     type RangeRow = {
-      id: string; title: string; project_id: string;
-      start_date: string | null; due_date: string | null;
-      status: string | null; area: string | null;
-      assignee_id: string | null; total_effort_hours: number | null;
+      id: string;
+      title: string;
+      project_id: string;
+      start_date: string | null;
+      due_date: string | null;
+      status: string | null;
+      area: string | null;
+      assignee_id: string | null;
+      total_effort_hours: number | null;
       task_statuses?: WorkloadStatusJoin | WorkloadStatusJoin[] | null;
     };
     const tasksAcc = new Map<string, RangeRow>();
@@ -1100,8 +1125,6 @@ export const getMyTasksInRange = createServerFn({ method: "GET" })
     await Promise.all([loadMine("primary"), loadMine("co")]);
     const tasks = Array.from(tasksAcc.values());
 
-
-
     // Count assignees per task to split totalMin equally
     const tIds = (tasks ?? []).map((t) => t.id);
     const nByTask = new Map<string, number>();
@@ -1122,7 +1145,6 @@ export const getMyTasksInRange = createServerFn({ method: "GET" })
       }
       for (const [tid, s] of setByTask) nByTask.set(tid, Math.max(1, s.size));
     }
-
 
     const rows = (tasks ?? [])
       .filter((t) => t.start_date || t.due_date)
@@ -1147,7 +1169,6 @@ export const getMyTasksInRange = createServerFn({ method: "GET" })
       });
     return { tasks: rows };
   });
-
 
 export type MyTaskInRange = {
   id: string;
@@ -1277,7 +1298,11 @@ export const getTeamTimeInRange = createServerFn({ method: "GET" })
         const s = assigneesByTask.get(t.id);
         if (!s) return false;
         let hasMember = false;
-        for (const u of s) if (memberSet.has(u)) { hasMember = true; break; }
+        for (const u of s)
+          if (memberSet.has(u)) {
+            hasMember = true;
+            break;
+          }
         if (!hasMember) return false;
         const st = t.start_date ?? t.due_date;
         const en = t.due_date ?? t.start_date;
@@ -1286,9 +1311,7 @@ export const getTeamTimeInRange = createServerFn({ method: "GET" })
       });
     }
 
-
     const taskById = new Map(tasks.map((t) => [t.id, t]));
-
 
     // Time entries for members in window
     const startUtc = utcFromTzWall(data.rangeStart, "00:00:00", tz);
@@ -1326,9 +1349,7 @@ export const getTeamTimeInRange = createServerFn({ method: "GET" })
     {
       const unknown = [
         ...new Set(
-          entries
-            .map((e) => e.task_id)
-            .filter((id): id is string => !!id && !areaByTask.has(id)),
+          entries.map((e) => e.task_id).filter((id): id is string => !!id && !areaByTask.has(id)),
         ),
       ];
       for (const ids of chunk(unknown)) {
@@ -1338,24 +1359,36 @@ export const getTeamTimeInRange = createServerFn({ method: "GET" })
     }
 
     // Aggregate logged minutes by user + day, split by area (internos = area != operations)
-    const loggedByUserDay = new Map<string, Map<string, { total: number; client: number; internal: number }>>();
-    const loggedByUserTotal = new Map<string, { total: number; client: number; internal: number }>();
+    const loggedByUserDay = new Map<
+      string,
+      Map<string, { total: number; client: number; internal: number }>
+    >();
+    const loggedByUserTotal = new Map<
+      string,
+      { total: number; client: number; internal: number }
+    >();
     for (const e of entries ?? []) {
       const day = dayInTz(e.started_at, tz);
-      const isClient = (e.task_id ? areaByTask.get(e.task_id) ?? "operations" : "operations") === "operations";
+      const isClient =
+        (e.task_id ? (areaByTask.get(e.task_id) ?? "operations") : "operations") === "operations";
 
       const mins = e.duration_minutes ?? 0;
 
       let byDay = loggedByUserDay.get(e.user_id);
-      if (!byDay) { byDay = new Map(); loggedByUserDay.set(e.user_id, byDay); }
+      if (!byDay) {
+        byDay = new Map();
+        loggedByUserDay.set(e.user_id, byDay);
+      }
       const cur = byDay.get(day) ?? { total: 0, client: 0, internal: 0 };
       cur.total += mins;
-      if (isClient) cur.client += mins; else cur.internal += mins;
+      if (isClient) cur.client += mins;
+      else cur.internal += mins;
       byDay.set(day, cur);
 
       const tot = loggedByUserTotal.get(e.user_id) ?? { total: 0, client: 0, internal: 0 };
       tot.total += mins;
-      if (isClient) tot.client += mins; else tot.internal += mins;
+      if (isClient) tot.client += mins;
+      else tot.internal += mins;
       loggedByUserTotal.set(e.user_id, tot);
     }
 
@@ -1407,13 +1440,9 @@ export const getTeamTimeInRange = createServerFn({ method: "GET" })
         }
       }
 
-
       // Estimate shown for the window = only the share of each task that
       // falls inside the visible range (prorrateado por días hábiles).
-      const estMin = Math.round(
-        Object.values(estimateByDay).reduce((s, v) => s + v, 0),
-      );
-
+      const estMin = Math.round(Object.values(estimateByDay).reduce((s, v) => s + v, 0));
 
       const loggedTotals = loggedByUserTotal.get(uid) ?? { total: 0, client: 0, internal: 0 };
       const loggedByDay: Record<string, { total: number; client: number; internal: number }> = {};
@@ -1432,7 +1461,6 @@ export const getTeamTimeInRange = createServerFn({ method: "GET" })
         loggedClientMin: loggedTotals.client,
         loggedInternalMin: loggedTotals.internal,
       };
-
     });
 
     return { tz, members: membersOut };

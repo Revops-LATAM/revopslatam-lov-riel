@@ -71,7 +71,9 @@ export function CreateInvoiceDialog({
   const [accountId, setAccountId] = useState<string>("");
   const [contractId, setContractId] = useState<string>("");
   const [tipoDte, setTipoDte] = useState<33 | 34>(33);
-  const [fecha, setFecha] = useState<string>(new Date().toLocaleDateString("en-CA", { timeZone: "America/Santiago" }));
+  const [fecha, setFecha] = useState<string>(
+    new Date().toLocaleDateString("en-CA", { timeZone: "America/Santiago" }),
+  );
   const [descripcion, setDescripcion] = useState<string>("");
   const [currency, setCurrency] = useState<string>("CLP");
   const [notas, setNotas] = useState<string>("");
@@ -98,10 +100,7 @@ export function CreateInvoiceDialog({
     [payments, selected],
   );
 
-  const totalManual = useMemo(
-    () => lines.reduce((s, l) => s + (Number(l.monto) || 0), 0),
-    [lines],
-  );
+  const totalManual = useMemo(() => lines.reduce((s, l) => s + (Number(l.monto) || 0), 0), [lines]);
   const totalPagos = useMemo(
     () => selectedPayments.reduce((s, p) => s + Number(p.amount ?? 0), 0),
     [selectedPayments],
@@ -149,10 +148,9 @@ export function CreateInvoiceDialog({
       const acct = accounts.find((a) => a.name === acctName);
       resolvedAccountId = acct?.id ?? resolvedAccountId;
       payload = selectedPayments.map((p) => ({
-        descripcion:
-          p.period_label
-            ? `${p.contract_name ?? "Servicio"} — ${p.period_label}`
-            : `${p.contract_name ?? "Servicio"} (${p.kind})`,
+        descripcion: p.period_label
+          ? `${p.contract_name ?? "Servicio"} — ${p.period_label}`
+          : `${p.contract_name ?? "Servicio"} (${p.kind})`,
         cantidad: 1,
         monto_unitario: Number(p.amount ?? 0),
         monto: Number(p.amount ?? 0),
@@ -244,7 +242,11 @@ export function CreateInvoiceDialog({
           </div>
         </div>
 
-        <Tabs value={tab} onValueChange={(v) => setTab(v as "manual" | "payments")} className="mt-2">
+        <Tabs
+          value={tab}
+          onValueChange={(v) => setTab(v as "manual" | "payments")}
+          className="mt-2"
+        >
           <TabsList>
             <TabsTrigger value="payments">Desde pagos programados</TabsTrigger>
             <TabsTrigger value="manual">Líneas manuales</TabsTrigger>
@@ -253,7 +255,10 @@ export function CreateInvoiceDialog({
           <TabsContent value="payments" className="space-y-2">
             <div>
               <Label className="text-xs">Cliente (filtro)</Label>
-              <Select value={accountId || "all"} onValueChange={(v) => setAccountId(v === "all" ? "" : v)}>
+              <Select
+                value={accountId || "all"}
+                onValueChange={(v) => setAccountId(v === "all" ? "" : v)}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Todos los clientes" />
                 </SelectTrigger>
@@ -270,9 +275,7 @@ export function CreateInvoiceDialog({
 
             <div className="max-h-72 overflow-auto border border-border rounded-md">
               {filteredPayments.length === 0 && (
-                <p className="text-xs text-muted-foreground p-3">
-                  No hay pagos programados.
-                </p>
+                <p className="text-xs text-muted-foreground p-3">No hay pagos programados.</p>
               )}
               {filteredPayments.map((p) => (
                 <label
@@ -293,7 +296,9 @@ export function CreateInvoiceDialog({
                   <div className="flex-1 grid grid-cols-4 gap-2 text-xs">
                     <span>{p.due_date}</span>
                     <span className="truncate">{p.contract_name}</span>
-                    <span className="truncate text-muted-foreground">{p.period_label ?? p.kind}</span>
+                    <span className="truncate text-muted-foreground">
+                      {p.period_label ?? p.kind}
+                    </span>
                     <span className="text-right">
                       {formatMoney(Number(p.amount ?? 0), p.currency)}
                     </span>
@@ -304,13 +309,15 @@ export function CreateInvoiceDialog({
             <p className="text-[11px] text-muted-foreground">
               {selected.size} pagos seleccionados · Total neto {formatMoney(totalPagos, currency)}
             </p>
-
           </TabsContent>
 
           <TabsContent value="manual" className="space-y-2">
             <div>
               <Label className="text-xs">Cliente</Label>
-              <Select value={accountId || "none"} onValueChange={(v) => setAccountId(v === "none" ? "" : v)}>
+              <Select
+                value={accountId || "none"}
+                onValueChange={(v) => setAccountId(v === "none" ? "" : v)}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecciona cliente" />
                 </SelectTrigger>
@@ -327,14 +334,15 @@ export function CreateInvoiceDialog({
             <div className="space-y-2">
               {lines.map((l, i) => (
                 <div key={l._uid ?? `line-${i}`} className="grid grid-cols-12 gap-2 items-end">
-
                   <div className="col-span-6">
                     <Label className="text-xs">Descripción</Label>
                     <Input
                       value={l.descripcion}
                       onChange={(e) => {
                         const v = e.target.value;
-                        setLines((ls) => ls.map((x, ix) => (ix === i ? { ...x, descripcion: v } : x)));
+                        setLines((ls) =>
+                          ls.map((x, ix) => (ix === i ? { ...x, descripcion: v } : x)),
+                        );
                       }}
                     />
                   </div>
@@ -347,9 +355,7 @@ export function CreateInvoiceDialog({
                         const cantidad = Number(e.target.value);
                         setLines((ls) =>
                           ls.map((x, ix) =>
-                            ix === i
-                              ? { ...x, cantidad, monto: cantidad * x.monto_unitario }
-                              : x,
+                            ix === i ? { ...x, cantidad, monto: cantidad * x.monto_unitario } : x,
                           ),
                         );
                       }}
@@ -364,9 +370,7 @@ export function CreateInvoiceDialog({
                         const pu = Number(e.target.value);
                         setLines((ls) =>
                           ls.map((x, ix) =>
-                            ix === i
-                              ? { ...x, monto_unitario: pu, monto: pu * x.cantidad }
-                              : x,
+                            ix === i ? { ...x, monto_unitario: pu, monto: pu * x.cantidad } : x,
                           ),
                         );
                       }}
@@ -389,9 +393,7 @@ export function CreateInvoiceDialog({
                 type="button"
                 size="sm"
                 variant="outline"
-                onClick={() =>
-                  setLines((ls) => [...ls, newLine()])
-                }
+                onClick={() => setLines((ls) => [...ls, newLine()])}
               >
                 <Plus className="size-3 mr-1" /> Línea
               </Button>
@@ -412,7 +414,6 @@ export function CreateInvoiceDialog({
             <span>Total</span>
             <span>{formatMoney(total, currency)}</span>
           </div>
-
         </div>
 
         <div>

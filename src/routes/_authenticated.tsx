@@ -1,4 +1,11 @@
-import { createFileRoute, redirect, Outlet, Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  redirect,
+  Outlet,
+  Link,
+  useNavigate,
+  useRouterState,
+} from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -10,7 +17,36 @@ import { profileQO, workspacesQO } from "@/lib/api/tasko.queries";
 import { usePermissions } from "@/lib/permissions";
 import { useActiveSpace, useDerivedArea, AREAS, type Space, type Area } from "@/lib/active-space";
 import { Button } from "@/components/ui/button";
-import { CheckSquare, LogOut, Folder, Inbox, Settings, Users, Search, Clock, BarChart3, FileBarChart, Building2, FileText, DollarSign, Briefcase, Shield, Wallet, Megaphone, ArrowLeftRight, Receipt, ChevronDown, Check, Handshake, RefreshCcw, Percent, CalendarDays, GraduationCap, CalendarHeart, Coffee } from "lucide-react";
+import {
+  CheckSquare,
+  LogOut,
+  Folder,
+  Inbox,
+  Settings,
+  Users,
+  Search,
+  Clock,
+  BarChart3,
+  FileBarChart,
+  Building2,
+  FileText,
+  DollarSign,
+  Briefcase,
+  Shield,
+  Wallet,
+  Megaphone,
+  ArrowLeftRight,
+  Receipt,
+  ChevronDown,
+  Check,
+  Handshake,
+  RefreshCcw,
+  Percent,
+  CalendarDays,
+  GraduationCap,
+  CalendarHeart,
+  Coffee,
+} from "lucide-react";
 import { pendingHandoffsCountQO } from "@/lib/api/tasko.queries";
 import { inboxPendingCount } from "@/lib/api/calendar.functions";
 import {
@@ -19,7 +55,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
 
 import { toast } from "sonner";
 import { CommandPalette } from "@/components/tasko/CommandPalette";
@@ -39,7 +74,9 @@ export const Route = createFileRoute("/_authenticated")({
     if (error || !data.user) {
       await context.queryClient.cancelQueries();
       context.queryClient.clear();
-      try { await supabase.auth.signOut(); } catch {}
+      try {
+        await supabase.auth.signOut();
+      } catch {}
       throw redirect({ to: "/login", search: { redirect: location.href } });
     }
     context.queryClient.setQueryData(["auth-user"], data.user.id);
@@ -59,7 +96,6 @@ function AuthLayout() {
       ? "No tienes acceso a ningún espacio de trabajo. Pide a un administrador que te invite."
       : null;
 
-
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const currentSlug = pathname.match(/^\/w\/([^/]+)/)?.[1];
   const currentWs =
@@ -68,10 +104,13 @@ function AuthLayout() {
   useEffect(() => {
     if (!currentWs) return;
     if (currentSlug && currentSlug !== currentWs.slug) {
-      navigate({ to: "/w/$workspaceSlug", params: { workspaceSlug: currentWs.slug }, replace: true });
+      navigate({
+        to: "/w/$workspaceSlug",
+        params: { workspaceSlug: currentWs.slug },
+        replace: true,
+      });
     }
   }, [currentSlug, currentWs, navigate]);
-
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -94,13 +133,18 @@ function AuthLayout() {
   }, []);
 
   useHotkey("?", () => setShortcutsOpen(true), { enabled: !!currentWs });
-  useHotkeySequence(["g", "h"], () =>
-    currentWs && navigate({ to: "/w/$workspaceSlug", params: { workspaceSlug: currentWs.slug } }),
+  useHotkeySequence(
+    ["g", "h"],
+    () =>
+      currentWs && navigate({ to: "/w/$workspaceSlug", params: { workspaceSlug: currentWs.slug } }),
   );
   useHotkeySequence(["g", "m"], () => navigate({ to: "/my-tasks" }));
 
-  useHotkeySequence(["g", "p"], () =>
-    currentWs && navigate({ to: "/w/$workspaceSlug/projects", params: { workspaceSlug: currentWs.slug } }),
+  useHotkeySequence(
+    ["g", "p"],
+    () =>
+      currentWs &&
+      navigate({ to: "/w/$workspaceSlug/projects", params: { workspaceSlug: currentWs.slug } }),
   );
   useHotkeySequence(["g", "t"], () => navigate({ to: "/admin/users" }));
 
@@ -123,7 +167,6 @@ function AuthLayout() {
   return (
     <div className="h-screen flex bg-background text-foreground overflow-hidden">
       <aside className="w-72 h-screen border-r border-sidebar-border bg-sidebar text-sidebar-foreground flex flex-col overflow-hidden">
-
         <div className="px-4 h-14 flex items-center gap-2.5 border-b border-sidebar-border">
           <img src={rielLogo} alt="Riel" className="h-7 w-7 object-contain shrink-0" />
           <div className="flex flex-col leading-tight min-w-0">
@@ -135,7 +178,9 @@ function AuthLayout() {
                 </span>
               )}
             </span>
-            <span className="text-[10px] text-muted-foreground truncate">Donde corre nuestra operación</span>
+            <span className="text-[10px] text-muted-foreground truncate">
+              Donde corre nuestra operación
+            </span>
           </div>
         </div>
 
@@ -180,21 +225,13 @@ function AuthLayout() {
           />
         </nav>
 
-
-
-        <WorkspacePicker
-          workspaces={workspacesQuery.data ?? []}
-          currentWs={currentWs}
-        />
+        <WorkspacePicker workspaces={workspacesQuery.data ?? []} currentWs={currentWs} />
 
         <AreaSwitcher
           workspaces={workspacesQuery.data ?? []}
           currentWs={currentWs}
           pathname={pathname}
         />
-
-
-
 
         <div className="px-2">
           <ClientFilter workspaceId={currentWs.id} workspaceSlug={currentWs.slug} />
@@ -203,9 +240,6 @@ function AuthLayout() {
         <nav className="px-2 mt-2 space-y-0.5 flex-1 overflow-y-auto">
           <SidebarNav workspace={currentWs} pathname={pathname} />
         </nav>
-
-
-
 
         <UserMenuFooter
           initial={initial}
@@ -232,9 +266,6 @@ function AuthLayout() {
     </div>
   );
 }
-
-
-
 
 function SidebarLink({
   to,
@@ -320,8 +351,6 @@ function ReportsSidebarLink({
   );
 }
 
-
-
 function CalendarInboxLink({
   workspaceId,
   slug,
@@ -359,19 +388,15 @@ function CalendarInboxLink({
   );
 }
 
+type WsLite = {
+  id: string;
+  slug: string;
+  kind: "operations" | "internal";
+  name: string;
+  color: string | null;
+};
 
-
-
-
-type WsLite = { id: string; slug: string; kind: "operations" | "internal"; name: string; color: string | null };
-
-function WorkspacePicker({
-  workspaces,
-  currentWs,
-}: {
-  workspaces: WsLite[];
-  currentWs: WsLite;
-}) {
+function WorkspacePicker({ workspaces, currentWs }: { workspaces: WsLite[]; currentWs: WsLite }) {
   const navigate = useNavigate();
   if (workspaces.length <= 1) return null;
 
@@ -426,8 +451,6 @@ function WorkspacePicker({
   );
 }
 
-
-
 function AreaSwitcher({
   workspaces,
   currentWs,
@@ -444,40 +467,40 @@ function AreaSwitcher({
   const active = useDerivedArea(pathname, currentWs.id);
 
   type Item = { id: Area; icon: React.ReactNode; show: boolean; onSelect: () => void };
-  const items: Item[] = ([
-    {
-      id: "operations" as const,
-      icon: <Briefcase className="w-3.5 h-3.5" />,
-      show:
-        perms.hasAny(["ops_view", "ops_manage", "workload_view", "reports_view"]) ||
-        perms.isLoading,
-      onSelect: () =>
-        navigate({ to: "/w/$workspaceSlug", params: { workspaceSlug: slug } }),
-    },
-    {
-      id: "marketing" as const,
-      icon: <Megaphone className="w-3.5 h-3.5" />,
-      show: perms.hasAny(["marketing_view", "marketing_manage"]) || perms.isLoading,
-      onSelect: () =>
-        navigate({ to: "/w/$workspaceSlug/marketing", params: { workspaceSlug: slug } }),
-    },
-    {
-      id: "internal" as const,
-      icon: <Coffee className="w-3.5 h-3.5" />,
-      // Interno es visible para todos los miembros del workspace por defecto.
-      show: true,
-      onSelect: () =>
-        navigate({ to: "/w/$workspaceSlug/internal", params: { workspaceSlug: slug } }),
-    },
-    {
-      id: "finance" as const,
-      icon: <Wallet className="w-3.5 h-3.5" />,
-      show: perms.hasAny(["finance_view", "finance_manage"]) || perms.isLoading,
-      onSelect: () =>
-        navigate({ to: "/w/$workspaceSlug/finance", params: { workspaceSlug: slug } }),
-    },
-  ] satisfies Item[]).filter((it) => it.show);
-
+  const items: Item[] = (
+    [
+      {
+        id: "operations" as const,
+        icon: <Briefcase className="w-3.5 h-3.5" />,
+        show:
+          perms.hasAny(["ops_view", "ops_manage", "workload_view", "reports_view"]) ||
+          perms.isLoading,
+        onSelect: () => navigate({ to: "/w/$workspaceSlug", params: { workspaceSlug: slug } }),
+      },
+      {
+        id: "marketing" as const,
+        icon: <Megaphone className="w-3.5 h-3.5" />,
+        show: perms.hasAny(["marketing_view", "marketing_manage"]) || perms.isLoading,
+        onSelect: () =>
+          navigate({ to: "/w/$workspaceSlug/marketing", params: { workspaceSlug: slug } }),
+      },
+      {
+        id: "internal" as const,
+        icon: <Coffee className="w-3.5 h-3.5" />,
+        // Interno es visible para todos los miembros del workspace por defecto.
+        show: true,
+        onSelect: () =>
+          navigate({ to: "/w/$workspaceSlug/internal", params: { workspaceSlug: slug } }),
+      },
+      {
+        id: "finance" as const,
+        icon: <Wallet className="w-3.5 h-3.5" />,
+        show: perms.hasAny(["finance_view", "finance_manage"]) || perms.isLoading,
+        onSelect: () =>
+          navigate({ to: "/w/$workspaceSlug/finance", params: { workspaceSlug: slug } }),
+      },
+    ] satisfies Item[]
+  ).filter((it) => it.show);
 
   const activeMeta = AREAS[active];
 
@@ -488,9 +511,7 @@ function AreaSwitcher({
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button
-            className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md border border-sidebar-border/60 bg-sidebar-accent/30 hover:bg-sidebar-accent/50 transition-colors text-left"
-          >
+          <button className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md border border-sidebar-border/60 bg-sidebar-accent/30 hover:bg-sidebar-accent/50 transition-colors text-left">
             <span
               className="w-1.5 h-1.5 rounded-full shrink-0"
               style={{ background: activeMeta.accent }}
@@ -533,13 +554,7 @@ function AreaSwitcher({
 
 import { SpaceSwitcher } from "@/components/tasko/SpaceSwitcher";
 
-function SidebarNav({
-  workspace,
-  pathname,
-}: {
-  workspace: WsLite;
-  pathname: string;
-}) {
+function SidebarNav({ workspace, pathname }: { workspace: WsLite; pathname: string }) {
   const area = useDerivedArea(pathname, workspace.id);
 
   if (area === "operations") return <OperationsNav workspace={workspace} pathname={pathname} />;
@@ -548,13 +563,7 @@ function SidebarNav({
   return <FinanceNav workspace={workspace} pathname={pathname} />;
 }
 
-function OperationsNav({
-  workspace,
-  pathname,
-}: {
-  workspace: WsLite;
-  pathname: string;
-}) {
+function OperationsNav({ workspace, pathname }: { workspace: WsLite; pathname: string }) {
   const slug = workspace.slug;
   const params = { workspaceSlug: slug };
   const startsWith = (p: string) => pathname.startsWith(`/w/${slug}${p}`);
@@ -569,9 +578,6 @@ function OperationsNav({
 
       {space === "work" && (
         <div className="mt-2">
-
-
-
           {isOps && perms.has("ops_view") ? (
             <>
               <div className="px-2 pt-1 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -614,7 +620,11 @@ function OperationsNav({
             />
           )}
           {isOps && perms.has("ops_view") && (
-            <HandoffsSidebarLink workspaceId={workspace.id} slug={slug} active={startsWith("/handoffs")} />
+            <HandoffsSidebarLink
+              workspaceId={workspace.id}
+              slug={slug}
+              active={startsWith("/handoffs")}
+            />
           )}
           {perms.has("workload_view") && (
             <SidebarLink
@@ -645,13 +655,7 @@ function OperationsNav({
   );
 }
 
-function MarketingNav({
-  workspace,
-  pathname,
-}: {
-  workspace: WsLite;
-  pathname: string;
-}) {
+function MarketingNav({ workspace, pathname }: { workspace: WsLite; pathname: string }) {
   const slug = workspace.slug;
   const params = { workspaceSlug: slug };
   const perms = usePermissions(workspace.id);
@@ -726,13 +730,7 @@ function MarketingNav({
   );
 }
 
-function InternalNav({
-  workspace,
-  pathname,
-}: {
-  workspace: WsLite;
-  pathname: string;
-}) {
+function InternalNav({ workspace, pathname }: { workspace: WsLite; pathname: string }) {
   const slug = workspace.slug;
   const params = { workspaceSlug: slug };
   const startsWith = (p: string) => pathname.startsWith(`/w/${slug}/internal${p}`);
@@ -796,14 +794,7 @@ function InternalNav({
   );
 }
 
-
-function FinanceNav({
-  workspace,
-  pathname,
-}: {
-  workspace: WsLite;
-  pathname: string;
-}) {
+function FinanceNav({ workspace, pathname }: { workspace: WsLite; pathname: string }) {
   const slug = workspace.slug;
   const params = { workspaceSlug: slug };
   const startsWith = (p: string) => pathname.startsWith(`/w/${slug}/finance${p}`);
@@ -877,8 +868,6 @@ function FinanceNav({
     </div>
   );
 }
-
-
 
 function AppShellSkeleton() {
   return (
@@ -976,8 +965,6 @@ function ClientFilter({ workspaceSlug }: { workspaceId: string; workspaceSlug: s
   );
 }
 
-
-
 function UserMenuFooter({
   initial,
   fullName,
@@ -1006,12 +993,8 @@ function UserMenuFooter({
             {initial}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-xs font-medium truncate">
-              {fullName ?? "Mi cuenta"}
-            </div>
-            <div className="text-[11px] text-muted-foreground truncate">
-              {email}
-            </div>
+            <div className="text-xs font-medium truncate">{fullName ?? "Mi cuenta"}</div>
+            <div className="text-[11px] text-muted-foreground truncate">{email}</div>
           </div>
           <ChevronDown className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
         </button>

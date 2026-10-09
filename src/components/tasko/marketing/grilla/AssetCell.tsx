@@ -1,14 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import {
-  ExternalLink,
-  FileEdit,
-  Image as ImageIcon,
-  Loader2,
-  Pencil,
-  Trash2,
-} from "lucide-react";
+import { ExternalLink, FileEdit, Image as ImageIcon, Loader2, Pencil, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { CHANNEL_LABEL, CHANNEL_META, type PieceChannel } from "./constants";
 
@@ -132,7 +125,11 @@ function SingleUploader({
           style={{ borderColor: "var(--border-strong)" }}
           title="Subir archivo"
         >
-          {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ImageIcon className="w-3.5 h-3.5" />}
+          {uploading ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : (
+            <ImageIcon className="w-3.5 h-3.5" />
+          )}
         </label>
       ) : isStoragePath ? (
         <StorageAssetThumb
@@ -186,7 +183,9 @@ function StorageAssetThumb({
         className="w-8 h-8 rounded-md border overflow-hidden bg-muted flex items-center justify-center relative group/thumb"
         style={{ borderColor: "var(--border)" }}
         title={path.split("/").pop()}
-        onClick={(e) => { if (!url) e.preventDefault(); }}
+        onClick={(e) => {
+          if (!url) e.preventDefault();
+        }}
       >
         {uploading ? (
           <Loader2 className="w-3.5 h-3.5 animate-spin text-muted-foreground" />
@@ -202,10 +201,18 @@ function StorageAssetThumb({
         )}
       </a>
       <div className="flex flex-col opacity-0 group-hover:opacity-100 transition-opacity">
-        <button className="text-[10px] text-muted-foreground hover:text-foreground" onClick={onReplace} title="Reemplazar">
+        <button
+          className="text-[10px] text-muted-foreground hover:text-foreground"
+          onClick={onReplace}
+          title="Reemplazar"
+        >
           <Pencil className="w-3 h-3" />
         </button>
-        <button className="text-[10px] text-muted-foreground hover:text-destructive" onClick={onRemove} title="Quitar">
+        <button
+          className="text-[10px] text-muted-foreground hover:text-destructive"
+          onClick={onRemove}
+          title="Quitar"
+        >
           <Trash2 className="w-3 h-3" />
         </button>
       </div>
@@ -247,10 +254,18 @@ function ExternalAssetThumb({
         </span>
       </a>
       <div className="flex flex-col opacity-0 group-hover:opacity-100 transition-opacity">
-        <button className="text-[10px] text-muted-foreground hover:text-foreground" onClick={onReplace} title="Reemplazar">
+        <button
+          className="text-[10px] text-muted-foreground hover:text-foreground"
+          onClick={onReplace}
+          title="Reemplazar"
+        >
           <Pencil className="w-3 h-3" />
         </button>
-        <button className="text-[10px] text-muted-foreground hover:text-destructive" onClick={onRemove} title="Quitar">
+        <button
+          className="text-[10px] text-muted-foreground hover:text-destructive"
+          onClick={onRemove}
+          title="Quitar"
+        >
           <Trash2 className="w-3 h-3" />
         </button>
       </div>

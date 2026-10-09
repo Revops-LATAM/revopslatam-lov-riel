@@ -74,7 +74,7 @@ function MarketingProjectDetail() {
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
 
   const [pendingDelete, setPendingDelete] = useState<{ ids: string[]; title: string } | null>(null);
-  
+
   const [selectedPhaseId, setSelectedPhaseId] = useState<string | null | "_none">(null);
   const [editingPhaseId, setEditingPhaseId] = useState<string | null>(null);
 
@@ -127,7 +127,13 @@ function MarketingProjectDetail() {
   });
 
   const createPhaseMut = useMutation({
-    mutationFn: (v: { name: string; color: string | null; startDate: string | null; endDate: string | null; ownerId: string | null }) =>
+    mutationFn: (v: {
+      name: string;
+      color: string | null;
+      startDate: string | null;
+      endDate: string | null;
+      ownerId: string | null;
+    }) =>
       createPhaseFn({
         data: {
           projectId,
@@ -146,7 +152,14 @@ function MarketingProjectDetail() {
   });
 
   const updatePhaseMut = useMutation({
-    mutationFn: (vars: { id: string; name: string; color: string | null; startDate: string | null; endDate: string | null; ownerId: string | null }) =>
+    mutationFn: (vars: {
+      id: string;
+      name: string;
+      color: string | null;
+      startDate: string | null;
+      endDate: string | null;
+      ownerId: string | null;
+    }) =>
       updatePhaseFn({
         data: {
           id: vars.id,
@@ -220,7 +233,6 @@ function MarketingProjectDetail() {
             <h1 className="text-sm font-semibold truncate">{projectQ.data.name}</h1>
           </div>
         </div>
-
       </header>
 
       <MarketingPhasesBar

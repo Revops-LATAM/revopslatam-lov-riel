@@ -30,7 +30,12 @@ export function WorkloadCellPopover({
       <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent className="w-80 p-0" align="center">
         {enabled ? (
-          <CellContent workspaceId={workspaceId} workspaceSlug={workspaceSlug} userId={userId} day={day} />
+          <CellContent
+            workspaceId={workspaceId}
+            workspaceSlug={workspaceSlug}
+            userId={userId}
+            day={day}
+          />
         ) : null}
       </PopoverContent>
     </Popover>

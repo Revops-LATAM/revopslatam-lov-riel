@@ -25,7 +25,13 @@ import {
   listSlas,
 } from "@/lib/api/tasko.functions";
 import { formatMoney } from "@/lib/tasko-utils";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -158,7 +164,10 @@ export function DeliveryPlanWizard({
   // Hydrate tickets state from contract
   useEffect(() => {
     if (!contractQ.data) return;
-    const c = contractQ.data as { requires_client_tickets?: boolean | null; sla_id?: string | null };
+    const c = contractQ.data as {
+      requires_client_tickets?: boolean | null;
+      sla_id?: string | null;
+    };
     setRequiresClientTickets(!!c.requires_client_tickets);
     setSlaId(c.sla_id ?? "");
   }, [contractQ.data]);
@@ -169,7 +178,6 @@ export function DeliveryPlanWizard({
     const normal = (slasQ.data ?? []).find((s) => s.name === "Normal");
     if (normal) setSlaId(normal.id);
   }, [requiresClientTickets, slaId, slasQ.data]);
-
 
   // Lock deliveryType to the contract's configured type
   useEffect(() => {
@@ -230,10 +238,7 @@ export function DeliveryPlanWizard({
   // Step "Fases" (only for implementation contracts).
   // The phase chain anchors to step 1's `fechaInicio` (Inicio delivery) — single source of truth.
   const [phases, setPhases] = useState<PhaseRow[]>([]);
-  const phaseDates = useMemo(
-    () => computePhaseDates(phases, fechaInicio),
-    [phases, fechaInicio],
-  );
+  const phaseDates = useMemo(() => computePhaseDates(phases, fechaInicio), [phases, fechaInicio]);
 
   // -------- Hydration from existing project (continuar planificación) --------
   const contractProjectsQ = useQuery({ ...contractProjectsQO(contractId), enabled: open });
@@ -472,7 +477,7 @@ export function DeliveryPlanWizard({
             })),
           serviceLineIds: Array.from(selectedLines),
           requiresClientTickets,
-          slaId: requiresClientTickets ? (slaId || null) : null,
+          slaId: requiresClientTickets ? slaId || null : null,
         },
       });
       const rows = skipHours
@@ -570,7 +575,10 @@ export function DeliveryPlanWizard({
     if (s.id === 6 && isRecurrente) return false;
     return true;
   });
-  const currentIdx = Math.max(0, visibleSteps.findIndex((s) => s.id === step));
+  const currentIdx = Math.max(
+    0,
+    visibleSteps.findIndex((s) => s.id === step),
+  );
   const isLastStep = currentIdx === visibleSteps.length - 1;
 
   const canNext = (() => {
@@ -591,7 +599,13 @@ export function DeliveryPlanWizard({
   }
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) setStep(1); }}>
+    <Dialog
+      open={open}
+      onOpenChange={(v) => {
+        onOpenChange(v);
+        if (!v) setStep(1);
+      }}
+    >
       <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>
@@ -622,13 +636,19 @@ export function DeliveryPlanWizard({
             <div className="space-y-3">
               <div>
                 <Label>Nombre del proyecto</Label>
-                <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Implementación CRM…" />
+                <Input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Implementación CRM…"
+                />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label>Tipo de entrega</Label>
                   <Select value={deliveryType} disabled>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="proyecto">Proyecto</SelectItem>
                       <SelectItem value="raas">Recurrente</SelectItem>
@@ -640,7 +660,11 @@ export function DeliveryPlanWizard({
                 </div>
                 <div>
                   <Label>Margen objetivo (%)</Label>
-                  <Input type="number" value={margenObjetivo} onChange={(e) => setMargenObjetivo(e.target.value)} />
+                  <Input
+                    type="number"
+                    value={margenObjetivo}
+                    onChange={(e) => setMargenObjetivo(e.target.value)}
+                  />
                 </div>
               </div>
               <div className="rounded-md border border-border p-3 space-y-2">
@@ -648,8 +672,8 @@ export function DeliveryPlanWizard({
                   <div>
                     <Label className="text-xs">Estructura de entrega</Label>
                     <p className="text-[10px] text-muted-foreground">
-                      Agrega proyectos internos si el contrato se ejecuta en varias
-                      líneas (cada uno con sus propios sprints y fases).
+                      Agrega proyectos internos si el contrato se ejecuta en varias líneas (cada uno
+                      con sus propios sprints y fases).
                     </p>
                   </div>
                   <Button
@@ -687,7 +711,9 @@ export function DeliveryPlanWizard({
                           value={p.hours}
                           onChange={(e) =>
                             setExtraProjects((arr) =>
-                              arr.map((r, idx) => (idx === i ? { ...r, hours: e.target.value } : r)),
+                              arr.map((r, idx) =>
+                                idx === i ? { ...r, hours: e.target.value } : r,
+                              ),
                             )
                           }
                         />
@@ -696,7 +722,9 @@ export function DeliveryPlanWizard({
                           size="sm"
                           variant="ghost"
                           className="h-8 text-xs"
-                          onClick={() => setExtraProjects((arr) => arr.filter((_, idx) => idx !== i))}
+                          onClick={() =>
+                            setExtraProjects((arr) => arr.filter((_, idx) => idx !== i))
+                          }
                         >
                           Quitar
                         </Button>
@@ -707,8 +735,13 @@ export function DeliveryPlanWizard({
               </div>
               <div>
                 <Label>Lead del proyecto</Label>
-                <Select value={leadId || "none"} onValueChange={(v) => setLeadId(v === "none" ? "" : v)}>
-                  <SelectTrigger><SelectValue placeholder="Sin asignar" /></SelectTrigger>
+                <Select
+                  value={leadId || "none"}
+                  onValueChange={(v) => setLeadId(v === "none" ? "" : v)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sin asignar" />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">Sin asignar</SelectItem>
                     {(membersQ.data ?? []).map((m) => (
@@ -748,7 +781,11 @@ export function DeliveryPlanWizard({
                 {!isRecurrente && (
                   <div>
                     <Label>Entrega objetivo</Label>
-                    <Input type="date" value={fechaEntrega} onChange={(e) => setFechaEntrega(e.target.value)} />
+                    <Input
+                      type="date"
+                      value={fechaEntrega}
+                      onChange={(e) => setFechaEntrega(e.target.value)}
+                    />
                     <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
                       <span className="text-[10px] text-muted-foreground">Atajo:</span>
                       <Input
@@ -759,8 +796,13 @@ export function DeliveryPlanWizard({
                         value={entregaQuickValue}
                         onChange={(e) => setEntregaQuickValue(e.target.value)}
                       />
-                      <Select value={entregaQuickUnit} onValueChange={(v) => setEntregaQuickUnit(v as "weeks" | "months")}>
-                        <SelectTrigger className="h-7 w-24 text-xs"><SelectValue /></SelectTrigger>
+                      <Select
+                        value={entregaQuickUnit}
+                        onValueChange={(v) => setEntregaQuickUnit(v as "weeks" | "months")}
+                      >
+                        <SelectTrigger className="h-7 w-24 text-xs">
+                          <SelectValue />
+                        </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="weeks">semanas</SelectItem>
                           <SelectItem value="months">meses</SelectItem>
@@ -812,7 +854,8 @@ export function DeliveryPlanWizard({
                     </div>
                   </div>
                   <p className="text-[10px] text-muted-foreground">
-                    Cadencia y horas vienen del contrato (Finanzas). Al confirmar, se generan los sprints automáticamente desde la fecha de inicio.
+                    Cadencia y horas vienen del contrato (Finanzas). Al confirmar, se generan los
+                    sprints automáticamente desde la fecha de inicio.
                   </p>
                 </div>
               )}
@@ -826,9 +869,12 @@ export function DeliveryPlanWizard({
                     className="mt-0.5"
                   />
                   <div className="space-y-0.5">
-                    <div className="text-xs font-semibold">Requiere portal de tickets del cliente</div>
+                    <div className="text-xs font-semibold">
+                      Requiere portal de tickets del cliente
+                    </div>
                     <p className="text-[10px] text-muted-foreground">
-                      Crea una fase "Tickets" y un formulario público para que el cliente envíe solicitudes.
+                      Crea una fase "Tickets" y un formulario público para que el cliente envíe
+                      solicitudes.
                     </p>
                   </div>
                 </label>
@@ -856,11 +902,11 @@ export function DeliveryPlanWizard({
             </div>
           )}
 
-
           {step === 2 && (
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground">
-                Selecciona qué líneas del contrato cubrirá este proyecto. Una línea puede mapearse a otro proyecto después.
+                Selecciona qué líneas del contrato cubrirá este proyecto. Una línea puede mapearse a
+                otro proyecto después.
               </p>
               {lines.length === 0 ? (
                 <div className="text-sm text-muted-foreground border border-dashed border-border rounded-md p-4 text-center">
@@ -877,7 +923,8 @@ export function DeliveryPlanWizard({
                       <div className="flex-1 min-w-0">
                         <div className="font-medium">{l.tipo_servicio}</div>
                         <div className="text-xs text-muted-foreground">
-                          {l.frecuencia}{l.numero_cuotas ? ` · ${l.numero_cuotas} cuotas` : ""}
+                          {l.frecuencia}
+                          {l.numero_cuotas ? ` · ${l.numero_cuotas} cuotas` : ""}
                         </div>
                       </div>
                       <div className="text-xs tabular-nums">
@@ -890,158 +937,198 @@ export function DeliveryPlanWizard({
             </div>
           )}
 
-          {step === 3 && (() => {
-            const hoursPerSprint = Number(contractQ.data?.hours_per_sprint ?? 0);
-            const hasSprintHours = isRecurrente && hoursPerSprint > 0;
-            const totalHoras = budget.reduce((s, r) => s + Number(r.horas || 0), 0);
-            const hoursDiff = hasSprintHours ? totalHoras - hoursPerSprint : 0;
-            const hoursLabel = hasSprintHours ? "Horas / sprint" : isRecurrente ? "Horas / mes" : "Horas totales";
-            return (
-            <div className="space-y-2">
-              <label className="flex items-start gap-2 text-xs bg-muted/30 border border-border rounded-md px-2 py-1.5 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="mt-0.5"
-                  checked={skipHours}
-                  onChange={(e) => setSkipHours(e.target.checked)}
-                />
-                <span>
-                  <span className="text-foreground font-medium">Definir horas más tarde.</span>{" "}
-                  <span className="text-muted-foreground">Si aún no tienes claridad del presupuesto por rol, puedes saltar este paso y configurarlo después desde el proyecto.</span>
-                </span>
-              </label>
-              {!skipHours && (
-              <p className="text-xs text-muted-foreground">
-                {hasSprintHours
-                  ? `El contrato tiene ${hoursPerSprint} horas contratadas por sprint. Distribúyelas entre los roles o personas que participarán en cada sprint.`
-                  : isRecurrente
-                    ? "Estima horas mensuales y costo por rol o persona. Como el contrato es recurrente, las horas representan la dedicación mensual de cada rol."
-                    : "Estima horas totales y costo por rol o persona para todo el proyecto. Esto define el margen estimado."}
-              </p>
-              )}
-              {!skipHours && (<>
-
-              <div className="border border-border rounded-md overflow-hidden">
-                <table className="w-full text-sm">
-                  <thead className="bg-muted/30 text-[11px] uppercase text-muted-foreground">
-                    <tr>
-                      <th className="text-left px-2 py-1.5">Rol / Persona</th>
-                      <th className="text-right px-2 py-1.5 w-28">
-                        {hoursLabel}
-                      </th>
-                      <th className="text-right px-2 py-1.5 w-32">Costo/hora</th>
-                      <th className="w-8" />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {budget.map((r, i) => (
-                      <tr key={r.key} className="border-t border-border">
-                        <td className="px-1 py-1">
-                          <Input
-                            className="h-8"
-                            value={r.rol}
-                            onChange={(e) => {
-                              const v = e.target.value;
-                              setBudget((prev) => prev.map((row, idx) => idx === i ? { ...row, rol: v } : row));
-                            }}
-                            placeholder="Ej. Tech Lead"
-                          />
-                        </td>
-                        <td className="px-1 py-1">
-                          <Input
-                            className="h-8 text-right"
-                            type="number"
-                            value={r.horas}
-                            onChange={(e) => {
-                              const v = e.target.value;
-                              setBudget((prev) => prev.map((row, idx) => idx === i ? { ...row, horas: v } : row));
-                            }}
-                          />
-                        </td>
-                        <td className="px-1 py-1">
-                          <div className="relative">
-                            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
-                              {primaryCurrency}
-                            </span>
-                            <Input
-                              className="h-8 text-right pl-10"
-                              type="text"
-                              inputMode={primaryCurrency === "UF" ? "decimal" : "numeric"}
-                              value={(() => {
-                                const raw = r.costoHora;
-                                if (!raw) return "";
-                                if (primaryCurrency === "UF") {
-                                  const [intPart, decPart] = raw.split(".");
-                                  const intFmt = Number(intPart || 0).toLocaleString("es-CL");
-                                  return decPart !== undefined ? `${intFmt},${decPart}` : intFmt;
-                                }
-                                const n = Number(raw.replace(/\D/g, ""));
-                                return Number.isFinite(n) && raw !== "" ? n.toLocaleString("es-CL") : "";
-                              })()}
-                              onChange={(e) => {
-                                let v = e.target.value;
-                                if (primaryCurrency === "UF") {
-                                  v = v.replace(/\./g, "").replace(",", ".").replace(/[^0-9.]/g, "");
-                                  const parts = v.split(".");
-                                  if (parts.length > 2) v = parts[0] + "." + parts.slice(1).join("");
-                                } else {
-                                  v = v.replace(/\D/g, "");
-                                }
-                                setBudget((prev) => prev.map((row, idx) => idx === i ? { ...row, costoHora: v } : row));
-                              }}
-                            />
-                          </div>
-                        </td>
-                        <td className="px-1 py-1">
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-7 w-7"
-                            onClick={() => setBudget((prev) => prev.filter((_, idx) => idx !== i))}
-                            disabled={budget.length <= 1}
+          {step === 3 &&
+            (() => {
+              const hoursPerSprint = Number(contractQ.data?.hours_per_sprint ?? 0);
+              const hasSprintHours = isRecurrente && hoursPerSprint > 0;
+              const totalHoras = budget.reduce((s, r) => s + Number(r.horas || 0), 0);
+              const hoursDiff = hasSprintHours ? totalHoras - hoursPerSprint : 0;
+              const hoursLabel = hasSprintHours
+                ? "Horas / sprint"
+                : isRecurrente
+                  ? "Horas / mes"
+                  : "Horas totales";
+              return (
+                <div className="space-y-2">
+                  <label className="flex items-start gap-2 text-xs bg-muted/30 border border-border rounded-md px-2 py-1.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="mt-0.5"
+                      checked={skipHours}
+                      onChange={(e) => setSkipHours(e.target.checked)}
+                    />
+                    <span>
+                      <span className="text-foreground font-medium">Definir horas más tarde.</span>{" "}
+                      <span className="text-muted-foreground">
+                        Si aún no tienes claridad del presupuesto por rol, puedes saltar este paso y
+                        configurarlo después desde el proyecto.
+                      </span>
+                    </span>
+                  </label>
+                  {!skipHours && (
+                    <p className="text-xs text-muted-foreground">
+                      {hasSprintHours
+                        ? `El contrato tiene ${hoursPerSprint} horas contratadas por sprint. Distribúyelas entre los roles o personas que participarán en cada sprint.`
+                        : isRecurrente
+                          ? "Estima horas mensuales y costo por rol o persona. Como el contrato es recurrente, las horas representan la dedicación mensual de cada rol."
+                          : "Estima horas totales y costo por rol o persona para todo el proyecto. Esto define el margen estimado."}
+                    </p>
+                  )}
+                  {!skipHours && (
+                    <>
+                      <div className="border border-border rounded-md overflow-hidden">
+                        <table className="w-full text-sm">
+                          <thead className="bg-muted/30 text-[11px] uppercase text-muted-foreground">
+                            <tr>
+                              <th className="text-left px-2 py-1.5">Rol / Persona</th>
+                              <th className="text-right px-2 py-1.5 w-28">{hoursLabel}</th>
+                              <th className="text-right px-2 py-1.5 w-32">Costo/hora</th>
+                              <th className="w-8" />
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {budget.map((r, i) => (
+                              <tr key={r.key} className="border-t border-border">
+                                <td className="px-1 py-1">
+                                  <Input
+                                    className="h-8"
+                                    value={r.rol}
+                                    onChange={(e) => {
+                                      const v = e.target.value;
+                                      setBudget((prev) =>
+                                        prev.map((row, idx) =>
+                                          idx === i ? { ...row, rol: v } : row,
+                                        ),
+                                      );
+                                    }}
+                                    placeholder="Ej. Tech Lead"
+                                  />
+                                </td>
+                                <td className="px-1 py-1">
+                                  <Input
+                                    className="h-8 text-right"
+                                    type="number"
+                                    value={r.horas}
+                                    onChange={(e) => {
+                                      const v = e.target.value;
+                                      setBudget((prev) =>
+                                        prev.map((row, idx) =>
+                                          idx === i ? { ...row, horas: v } : row,
+                                        ),
+                                      );
+                                    }}
+                                  />
+                                </td>
+                                <td className="px-1 py-1">
+                                  <div className="relative">
+                                    <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+                                      {primaryCurrency}
+                                    </span>
+                                    <Input
+                                      className="h-8 text-right pl-10"
+                                      type="text"
+                                      inputMode={primaryCurrency === "UF" ? "decimal" : "numeric"}
+                                      value={(() => {
+                                        const raw = r.costoHora;
+                                        if (!raw) return "";
+                                        if (primaryCurrency === "UF") {
+                                          const [intPart, decPart] = raw.split(".");
+                                          const intFmt = Number(intPart || 0).toLocaleString(
+                                            "es-CL",
+                                          );
+                                          return decPart !== undefined
+                                            ? `${intFmt},${decPart}`
+                                            : intFmt;
+                                        }
+                                        const n = Number(raw.replace(/\D/g, ""));
+                                        return Number.isFinite(n) && raw !== ""
+                                          ? n.toLocaleString("es-CL")
+                                          : "";
+                                      })()}
+                                      onChange={(e) => {
+                                        let v = e.target.value;
+                                        if (primaryCurrency === "UF") {
+                                          v = v
+                                            .replace(/\./g, "")
+                                            .replace(",", ".")
+                                            .replace(/[^0-9.]/g, "");
+                                          const parts = v.split(".");
+                                          if (parts.length > 2)
+                                            v = parts[0] + "." + parts.slice(1).join("");
+                                        } else {
+                                          v = v.replace(/\D/g, "");
+                                        }
+                                        setBudget((prev) =>
+                                          prev.map((row, idx) =>
+                                            idx === i ? { ...row, costoHora: v } : row,
+                                          ),
+                                        );
+                                      }}
+                                    />
+                                  </div>
+                                </td>
+                                <td className="px-1 py-1">
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className="h-7 w-7"
+                                    onClick={() =>
+                                      setBudget((prev) => prev.filter((_, idx) => idx !== i))
+                                    }
+                                    disabled={budget.length <= 1}
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </Button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          setBudget((prev) => [
+                            ...prev,
+                            { key: crypto.randomUUID(), rol: "", horas: "", costoHora: "" },
+                          ])
+                        }
+                      >
+                        <Plus className="w-3.5 h-3.5 mr-1" /> Agregar línea
+                      </Button>
+                      <div className="text-xs text-muted-foreground pt-2 flex items-center justify-between">
+                        <span>
+                          Costo{" "}
+                          {isRecurrente ? (hasSprintHours ? "por sprint" : "mensual") : "total"}{" "}
+                          estimado:{" "}
+                          <span className="text-foreground tabular-nums">
+                            {formatMoney(totalCost, primaryCurrency)}
+                          </span>
+                        </span>
+                        {hasSprintHours && (
+                          <span
+                            className={`tabular-nums ${hoursDiff === 0 ? "text-emerald-400" : "text-amber-400"}`}
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => setBudget((prev) => [...prev, { key: crypto.randomUUID(), rol: "", horas: "", costoHora: "" }])}
-              >
-                <Plus className="w-3.5 h-3.5 mr-1" /> Agregar línea
-              </Button>
-              <div className="text-xs text-muted-foreground pt-2 flex items-center justify-between">
-                <span>
-                  Costo {isRecurrente ? (hasSprintHours ? "por sprint" : "mensual") : "total"} estimado:{" "}
-                  <span className="text-foreground tabular-nums">
-                    {formatMoney(totalCost, primaryCurrency)}
-                  </span>
-                </span>
-                {hasSprintHours && (
-                  <span className={`tabular-nums ${hoursDiff === 0 ? "text-emerald-400" : "text-amber-400"}`}>
-                    {totalHoras} / {hoursPerSprint} h
-                    {hoursDiff !== 0 ? ` (${hoursDiff > 0 ? "+" : ""}${hoursDiff})` : " ✓"}
-                  </span>
-                )}
-              </div>
-              {hasSprintHours && hoursDiff !== 0 && (
-                <div className="flex items-start gap-2 text-[11px] text-amber-400 bg-amber-500/10 border border-amber-500/30 rounded-md px-2 py-1.5">
-                  <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-                  <span>
-                    La suma de horas asignadas {hoursDiff > 0 ? "supera" : "es menor que"} las {hoursPerSprint} h contratadas por sprint.
-                  </span>
+                            {totalHoras} / {hoursPerSprint} h
+                            {hoursDiff !== 0 ? ` (${hoursDiff > 0 ? "+" : ""}${hoursDiff})` : " ✓"}
+                          </span>
+                        )}
+                      </div>
+                      {hasSprintHours && hoursDiff !== 0 && (
+                        <div className="flex items-start gap-2 text-[11px] text-amber-400 bg-amber-500/10 border border-amber-500/30 rounded-md px-2 py-1.5">
+                          <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                          <span>
+                            La suma de horas asignadas {hoursDiff > 0 ? "supera" : "es menor que"}{" "}
+                            las {hoursPerSprint} h contratadas por sprint.
+                          </span>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
-              )}
-              </>)}
-            </div>
-            );
-          })()}
-
+              );
+            })()}
 
           {step === 4 && (
             <div className="space-y-3">
@@ -1049,8 +1136,8 @@ export function DeliveryPlanWizard({
                 <>
                   <p className="text-xs text-muted-foreground">
                     El contrato en Finanzas no contempla hitos de facturación
-                    {paymentSchedule === "monthly_fixed" ? " (pago mensual fijo)" : ""}.
-                    No es necesario configurar hitos para este plan.
+                    {paymentSchedule === "monthly_fixed" ? " (pago mensual fijo)" : ""}. No es
+                    necesario configurar hitos para este plan.
                   </p>
                   <div className="border border-dashed border-border rounded-md p-4 text-center text-sm text-muted-foreground">
                     No aplica para este contrato.
@@ -1059,10 +1146,10 @@ export function DeliveryPlanWizard({
               ) : (
                 <>
                   <p className="text-xs text-muted-foreground">
-                    Por cada pago por hito definido en Finanzas, crea un hito del proyecto
-                    y vincúlalo. Al marcar el hito como cumplido, el pago queda listo
-                    para facturar automáticamente. Podrás asignarlo a una fase del
-                    proyecto más tarde, desde el detalle del proyecto.
+                    Por cada pago por hito definido en Finanzas, crea un hito del proyecto y
+                    vincúlalo. Al marcar el hito como cumplido, el pago queda listo para facturar
+                    automáticamente. Podrás asignarlo a una fase del proyecto más tarde, desde el
+                    detalle del proyecto.
                   </p>
                   {milestonePayments.length === 0 ? (
                     <div className="border border-dashed border-border rounded-md p-4 text-center text-sm text-muted-foreground">
@@ -1100,9 +1187,7 @@ export function DeliveryPlanWizard({
                                   />
                                 </td>
                                 <td className="px-2 py-2">
-                                  <div className="truncate">
-                                    {p.period_label ?? "Hito"}
-                                  </div>
+                                  <div className="truncate">{p.period_label ?? "Hito"}</div>
                                   <div className="text-[11px] text-muted-foreground tabular-nums">
                                     {formatMoney(Number(p.amount ?? 0), p.currency)}
                                     {p.due_date ? ` · ${p.due_date}` : ""}
@@ -1142,9 +1227,8 @@ export function DeliveryPlanWizard({
             <div className="space-y-3">
               <div className="flex items-start justify-between gap-2">
                 <p className="text-xs text-muted-foreground">
-                  Define las fases del delivery (ej. Discovery, Build, UAT, Go-live).
-                  Elige duración en semanas o meses; el inicio de cada fase es el fin
-                  de la anterior.
+                  Define las fases del delivery (ej. Discovery, Build, UAT, Go-live). Elige duración
+                  en semanas o meses; el inicio de cada fase es el fin de la anterior.
                 </p>
                 {phases.length === 0 && (
                   <Button
@@ -1153,10 +1237,30 @@ export function DeliveryPlanWizard({
                     className="shrink-0"
                     onClick={() =>
                       setPhases([
-                        { key: crypto.randomUUID(), name: "Discovery", durationValue: 2, durationUnit: "weeks" },
-                        { key: crypto.randomUUID(), name: "Build", durationValue: 2, durationUnit: "months" },
-                        { key: crypto.randomUUID(), name: "UAT", durationValue: 2, durationUnit: "weeks" },
-                        { key: crypto.randomUUID(), name: "Go-live", durationValue: 1, durationUnit: "weeks" },
+                        {
+                          key: crypto.randomUUID(),
+                          name: "Discovery",
+                          durationValue: 2,
+                          durationUnit: "weeks",
+                        },
+                        {
+                          key: crypto.randomUUID(),
+                          name: "Build",
+                          durationValue: 2,
+                          durationUnit: "months",
+                        },
+                        {
+                          key: crypto.randomUUID(),
+                          name: "UAT",
+                          durationValue: 2,
+                          durationUnit: "weeks",
+                        },
+                        {
+                          key: crypto.randomUUID(),
+                          name: "Go-live",
+                          durationValue: 1,
+                          durationUnit: "weeks",
+                        },
                       ])
                     }
                   >
@@ -1195,7 +1299,9 @@ export function DeliveryPlanWizard({
                         <th className="text-left px-2 py-1.5 w-8">#</th>
                         <th className="text-left px-2 py-1.5 min-w-[16rem]">Nombre</th>
                         <th className="text-left px-2 py-1.5 w-[150px]">Duración</th>
-                        <th className="text-left px-2 py-1.5 w-[110px] whitespace-nowrap">Inicio</th>
+                        <th className="text-left px-2 py-1.5 w-[110px] whitespace-nowrap">
+                          Inicio
+                        </th>
                         <th className="text-left px-2 py-1.5 w-[150px]">Fin</th>
                         <th className="w-10" />
                       </tr>
@@ -1213,9 +1319,7 @@ export function DeliveryPlanWizard({
                               onChange={(e) => {
                                 const v = e.target.value;
                                 setPhases((prev) =>
-                                  prev.map((row, idx) =>
-                                    idx === i ? { ...row, name: v } : row,
-                                  ),
+                                  prev.map((row, idx) => (idx === i ? { ...row, name: v } : row)),
                                 );
                               }}
                               placeholder="Ej. Discovery & Diseño funcional"
@@ -1335,24 +1439,36 @@ export function DeliveryPlanWizard({
                     {formatMoney(totalCost, primaryCurrency)}
                   </div>
                 </div>
-                <div className={`border rounded-md p-3 ${margenAlerta ? "border-rose-500/40 bg-rose-500/5" : "border-emerald-500/40 bg-emerald-500/5"}`}>
-                  <div className="text-[10px] uppercase text-muted-foreground tracking-wider">Margen</div>
-                  <div className={`text-lg font-semibold tabular-nums ${margenAlerta ? "text-rose-400" : "text-emerald-400"}`}>
+                <div
+                  className={`border rounded-md p-3 ${margenAlerta ? "border-rose-500/40 bg-rose-500/5" : "border-emerald-500/40 bg-emerald-500/5"}`}
+                >
+                  <div className="text-[10px] uppercase text-muted-foreground tracking-wider">
+                    Margen
+                  </div>
+                  <div
+                    className={`text-lg font-semibold tabular-nums ${margenAlerta ? "text-rose-400" : "text-emerald-400"}`}
+                  >
                     {margenPct.toFixed(1)}%
                   </div>
-                  <div className="text-[11px] text-muted-foreground">Objetivo {margenObjetivoNum}%</div>
+                  <div className="text-[11px] text-muted-foreground">
+                    Objetivo {margenObjetivoNum}%
+                  </div>
                 </div>
               </div>
               {revenueByCurrency.size > 1 && (
                 <div className="text-[11px] text-muted-foreground">
-                  Nota: el contrato tiene múltiples monedas. El margen se calcula con la primera ({primaryCurrency}). Para análisis multi-moneda, ajusta tipos de cambio en Finanzas.
+                  Nota: el contrato tiene múltiples monedas. El margen se calcula con la primera (
+                  {primaryCurrency}). Para análisis multi-moneda, ajusta tipos de cambio en
+                  Finanzas.
                 </div>
               )}
               {margenAlerta ? (
                 <div className="flex items-start gap-2 text-xs text-rose-400 border border-rose-500/30 bg-rose-500/5 rounded-md p-3">
                   <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
                   <div>
-                    El margen estimado ({margenPct.toFixed(1)}%) está bajo el objetivo ({margenObjetivoNum}%). Puedes continuar, pero el handoff quedará marcado con alerta de margen.
+                    El margen estimado ({margenPct.toFixed(1)}%) está bajo el objetivo (
+                    {margenObjetivoNum}%). Puedes continuar, pero el handoff quedará marcado con
+                    alerta de margen.
                   </div>
                 </div>
               ) : primaryRevenue > 0 ? (
@@ -1398,15 +1514,10 @@ export function DeliveryPlanWizard({
               onClick={() => confirmM.mutate()}
               disabled={confirmM.isPending || !name.trim()}
             >
-              {confirmM.isPending
-                ? "Guardando…"
-                : isContinuation
-                  ? "Guardar plan"
-                  : "Crear plan"}
+              {confirmM.isPending ? "Guardando…" : isContinuation ? "Guardar plan" : "Crear plan"}
             </Button>
           )}
         </DialogFooter>
-
       </DialogContent>
     </Dialog>
   );

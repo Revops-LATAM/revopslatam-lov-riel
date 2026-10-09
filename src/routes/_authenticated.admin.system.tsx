@@ -30,7 +30,8 @@ function AdminSystem() {
           <section className="border border-border rounded-md p-4 space-y-2">
             <h3 className="text-sm font-semibold">Secretos configurados</h3>
             <p className="text-[11px] text-muted-foreground">
-              Nombres de variables de entorno disponibles en el servidor. Los valores no se muestran nunca.
+              Nombres de variables de entorno disponibles en el servidor. Los valores no se muestran
+              nunca.
             </p>
             <div className="flex flex-wrap gap-1.5 pt-1">
               {(cfg.data?.secret_names ?? []).map((n) => (

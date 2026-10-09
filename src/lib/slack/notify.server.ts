@@ -140,7 +140,6 @@ export async function postTicketToSlack(p: TicketSlackPayload): Promise<void> {
   }
 }
 
-
 export interface TicketReplySlackPayload {
   channelId: string;
   ticketId: string;

@@ -15,25 +15,12 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarPicker } from "@/components/ui/calendar";
 import { Separator } from "@/components/ui/separator";
-import {
-  getTask,
-  updateTask,
-  deleteTask,
-  listWorkspaceMembers,
-} from "@/lib/api/tasko.functions";
-import {
-  PRIORITY_OPTIONS,
-  PRIORITY_ICON,
-} from "@/lib/tasko-constants";
+import { getTask, updateTask, deleteTask, listWorkspaceMembers } from "@/lib/api/tasko.functions";
+import { PRIORITY_OPTIONS, PRIORITY_ICON } from "@/lib/tasko-constants";
 import { dueTone, dueToneClass } from "@/lib/tasko-utils";
 import { useTaskTypeMeta, getLucideIcon } from "@/lib/task-type-meta";
 import { MultiAssigneeSelect } from "./MultiAssigneeSelect";
@@ -82,7 +69,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 
-
 const EFFORT_LABELS = {
   flexible: "Flexible",
   basic: "Básico",
@@ -121,7 +107,6 @@ export function TaskDetailDrawer({
   const deleteFn = useServerFn(deleteTask);
   const fetchMembers = useServerFn(listWorkspaceMembers);
   const setAssigneesFn = useServerFn(setTaskAssignees);
-
 
   const open = !!taskId;
 
@@ -216,7 +201,14 @@ export function TaskDetailDrawer({
       if (savedTimer.current) clearTimeout(savedTimer.current);
       savedTimer.current = setTimeout(() => setSaveState("idle"), 1600);
       // Auto-sync Google Calendar event for meeting tasks when a relevant field changed
-      const meetingKeys = ["title", "description", "dueDate", "meetingStartTime", "meetingDurationMinutes", "meetingTimezone"];
+      const meetingKeys = [
+        "title",
+        "description",
+        "dueDate",
+        "meetingStartTime",
+        "meetingDurationMinutes",
+        "meetingTimezone",
+      ];
       if (meetingKeys.some((k) => (vars as Record<string, unknown>)[k] !== undefined)) {
         upsertMeetingFn({ data: { taskId: vars.taskId } })
           .then((r) => {
@@ -237,7 +229,9 @@ export function TaskDetailDrawer({
     onError: (e: Error, vars, ctx) => {
       // Roll back
       if (ctx?.prevTask) qc.setQueryData(["task", vars.taskId], ctx.prevTask);
-      ctx?.snapshots?.forEach(([qKey, data]) => qc.setQueryData(qKey as readonly unknown[], data as never));
+      ctx?.snapshots?.forEach(([qKey, data]) =>
+        qc.setQueryData(qKey as readonly unknown[], data as never),
+      );
       setSaveState("error");
       toast.error("Error al guardar", { description: e.message });
     },
@@ -260,7 +254,15 @@ export function TaskDetailDrawer({
     onError: (e: Error) => toast.error("No se pudo eliminar", { description: e.message }),
   });
 
-  const t = taskQuery.data as (typeof taskQuery.data & { task_type_id?: string | null; status_id?: string | null; submitter_email?: string | null; project_id?: string | null; phase_id?: string | null }) | undefined;
+  const t = taskQuery.data as
+    | (typeof taskQuery.data & {
+        task_type_id?: string | null;
+        status_id?: string | null;
+        submitter_email?: string | null;
+        project_id?: string | null;
+        phase_id?: string | null;
+      })
+    | undefined;
 
   // Marketing / internal project phases (empty for others)
   const fetchPhases = useServerFn(listMarketingPhases);
@@ -273,19 +275,18 @@ export function TaskDetailDrawer({
 
   // Dynamic task types + statuses by workspace
   const meta = useTaskTypeMeta(workspaceId);
-  const taskType = t?.task_type_id ? meta.typeById.get(t.task_type_id) ?? null : null;
+  const taskType = t?.task_type_id ? (meta.typeById.get(t.task_type_id) ?? null) : null;
   const TypeIcon = taskType ? getLucideIcon(taskType.icon) : null;
   const typeStatuses = taskType ? (meta.statusesByType.get(taskType.id) ?? []) : [];
   const currentStatus = t?.status_id
-    ? meta.statusById.get(t.status_id) ?? null
+    ? (meta.statusById.get(t.status_id) ?? null)
     : (typeStatuses.find((s) => s.key === t?.status) ?? null);
   const isCompleted = currentStatus
     ? currentStatus.category === "completada"
     : t?.status === "completada";
   const completedStatus = typeStatuses.find((s) => s.category === "completada");
   const reopenStatus =
-    typeStatuses.find((s) => s.is_default) ??
-    typeStatuses.find((s) => s.category === "abierta");
+    typeStatuses.find((s) => s.is_default) ?? typeStatuses.find((s) => s.category === "abierta");
 
   // Auto-notify client when a ticket transitions to "resolved" (completada)
   const notifyResolvedFn = useServerFn(notifyTicketResolved);
@@ -331,7 +332,6 @@ export function TaskDetailDrawer({
       setTitleDraft(t.title);
       setDescDraft(t.description ?? "");
     }
-     
   }, [currentTaskId]);
 
   useEffect(() => {
@@ -340,7 +340,6 @@ export function TaskDetailDrawer({
       const id = window.setTimeout(() => el.focus(), 80);
       return () => window.clearTimeout(id);
     }
-     
   }, [open, currentTaskId]);
 
   const pendingTitle = useRef<string | null>(null);
@@ -359,7 +358,6 @@ export function TaskDetailDrawer({
       pendingTitle.current = null;
     }, 600);
     return () => window.clearTimeout(id);
-     
   }, [titleDraft]);
 
   useEffect(() => {
@@ -374,7 +372,6 @@ export function TaskDetailDrawer({
       pendingDesc.current = null;
     }, 600);
     return () => window.clearTimeout(id);
-     
   }, [descDraft]);
 
   useEffect(() => {
@@ -390,7 +387,6 @@ export function TaskDetailDrawer({
         pendingDesc.current = null;
       }
     };
-     
   }, [currentTaskId]);
 
   const titleEmpty = titleDraft.trim() === "";
@@ -415,7 +411,6 @@ export function TaskDetailDrawer({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-     
   }, [open, titleDraft, currentTaskId]);
 
   // Auto-grow the title textarea
@@ -492,7 +487,8 @@ export function TaskDetailDrawer({
         <VisuallyHidden>
           <SheetTitle>{t?.title ?? "Detalle de tarea"}</SheetTitle>
           <SheetDescription>
-            Edita título, estado, prioridad, asignado, fecha, descripción, subtareas, comentarios y adjuntos.
+            Edita título, estado, prioridad, asignado, fecha, descripción, subtareas, comentarios y
+            adjuntos.
           </SheetDescription>
         </VisuallyHidden>
 
@@ -527,13 +523,21 @@ export function TaskDetailDrawer({
               <div className="flex items-center gap-2 min-w-0">
                 <span
                   className="inline-flex items-center gap-1.5 text-[11px] font-medium px-2 py-1 rounded-md border"
-                  style={taskType ? {
-                    color: taskType.color,
-                    borderColor: `${taskType.color}55`,
-                    backgroundColor: `${taskType.color}14`,
-                  } : undefined}
+                  style={
+                    taskType
+                      ? {
+                          color: taskType.color,
+                          borderColor: `${taskType.color}55`,
+                          backgroundColor: `${taskType.color}14`,
+                        }
+                      : undefined
+                  }
                 >
-                  {TypeIcon ? <TypeIcon className="w-3.5 h-3.5" /> : <ListChecks className="w-3.5 h-3.5 text-muted-foreground" />}
+                  {TypeIcon ? (
+                    <TypeIcon className="w-3.5 h-3.5" />
+                  ) : (
+                    <ListChecks className="w-3.5 h-3.5 text-muted-foreground" />
+                  )}
                   {taskType?.name ?? "Tarea"}
                 </span>
                 <button
@@ -544,7 +548,11 @@ export function TaskDetailDrawer({
                   title={t.id}
                 >
                   #{t.id.slice(0, 8)}
-                  {copied ? <CheckCheck className="w-3 h-3 text-primary" /> : <Copy className="w-3 h-3" />}
+                  {copied ? (
+                    <CheckCheck className="w-3 h-3 text-primary" />
+                  ) : (
+                    <Copy className="w-3 h-3" />
+                  )}
                 </button>
                 <TooltipProvider delayDuration={200}>
                   <Tooltip>
@@ -623,7 +631,9 @@ export function TaskDetailDrawer({
                     style={{ background: x.project?.color ?? "#94a3b8" }}
                     aria-hidden="true"
                   />
-                  <span className="font-medium text-foreground truncate">{x.project?.name ?? "—"}</span>
+                  <span className="font-medium text-foreground truncate">
+                    {x.project?.name ?? "—"}
+                  </span>
                   {x.sprint?.sprint_number != null && (
                     <>
                       <span aria-hidden="true">/</span>
@@ -674,7 +684,11 @@ export function TaskDetailDrawer({
                     aria-describedby={titleEmpty ? "title-error" : undefined}
                     placeholder="Sin título"
                     className={`w-full resize-none bg-transparent border-0 outline-none text-[26px] font-semibold leading-tight tracking-tight placeholder:text-muted-foreground/60 focus:outline-none ${
-                      titleEmpty ? "text-destructive" : isCompleted ? "text-muted-foreground line-through" : "text-foreground"
+                      titleEmpty
+                        ? "text-destructive"
+                        : isCompleted
+                          ? "text-muted-foreground line-through"
+                          : "text-foreground"
                     }`}
                   />
                   {titleEmpty && (
@@ -701,10 +715,14 @@ export function TaskDetailDrawer({
                 >
                   <SelectTrigger
                     className="h-auto min-h-[64px] flex-col items-start gap-1 px-3 py-2.5 border rounded-lg shadow-none hover:border-primary/40 transition-colors [&>svg]:hidden text-left"
-                    style={currentStatus ? {
-                      backgroundColor: `${currentStatus.color}1a`,
-                      borderColor: `${currentStatus.color}55`,
-                    } : undefined}
+                    style={
+                      currentStatus
+                        ? {
+                            backgroundColor: `${currentStatus.color}1a`,
+                            borderColor: `${currentStatus.color}55`,
+                          }
+                        : undefined
+                    }
                   >
                     <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
                       Estado
@@ -721,14 +739,16 @@ export function TaskDetailDrawer({
                     {typeStatuses.map((s) => (
                       <SelectItem key={s.id} value={s.id}>
                         <span className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: s.color }} />
+                          <span
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: s.color }}
+                          />
                           {s.name}
                         </span>
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-
 
                 {/* Asignados (multi) */}
                 <div className="min-h-[64px] flex flex-col items-start gap-1 px-3 py-2.5 border border-border rounded-lg bg-card hover:border-primary/40 transition-colors">
@@ -740,11 +760,16 @@ export function TaskDetailDrawer({
                       members={members}
                       value={currentAssigneeIds}
                       onChange={async (ids) => {
-                        const previousTask = qc.getQueryData<Record<string, unknown>>(["task", t.id]);
+                        const previousTask = qc.getQueryData<Record<string, unknown>>([
+                          "task",
+                          t.id,
+                        ]);
                         const snapshots = qc.getQueriesData<unknown>({ queryKey: ["tasks"] });
                         setSaveState("saving");
-                        qc.setQueryData(["task", t.id], (old: Record<string, unknown> | undefined) =>
-                          old ? patchTaskAssignees(old, ids) : old,
+                        qc.setQueryData(
+                          ["task", t.id],
+                          (old: Record<string, unknown> | undefined) =>
+                            old ? patchTaskAssignees(old, ids) : old,
                         );
                         snapshots.forEach(([qKey, data]) => {
                           if (!Array.isArray(data)) return;
@@ -781,7 +806,6 @@ export function TaskDetailDrawer({
                     />
                   </div>
                 </div>
-
 
                 {/* Fechas: inicio + límite */}
                 <div className="min-h-[64px] flex flex-col items-start gap-1 px-3 py-2.5 border border-border rounded-lg bg-card hover:border-primary/40 transition-colors">
@@ -830,7 +854,12 @@ export function TaskDetailDrawer({
                         <Input
                           type="time"
                           className="h-8 w-[110px]"
-                          value={(t as { meeting_start_time?: string | null }).meeting_start_time?.slice(0, 5) ?? ""}
+                          value={
+                            (t as { meeting_start_time?: string | null }).meeting_start_time?.slice(
+                              0,
+                              5,
+                            ) ?? ""
+                          }
                           onChange={(e) => {
                             const v = e.target.value;
                             updateMut.mutate({
@@ -844,7 +873,8 @@ export function TaskDetailDrawer({
                         <span className="text-muted-foreground">Duración</span>
                         <Select
                           value={String(
-                            (t as { meeting_duration_minutes?: number | null }).meeting_duration_minutes ?? 60,
+                            (t as { meeting_duration_minutes?: number | null })
+                              .meeting_duration_minutes ?? 60,
                           )}
                           onValueChange={(v) =>
                             updateMut.mutate({
@@ -857,17 +887,24 @@ export function TaskDetailDrawer({
                           <SelectContent>
                             {[15, 30, 45, 60, 90, 120, 180].map((m) => (
                               <SelectItem key={m} value={String(m)}>
-                                {m < 60 ? `${m} min` : m % 60 === 0 ? `${m / 60}h` : `${Math.floor(m / 60)}h ${m % 60}m`}
+                                {m < 60
+                                  ? `${m} min`
+                                  : m % 60 === 0
+                                    ? `${m / 60}h`
+                                    : `${Math.floor(m / 60)}h ${m % 60}m`}
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                       </label>
                       <div className="text-[11px] text-muted-foreground">
-                        Estimado: {(() => {
-                          const dur = (t as { meeting_duration_minutes?: number | null }).meeting_duration_minutes ?? 0;
+                        Estimado:{" "}
+                        {(() => {
+                          const dur =
+                            (t as { meeting_duration_minutes?: number | null })
+                              .meeting_duration_minutes ?? 0;
                           const n = currentAssigneeIds.length || 1;
-                          const hrs = Math.round(((dur / 60) * n) * 100) / 100;
+                          const hrs = Math.round((dur / 60) * n * 100) / 100;
                           return dur > 0
                             ? `${(dur / 60).toString().replace(/\.0$/, "")}h × ${n} = ${hrs}h`
                             : "—";
@@ -876,12 +913,12 @@ export function TaskDetailDrawer({
                     </div>
                     {!(t as { google_event_id?: string | null }).google_event_id && (
                       <p className="text-[11px] text-muted-foreground">
-                        Se creará el evento en el Google Calendar del creador cuando hora, duración y fecha estén completos.
+                        Se creará el evento en el Google Calendar del creador cuando hora, duración
+                        y fecha estén completos.
                       </p>
                     )}
                   </div>
                 )}
-
 
                 {/* Esfuerzo (Wrike-style effort mode) */}
                 <Select
@@ -898,15 +935,22 @@ export function TaskDetailDrawer({
                       Esfuerzo
                     </span>
                     <span className="flex items-center gap-2 text-sm font-medium text-foreground">
-                      {EFFORT_LABELS[((t as { effort_mode?: string }).effort_mode ?? "flexible") as keyof typeof EFFORT_LABELS]}
+                      {
+                        EFFORT_LABELS[
+                          ((t as { effort_mode?: string }).effort_mode ??
+                            "flexible") as keyof typeof EFFORT_LABELS
+                        ]
+                      }
                     </span>
                   </SelectTrigger>
                   <SelectContent>
-                    {(Object.entries(EFFORT_LABELS) as Array<[string, string]>).map(([v, label]) => (
-                      <SelectItem key={v} value={v}>
-                        {label}
-                      </SelectItem>
-                    ))}
+                    {(Object.entries(EFFORT_LABELS) as Array<[string, string]>).map(
+                      ([v, label]) => (
+                        <SelectItem key={v} value={v}>
+                          {label}
+                        </SelectItem>
+                      ),
+                    )}
                   </SelectContent>
                 </Select>
 
@@ -950,9 +994,7 @@ export function TaskDetailDrawer({
                       style={(() => {
                         const p = phases.find((x) => x.id === t.phase_id);
                         const c = p?.color;
-                        return c
-                          ? { backgroundColor: `${c}1a`, borderColor: `${c}55` }
-                          : undefined;
+                        return c ? { backgroundColor: `${c}1a`, borderColor: `${c}55` } : undefined;
                       })()}
                     >
                       <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
@@ -991,9 +1033,21 @@ export function TaskDetailDrawer({
             {/* ===== Quick action toolbar ===== */}
             <div className="px-5 sm:px-6 pb-4">
               <div className="flex flex-wrap items-center gap-1 text-muted-foreground">
-                <ToolbarBtn icon={<Plus className="w-3.5 h-3.5" />} label="Subtarea" onClick={openSubtask} />
-                <ToolbarBtn icon={<Paperclip className="w-3.5 h-3.5" />} label="Adjuntar" onClick={openAttach} />
-                <ToolbarBtn icon={<MessageSquare className="w-3.5 h-3.5" />} label="Comentar" onClick={openComment} />
+                <ToolbarBtn
+                  icon={<Plus className="w-3.5 h-3.5" />}
+                  label="Subtarea"
+                  onClick={openSubtask}
+                />
+                <ToolbarBtn
+                  icon={<Paperclip className="w-3.5 h-3.5" />}
+                  label="Adjuntar"
+                  onClick={openAttach}
+                />
+                <ToolbarBtn
+                  icon={<MessageSquare className="w-3.5 h-3.5" />}
+                  label="Comentar"
+                  onClick={openComment}
+                />
                 {t.priority === "none" && (
                   <PriorityQuickAdd
                     onSelect={(v) => updateMut.mutate({ taskId: t.id, priority: v })}
@@ -1065,7 +1119,8 @@ export function TaskDetailDrawer({
                     >
                       Adjuntos
                     </TabsTrigger>
-                    {(t as { contract?: { type?: string } | null }).contract?.type === "implementation" && (
+                    {(t as { contract?: { type?: string } | null }).contract?.type ===
+                      "implementation" && (
                       <TabsTrigger
                         value="deps"
                         className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-foreground rounded-none border-b-2 border-transparent text-muted-foreground px-3 h-9 -mb-px"
@@ -1073,7 +1128,6 @@ export function TaskDetailDrawer({
                         Dependencias
                       </TabsTrigger>
                     )}
-
                   </TabsList>
                 </div>
 
@@ -1089,8 +1143,6 @@ export function TaskDetailDrawer({
                   <TimeTab taskId={t.id} members={membersQuery.data ?? []} />
                 </TabsContent>
 
-
-
                 <TabsContent value="comments" className="px-5 sm:px-6 py-5">
                   <CommentsTab
                     taskId={t.id}
@@ -1104,7 +1156,8 @@ export function TaskDetailDrawer({
                   <AttachmentsTab taskId={t.id} uploadSignal={uploadSignal} />
                 </TabsContent>
 
-                {(t as { contract?: { type?: string } | null }).contract?.type === "implementation" && (
+                {(t as { contract?: { type?: string } | null }).contract?.type ===
+                  "implementation" && (
                   <TabsContent value="deps" className="px-5 sm:px-6 py-5">
                     <DependenciesSection taskId={t.id} projectId={t.project_id} />
                   </TabsContent>
@@ -1144,8 +1197,7 @@ export function TaskDetailDrawer({
                     <span aria-hidden="true">·</span>
                     <span className="inline-flex items-center gap-1 text-status-done">
                       <Check className="w-3 h-3" />
-                      Completada{" "}
-                      {format(parseISO(t.completed_at), "dd/MM/yyyy", { locale: es })}
+                      Completada {format(parseISO(t.completed_at), "dd/MM/yyyy", { locale: es })}
                     </span>
                   </>
                 )}
@@ -1167,7 +1219,12 @@ export function TaskDetailDrawer({
       <RecurrenceDialog
         open={recurrenceOpen}
         taskId={taskId}
-        anchorDate={(taskQuery.data as { due_date?: string | null; start_date?: string | null } | undefined)?.due_date ?? (taskQuery.data as { start_date?: string | null } | undefined)?.start_date ?? null}
+        anchorDate={
+          (taskQuery.data as { due_date?: string | null; start_date?: string | null } | undefined)
+            ?.due_date ??
+          (taskQuery.data as { start_date?: string | null } | undefined)?.start_date ??
+          null
+        }
         onOpenChange={setRecurrenceOpen}
         onCreated={invalidate}
       />
@@ -1218,7 +1275,6 @@ function PriorityQuickAdd({ onSelect }: { onSelect: (v: string) => void }) {
   );
 }
 
-
 function DateField({
   label,
   value,
@@ -1245,7 +1301,7 @@ function DateField({
         <button
           type="button"
           className={`w-full flex items-center gap-2 text-xs px-2 py-1 rounded hover:bg-accent/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-            value ? tone ?? "text-foreground" : "text-muted-foreground"
+            value ? (tone ?? "text-foreground") : "text-muted-foreground"
           }`}
         >
           <span className="text-[10px] uppercase tracking-wider text-muted-foreground/80 w-12 text-left">
@@ -1317,4 +1373,3 @@ function SaveIndicator({ state }: { state: SaveState }) {
     </span>
   );
 }
-

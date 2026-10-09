@@ -165,7 +165,6 @@ export const updateTimeEntry = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-
 export const deleteTimeEntry = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
@@ -189,7 +188,10 @@ export const deleteTimeEntry = createServerFn({ method: "POST" })
 export const getActiveTimer = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
-    z.object({ workspaceId: z.string().uuid().optional() }).optional().parse(input ?? undefined),
+    z
+      .object({ workspaceId: z.string().uuid().optional() })
+      .optional()
+      .parse(input ?? undefined),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
@@ -211,11 +213,7 @@ export const getActiveTimer = createServerFn({ method: "GET" })
           .maybeSingle()
       : supabase.from("user_capacity").select("max_timer_hours").eq("user_id", userId);
     const taskQ = row.task_id
-      ? supabase
-          .from("tasks")
-          .select("id, title, project_id")
-          .eq("id", row.task_id)
-          .maybeSingle()
+      ? supabase.from("tasks").select("id, title, project_id").eq("id", row.task_id).maybeSingle()
       : Promise.resolve({ data: null as { id: string; title: string; project_id: string } | null });
     const [capRes, taskRes] = await Promise.all([capQ, taskQ]);
 
@@ -232,7 +230,9 @@ export const getActiveTimer = createServerFn({ method: "GET" })
 
     const elapsedMs = Date.now() - new Date(row.started_at).getTime();
     if (elapsedMs > maxHours * 3600 * 1000) {
-      const endedAt = new Date(new Date(row.started_at).getTime() + maxHours * 3600 * 1000).toISOString();
+      const endedAt = new Date(
+        new Date(row.started_at).getTime() + maxHours * 3600 * 1000,
+      ).toISOString();
       await supabase
         .from("time_entries")
         .update({ ended_at: endedAt, source: "auto_stopped" })
@@ -510,7 +510,6 @@ export const addMyTimeOffRange = createServerFn({ method: "POST" })
     }
     return { ok: true, inserted: toInsert.length, conflicts };
   });
-
 
 /** Elimina un día libre del usuario (solo el propio). */
 export const deleteMyTimeOff = createServerFn({ method: "POST" })

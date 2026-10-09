@@ -9,10 +9,7 @@ import {
   importEscTasksFromXlsx,
   createEscGhostUser,
 } from "@/lib/api/esc-import.functions";
-import {
-  importWrikeContract,
-  listContractsForImport,
-} from "@/lib/api/wrike-import.functions";
+import { importWrikeContract, listContractsForImport } from "@/lib/api/wrike-import.functions";
 import { listContractProjects } from "@/lib/api/operations.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -85,8 +82,9 @@ function ImportPage() {
         <div>
           <h2 className="text-sm font-semibold">Importar desde sistema comercial</h2>
           <p className="text-xs text-muted-foreground mt-1">
-            Trae accounts, contratos, facturas y pagos desde el endpoint legacy y los inserta en el workspace seleccionado.
-            No crea proyectos, sprints, fases, tareas ni handoffs. Es idempotente: re-ejecutar actualiza en vez de duplicar (matching por id legacy).
+            Trae accounts, contratos, facturas y pagos desde el endpoint legacy y los inserta en el
+            workspace seleccionado. No crea proyectos, sprints, fases, tareas ni handoffs. Es
+            idempotente: re-ejecutar actualiza en vez de duplicar (matching por id legacy).
           </p>
         </div>
 
@@ -107,7 +105,12 @@ function ImportPage() {
         </div>
 
         <div className="flex gap-2 pt-1">
-          <Button variant="outline" size="sm" disabled={loading || !workspaceId} onClick={() => go(true)}>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={loading || !workspaceId}
+            onClick={() => go(true)}
+          >
             {loading ? "..." : "Previsualizar (dry-run)"}
           </Button>
           <Button size="sm" disabled={loading || !workspaceId} onClick={() => go(false)}>
@@ -124,9 +127,7 @@ function ImportPage() {
 
       {result && (
         <section className="border border-border rounded-md p-4 space-y-3">
-          <h3 className="text-sm font-semibold">
-            {result.dryRun ? "Vista previa" : "Resultado"}
-          </h3>
+          <h3 className="text-sm font-semibold">{result.dryRun ? "Vista previa" : "Resultado"}</h3>
           <pre className="text-xs bg-muted/40 rounded p-3 overflow-auto max-h-[60vh]">
             {JSON.stringify(result, null, 2)}
           </pre>
@@ -161,7 +162,9 @@ function EscImportSection() {
   const importFn = useServerFn(importEscTasksFromXlsx);
   const ghostFn = useServerFn(createEscGhostUser);
 
-  const [busy, setBusy] = useState<null | "setup-dry" | "setup" | "import-dry" | "import" | "ghost">(null);
+  const [busy, setBusy] = useState<
+    null | "setup-dry" | "setup" | "import-dry" | "import" | "ghost"
+  >(null);
   const [projectId, setProjectId] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
   const [output, setOutput] = useState<unknown>(null);
@@ -218,16 +221,21 @@ function EscImportSection() {
       <div>
         <h2 className="text-sm font-semibold">Escuela de Comercio — Wrike xlsx</h2>
         <p className="text-xs text-muted-foreground mt-1">
-          Paso 1: completa el contrato RaaS (quincenal, 25 h/sprint) y crea el proyecto ESC - RaaS 2026.
-          Paso 2: sube el export de Wrike y crea/actualiza las tareas por sprint.
-          Es idempotente por <code>wrike:&lt;Key&gt;</code>.
+          Paso 1: completa el contrato RaaS (quincenal, 25 h/sprint) y crea el proyecto ESC - RaaS
+          2026. Paso 2: sube el export de Wrike y crea/actualiza las tareas por sprint. Es
+          idempotente por <code>wrike:&lt;Key&gt;</code>.
         </p>
       </div>
 
       <div className="border border-dashed rounded-md p-3 space-y-2">
         <div className="text-xs font-medium">Paso 1 · Contrato + proyecto</div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" disabled={busy !== null} onClick={() => runSetup(true)}>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={busy !== null}
+            onClick={() => runSetup(true)}
+          >
             {busy === "setup-dry" ? "..." : "Dry-run setup"}
           </Button>
           <Button size="sm" disabled={busy !== null} onClick={() => runSetup(false)}>
@@ -239,8 +247,8 @@ function EscImportSection() {
       <div className="border border-dashed rounded-md p-3 space-y-2">
         <div className="text-xs font-medium">Ghost user (ex-empleados)</div>
         <p className="text-xs text-muted-foreground">
-          Crea una cuenta ficticia para preservar el historial de asignaciones de alguien que ya no trabaja acá.
-          Email sugerido: <code>dominique.ghost@rielapp.local</code>. Idempotente.
+          Crea una cuenta ficticia para preservar el historial de asignaciones de alguien que ya no
+          trabaja acá. Email sugerido: <code>dominique.ghost@rielapp.local</code>. Idempotente.
         </p>
         <Button
           size="sm"
@@ -290,7 +298,12 @@ function EscImportSection() {
           />
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" disabled={busy !== null} onClick={() => runImport(true)}>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={busy !== null}
+            onClick={() => runImport(true)}
+          >
             {busy === "import-dry" ? "..." : "Dry-run import"}
           </Button>
           <Button size="sm" disabled={busy !== null} onClick={() => runImport(false)}>
@@ -364,9 +377,18 @@ function WrikeImportSection({ workspaceId }: { workspaceId: string }) {
   }
 
   async function go(dryRun: boolean) {
-    if (!contractId) { setErr("Elige un contrato"); return; }
-    if (!file) { setErr("Sube el .xlsx de Wrike"); return; }
-    if (!projectName.trim()) { setErr("Nombre de proyecto requerido"); return; }
+    if (!contractId) {
+      setErr("Elige un contrato");
+      return;
+    }
+    if (!file) {
+      setErr("Sube el .xlsx de Wrike");
+      return;
+    }
+    if (!projectName.trim()) {
+      setErr("Nombre de proyecto requerido");
+      return;
+    }
     setBusy(dryRun ? "dry" : "run");
     setErr(null);
     setOutput(null);
@@ -401,20 +423,24 @@ function WrikeImportSection({ workspaceId }: { workspaceId: string }) {
       <div>
         <h2 className="text-sm font-semibold">Importar contrato desde Wrike (genérico)</h2>
         <p className="text-xs text-muted-foreground mt-1">
-          Elige un contrato existente y sube el export .xlsx de Wrike. El importador
-          descubre los sprints desde los folders del export (usando <code>Horas contratadas</code>),
-          mapea estados/asignados, y crea o actualiza el proyecto e ideas de tareas. Idempotente por <code>wrike:&lt;Key&gt;</code>.
+          Elige un contrato existente y sube el export .xlsx de Wrike. El importador descubre los
+          sprints desde los folders del export (usando <code>Horas contratadas</code>), mapea
+          estados/asignados, y crea o actualiza el proyecto e ideas de tareas. Idempotente por{" "}
+          <code>wrike:&lt;Key&gt;</code>.
         </p>
       </div>
 
       <div className="space-y-1.5">
         <label className="text-xs">Contrato</label>
         <Select value={contractId} onValueChange={setContractId}>
-          <SelectTrigger className="text-xs"><SelectValue placeholder="Selecciona contrato" /></SelectTrigger>
+          <SelectTrigger className="text-xs">
+            <SelectValue placeholder="Selecciona contrato" />
+          </SelectTrigger>
           <SelectContent>
             {(contracts.data ?? []).map((c) => (
               <SelectItem key={c.id} value={c.id}>
-                {c.accountName ? `${c.accountName} — ` : ""}{c.name} · {c.status}
+                {c.accountName ? `${c.accountName} — ` : ""}
+                {c.name} · {c.status}
               </SelectItem>
             ))}
           </SelectContent>
@@ -431,14 +457,15 @@ function WrikeImportSection({ workspaceId }: { workspaceId: string }) {
             <SelectContent>
               {(contractProjects.data ?? []).map((p) => (
                 <SelectItem key={p.id} value={p.id}>
-                  {p.name}{p.is_primary ? " · principal" : ""}
+                  {p.name}
+                  {p.is_primary ? " · principal" : ""}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
           <p className="text-[10px] text-muted-foreground">
-            El contrato tiene varias líneas. Las tareas y sprints del export se
-            cargan en el proyecto elegido.
+            El contrato tiene varias líneas. Las tareas y sprints del export se cargan en el
+            proyecto elegido.
           </p>
         </div>
       )}
@@ -446,12 +473,18 @@ function WrikeImportSection({ workspaceId }: { workspaceId: string }) {
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
           <label className="text-xs">Nombre del proyecto</label>
-          <Input value={projectName} onChange={(e) => setProjectName(e.target.value)} className="text-xs" />
+          <Input
+            value={projectName}
+            onChange={(e) => setProjectName(e.target.value)}
+            className="text-xs"
+          />
         </div>
         <div className="space-y-1.5">
           <label className="text-xs">Cadencia sprints</label>
           <Select value={cadence} onValueChange={(v) => setCadence(v as typeof cadence)}>
-            <SelectTrigger className="text-xs"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="text-xs">
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="weekly">Semanal</SelectItem>
               <SelectItem value="biweekly">Quincenal</SelectItem>
@@ -474,7 +507,9 @@ function WrikeImportSection({ workspaceId }: { workspaceId: string }) {
         <div className="space-y-1.5">
           <label className="text-xs">Asignación de sprints</label>
           <Select value={sprintMode} onValueChange={(v) => setSprintMode(v as typeof sprintMode)}>
-            <SelectTrigger className="text-xs"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="text-xs">
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="folders">Desde folders del export</SelectItem>
               <SelectItem value="by_date">Por fecha (grilla del contrato)</SelectItem>
@@ -487,11 +522,21 @@ function WrikeImportSection({ workspaceId }: { workspaceId: string }) {
         <div className="grid grid-cols-3 gap-3">
           <div className="space-y-1.5">
             <label className="text-xs">Inicio grilla</label>
-            <Input type="date" value={sprintStart} onChange={(e) => setSprintStart(e.target.value)} className="text-xs" />
+            <Input
+              type="date"
+              value={sprintStart}
+              onChange={(e) => setSprintStart(e.target.value)}
+              className="text-xs"
+            />
           </div>
           <div className="space-y-1.5">
             <label className="text-xs">Fin grilla</label>
-            <Input type="date" value={sprintEnd} onChange={(e) => setSprintEnd(e.target.value)} className="text-xs" />
+            <Input
+              type="date"
+              value={sprintEnd}
+              onChange={(e) => setSprintEnd(e.target.value)}
+              className="text-xs"
+            />
           </div>
           <div className="space-y-1.5">
             <label className="text-xs">Horas por sprint</label>
@@ -508,7 +553,12 @@ function WrikeImportSection({ workspaceId }: { workspaceId: string }) {
 
       <div className="space-y-1.5">
         <label className="text-xs">Archivo .xlsx</label>
-        <Input type="file" accept=".xlsx" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="text-xs" />
+        <Input
+          type="file"
+          accept=".xlsx"
+          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+          className="text-xs"
+        />
       </div>
 
       <div className="flex gap-2">

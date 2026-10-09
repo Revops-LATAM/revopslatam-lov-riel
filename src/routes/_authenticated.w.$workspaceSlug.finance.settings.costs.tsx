@@ -37,7 +37,12 @@ type Rate = {
   costo_hora: number | string | null;
   currency: string;
   effective_from: string;
-  profiles: { id: string; full_name: string | null; email: string | null; avatar_url: string | null } | null;
+  profiles: {
+    id: string;
+    full_name: string | null;
+    email: string | null;
+    avatar_url: string | null;
+  } | null;
 };
 
 function todayIso() {
@@ -115,8 +120,8 @@ function CostsPage() {
       <div>
         <h2 className="text-base font-semibold">Costos por hora</h2>
         <p className="text-xs text-muted-foreground mt-1">
-          Define el costo interno por hora de cada miembro. Se usa para calcular el margen estimado de
-          cada proyecto. Puedes mantener un histórico por fecha de vigencia.
+          Define el costo interno por hora de cada miembro. Se usa para calcular el margen estimado
+          de cada proyecto. Puedes mantener un histórico por fecha de vigencia.
         </p>
       </div>
 
@@ -155,7 +160,10 @@ function CostsPage() {
           </div>
           <div className="md:col-span-2">
             <label className="text-[11px] text-muted-foreground">Moneda</label>
-            <Select value={newCurrency} onValueChange={(v) => setNewCurrency(v as "CLP" | "USD" | "UF")}>
+            <Select
+              value={newCurrency}
+              onValueChange={(v) => setNewCurrency(v as "CLP" | "USD" | "UF")}
+            >
               <SelectTrigger className="h-8 text-xs">
                 <SelectValue />
               </SelectTrigger>
@@ -191,7 +199,9 @@ function CostsPage() {
       {/* Current rates */}
       <div className="border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-2 border-b border-border bg-muted/40">
-          <h3 className="text-xs font-semibold uppercase text-muted-foreground">Costo vigente por miembro</h3>
+          <h3 className="text-xs font-semibold uppercase text-muted-foreground">
+            Costo vigente por miembro
+          </h3>
         </div>
         <table className="w-full text-xs">
           <thead className="text-[11px] uppercase text-muted-foreground bg-muted/20">
@@ -219,7 +229,11 @@ function CostsPage() {
                       {m.profile?.full_name ?? m.profile?.email ?? m.user_id.slice(0, 8)}
                     </td>
                     <td className="px-4 py-2 text-right tabular-nums">
-                      {r ? Number(r.costo_hora ?? 0).toLocaleString("es-CL") : <span className="text-muted-foreground">—</span>}
+                      {r ? (
+                        Number(r.costo_hora ?? 0).toLocaleString("es-CL")
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
                     </td>
                     <td className="px-4 py-2 text-muted-foreground">{r?.currency ?? "—"}</td>
                     <td className="px-4 py-2 text-muted-foreground">{r?.effective_from ?? "—"}</td>
@@ -235,7 +249,9 @@ function CostsPage() {
       {/* Full history */}
       <div className="border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-2 border-b border-border bg-muted/40">
-          <h3 className="text-xs font-semibold uppercase text-muted-foreground">Historial completo</h3>
+          <h3 className="text-xs font-semibold uppercase text-muted-foreground">
+            Historial completo
+          </h3>
         </div>
         <table className="w-full text-xs">
           <thead className="text-[11px] uppercase text-muted-foreground bg-muted/20">

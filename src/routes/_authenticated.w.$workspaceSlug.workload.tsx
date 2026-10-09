@@ -32,11 +32,7 @@ import { TaskDetailDrawer } from "@/components/tasko/TaskDetailDrawer";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
-import {
-  packTasks,
-  ganttRowHeight,
-  WorkloadGanttBar,
-} from "@/components/tasko/WorkloadGanttBar";
+import { packTasks, ganttRowHeight, WorkloadGanttBar } from "@/components/tasko/WorkloadGanttBar";
 import { RouteError } from "@/components/tasko/RouteError";
 
 const ROLES = ["owner", "admin", "super_admin", "member", "guest"] as const;
@@ -62,8 +58,6 @@ export const Route = createFileRoute("/_authenticated/w/$workspaceSlug/workload"
   errorComponent: RouteError,
   component: WorkloadPage,
 });
-
-
 
 function WorkloadPage() {
   const { workspaceSlug } = Route.useParams();
@@ -137,8 +131,7 @@ function WorkloadPage() {
         return false;
       if (search.overflow) {
         const ov = win.columns.reduce(
-          (acc, c) =>
-            acc + c.days.reduce((a, d) => a + (m.days[d]?.overflowMin ?? 0), 0),
+          (acc, c) => acc + c.days.reduce((a, d) => a + (m.days[d]?.overflowMin ?? 0), 0),
           0,
         );
         if (ov === 0) return false;
@@ -463,8 +456,7 @@ function WorkloadPage() {
             );
             const rowH = isExpanded ? ganttRowHeight(lanesUsed) : 0;
             const totalAlloc = win.columns.reduce(
-              (acc, c) =>
-                acc + c.days.reduce((a, d) => a + (m.days[d]?.allocatedMin ?? 0), 0),
+              (acc, c) => acc + c.days.reduce((a, d) => a + (m.days[d]?.allocatedMin ?? 0), 0),
               0,
             );
             const totalCap = win.columns.reduce(
@@ -502,8 +494,8 @@ function WorkloadPage() {
                         {totalAlloc > 0 && (
                           <>
                             {" · "}
-                            {Math.round((totalAlloc / 60) * 10) / 10}h /{" "}
-                            {Math.round(totalCap / 60)}h
+                            {Math.round((totalAlloc / 60) * 10) / 10}h / {Math.round(totalCap / 60)}
+                            h
                           </>
                         )}
                         {m.unplanned && m.unplanned.count > 0 && (
@@ -573,9 +565,7 @@ function WorkloadPage() {
                                 <div
                                   className={cn(
                                     "text-xs font-semibold tabular-nums",
-                                    isOver
-                                      ? "text-destructive"
-                                      : "text-foreground",
+                                    isOver ? "text-destructive" : "text-foreground",
                                   )}
                                 >
                                   {(alloc / 60).toFixed(alloc % 60 === 0 ? 0 : 2)}h
@@ -644,10 +634,7 @@ function WorkloadPage() {
                         }}
                       >
                         {win.columns.map((c) => (
-                          <div
-                            key={c.key}
-                            className="border-r border-border/50 last:border-r-0"
-                          />
+                          <div key={c.key} className="border-r border-border/50 last:border-r-0" />
                         ))}
                       </div>
                       {positioned.length === 0 ? (

@@ -2,11 +2,7 @@ import { useState, useMemo } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import {
-  listAllUsers,
-  grantAppRole,
-  revokeAppRole,
-} from "@/lib/api/admin.functions";
+import { listAllUsers, grantAppRole, revokeAppRole } from "@/lib/api/admin.functions";
 import { listWorkspaces } from "@/lib/api/workspaces.functions";
 import {
   listWorkspaceMembers,
@@ -17,10 +13,7 @@ import {
   cancelInvitation,
   materializePendingInvitations,
 } from "@/lib/api/members.functions";
-import {
-  listRoleTemplates,
-  assignRoleTemplate,
-} from "@/lib/api/permissions.functions";
+import { listRoleTemplates, assignRoleTemplate } from "@/lib/api/permissions.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -64,10 +57,7 @@ function AdminUsers() {
 
   const users = useQuery({ queryKey: ["admin-users"], queryFn: () => fetchUsers() });
   const workspaces = useQuery({ queryKey: ["workspaces"], queryFn: () => fetchWorkspaces() });
-  const primaryWs = useMemo(
-    () => (workspaces.data ?? [])[0] ?? null,
-    [workspaces.data],
-  );
+  const primaryWs = useMemo(() => (workspaces.data ?? [])[0] ?? null, [workspaces.data]);
   const wsId = primaryWs?.id ?? "";
 
   const members = useQuery({
@@ -226,7 +216,10 @@ function AdminUsers() {
           </div>
           <div className="space-y-1">
             <Label className="text-xs text-muted-foreground">Plantilla de permisos</Label>
-            <Select value={invTpl || "__none"} onValueChange={(v) => setInvTpl(v === "__none" ? "" : v)}>
+            <Select
+              value={invTpl || "__none"}
+              onValueChange={(v) => setInvTpl(v === "__none" ? "" : v)}
+            >
               <SelectTrigger className="h-8 text-xs">
                 <SelectValue placeholder="Sin plantilla" />
               </SelectTrigger>
@@ -299,7 +292,13 @@ function AdminUsers() {
                     <td className="px-3 py-2 text-xs">{inv.role}</td>
                     <td className="px-3 py-2 text-xs text-muted-foreground">{tpl?.name ?? "—"}</td>
                     <td className="px-3 py-2 text-xs text-muted-foreground">
-                      {inv.created_at ? new Date(inv.created_at).toLocaleDateString("es-CL", { day: "2-digit", month: "2-digit", year: "numeric" }) : "—"}
+                      {inv.created_at
+                        ? new Date(inv.created_at).toLocaleDateString("es-CL", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          })
+                        : "—"}
                     </td>
                     <td className="px-3 py-2">
                       <Button
@@ -334,7 +333,9 @@ function AdminUsers() {
             <thead className="text-xs text-muted-foreground">
               <tr>
                 <th className="text-left px-3 py-2 font-medium">Usuario</th>
-                <th className="text-left px-3 py-2 font-medium">Rol en {primaryWs?.name ?? "workspace"}</th>
+                <th className="text-left px-3 py-2 font-medium">
+                  Rol en {primaryWs?.name ?? "workspace"}
+                </th>
                 <th className="text-left px-3 py-2 font-medium">Plantilla</th>
                 <th className="text-left px-3 py-2 font-medium">Super admin</th>
                 <th className="w-10" />
@@ -400,9 +401,7 @@ function AdminUsers() {
                     <td className="px-3 py-2">
                       <Switch
                         checked={u.is_super_admin}
-                        onCheckedChange={(v) =>
-                          saToggle.mutate({ userId: u.id, enable: v })
-                        }
+                        onCheckedChange={(v) => saToggle.mutate({ userId: u.id, enable: v })}
                       />
                     </td>
                     <td className="px-3 py-2">

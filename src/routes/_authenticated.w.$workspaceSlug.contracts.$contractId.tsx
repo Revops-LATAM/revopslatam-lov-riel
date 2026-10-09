@@ -47,7 +47,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { ArrowLeft, Plus, CheckCircle2, Circle, Lock, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { RouteError } from "@/components/tasko/RouteError";
@@ -55,7 +61,9 @@ import { ContractTypeBadge } from "@/components/tasko/operations/ContractTypeBad
 import { DataGrid, type ColumnDef } from "@/components/datagrid/DataGrid";
 import { ContractDocuments } from "@/components/tasko/finance/ContractDocuments";
 
-const search = z.object({ tab: z.enum(["resumen", "plan", "pagos", "financials", "documentos"]).optional() });
+const search = z.object({
+  tab: z.enum(["resumen", "plan", "pagos", "financials", "documentos"]).optional(),
+});
 
 export const Route = createFileRoute("/_authenticated/w/$workspaceSlug/contracts/$contractId")({
   ssr: false,
@@ -80,7 +88,6 @@ const STATUS_TONE: Record<string, string> = {
   finalizado: "bg-muted text-muted-foreground border-border",
   cancelado: "bg-red-500/15 text-red-400 border-red-500/30",
 };
-
 
 function ContractDetail() {
   const { workspaceSlug, contractId } = Route.useParams();
@@ -114,7 +121,11 @@ function ContractDetail() {
   return (
     <div className="flex flex-col h-full">
       <header className="h-12 border-b border-border px-6 flex items-center gap-3">
-        <Link to="/w/$workspaceSlug/contracts" params={{ workspaceSlug }} className="text-muted-foreground hover:text-foreground">
+        <Link
+          to="/w/$workspaceSlug/contracts"
+          params={{ workspaceSlug }}
+          className="text-muted-foreground hover:text-foreground"
+        >
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <h1 className="text-sm font-semibold truncate">{contract.name}</h1>
@@ -171,12 +182,24 @@ function ContractDetail() {
           <TabsTrigger value="documentos">Documentos</TabsTrigger>
         </TabsList>
         <div className="flex-1 overflow-auto p-6">
-          <TabsContent value="resumen"><ResumenTab contract={contract} /></TabsContent>
-          <TabsContent value="plan"><PlanTab contract={contract} /></TabsContent>
+          <TabsContent value="resumen">
+            <ResumenTab contract={contract} />
+          </TabsContent>
+          <TabsContent value="plan">
+            <PlanTab contract={contract} />
+          </TabsContent>
           {canFinance && (
-            <TabsContent value="pagos"><PagosTab contractId={contractId} currency={contract.currency} accountId={contract.account_id} /></TabsContent>
+            <TabsContent value="pagos">
+              <PagosTab
+                contractId={contractId}
+                currency={contract.currency}
+                accountId={contract.account_id}
+              />
+            </TabsContent>
           )}
-          <TabsContent value="financials"><FinancialsTab contractId={contractId} /></TabsContent>
+          <TabsContent value="financials">
+            <FinancialsTab contractId={contractId} />
+          </TabsContent>
           <TabsContent value="documentos">
             <ContractDocuments workspaceId={contract.workspace_id} contractId={contractId} />
           </TabsContent>
@@ -205,9 +228,15 @@ function ResumenTab({ contract }: { contract: ContractRow }) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl">
-      <Card title="Tipo"><ContractTypeBadge type={contract.type} /></Card>
-      <Card title="Estado"><StatusBadgeSelect value={contract.status} options={CONTRACT_STATUS_OPTIONS} readOnly /></Card>
-      <Card title="Período">{contract.start_date} → {contract.end_date ?? "en curso"}</Card>
+      <Card title="Tipo">
+        <ContractTypeBadge type={contract.type} />
+      </Card>
+      <Card title="Estado">
+        <StatusBadgeSelect value={contract.status} options={CONTRACT_STATUS_OPTIONS} readOnly />
+      </Card>
+      <Card title="Período">
+        {contract.start_date} → {contract.end_date ?? "en curso"}
+      </Card>
       <Card title="Moneda">{contract.currency}</Card>
       {contract.type !== "implementation" && (
         <Card title="Duración de sprint">{contract.sprint_duration_days ?? "—"} días</Card>
@@ -234,11 +263,14 @@ function ResumenTab({ contract }: { contract: ContractRow }) {
           </Button>
         </div>
         <div className="text-[10px] text-muted-foreground mt-1">
-          Al emitir se agrega automáticamente el sufijo de cuota (ej. " - 3/12") o el nombre del hito.
+          Al emitir se agrega automáticamente el sufijo de cuota (ej. " - 3/12") o el nombre del
+          hito.
         </div>
       </div>
       {contract.notes && (
-        <div className="md:col-span-2 border border-border rounded-md p-3 text-sm text-muted-foreground whitespace-pre-wrap">{contract.notes}</div>
+        <div className="md:col-span-2 border border-border rounded-md p-3 text-sm text-muted-foreground whitespace-pre-wrap">
+          {contract.notes}
+        </div>
       )}
     </div>
   );
@@ -255,9 +287,14 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
 
 // ============ PLAN ============
 
-function PlanTab({ contract }: { contract: { id: string; type: "implementation" | "recurrente"; workspace_id: string } }) {
+function PlanTab({
+  contract,
+}: {
+  contract: { id: string; type: "implementation" | "recurrente"; workspace_id: string };
+}) {
   if (contract.type === "recurrente") return <SprintsSection contractId={contract.id} />;
-  if (contract.type === "implementation") return <ProjectsSection contractId={contract.id} workspaceId={contract.workspace_id} />;
+  if (contract.type === "implementation")
+    return <ProjectsSection contractId={contract.id} workspaceId={contract.workspace_id} />;
   return (
     <div className="space-y-6">
       <ProjectsSection contractId={contract.id} workspaceId={contract.workspace_id} />
@@ -273,8 +310,7 @@ function fmtH(n: number) {
 function ConsumptionBar({ real, contracted }: { real: number; contracted: number }) {
   if (!contracted) return <span className="text-muted-foreground">—</span>;
   const pct = (real / contracted) * 100;
-  const tone =
-    pct > 100 ? "bg-destructive" : pct >= 80 ? "bg-amber-500" : "bg-emerald-500";
+  const tone = pct > 100 ? "bg-destructive" : pct >= 80 ? "bg-amber-500" : "bg-emerald-500";
   return (
     <div className="flex items-center gap-2 min-w-[120px]">
       <div className="h-1.5 flex-1 rounded-full bg-muted overflow-hidden">
@@ -440,10 +476,17 @@ function SprintsSection({ contractId }: { contractId: string }) {
       <NewSprintDialog open={open} onOpenChange={setOpen} contractId={contractId} />
     </section>
   );
-
 }
 
-function NewSprintDialog({ open, onOpenChange, contractId }: { open: boolean; onOpenChange: (v: boolean) => void; contractId: string }) {
+function NewSprintDialog({
+  open,
+  onOpenChange,
+  contractId,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  contractId: string;
+}) {
   const qc = useQueryClient();
   const fn = useServerFn(createSprint);
   const [startDate, setStartDate] = useState("");
@@ -461,19 +504,34 @@ function NewSprintDialog({ open, onOpenChange, contractId }: { open: boolean; on
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
-        <DialogHeader><DialogTitle>Nuevo sprint</DialogTitle></DialogHeader>
+        <DialogHeader>
+          <DialogTitle>Nuevo sprint</DialogTitle>
+        </DialogHeader>
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-2">
-            <div><Label>Inicio</Label><Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} /></div>
-            <div><Label>Fin</Label><Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} /></div>
+            <div>
+              <Label>Inicio</Label>
+              <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+            </div>
+            <div>
+              <Label>Fin</Label>
+              <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            </div>
           </div>
-          <div><Label>Horas contratadas</Label><Input type="number" value={hours} onChange={(e) => setHours(e.target.value)} /></div>
+          <div>
+            <Label>Horas contratadas</Label>
+            <Input type="number" value={hours} onChange={(e) => setHours(e.target.value)} />
+          </div>
         </div>
         <DialogFooter>
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>Cancelar</Button>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>
+            Cancelar
+          </Button>
           <Button
             disabled={!startDate || !endDate || m.isPending}
-            onClick={() => m.mutate({ data: { contractId, startDate, endDate, contractedHours: Number(hours) } })}
+            onClick={() =>
+              m.mutate({ data: { contractId, startDate, endDate, contractedHours: Number(hours) } })
+            }
           >
             Crear
           </Button>
@@ -502,9 +560,7 @@ function ProjectsSection({ contractId, workspaceId }: { contractId: string; work
     onSuccess: (r: { sprintsCreated?: number }) => {
       refresh();
       toast.success(
-        r?.sprintsCreated
-          ? `Proyecto creado con ${r.sprintsCreated} sprints`
-          : "Proyecto creado",
+        r?.sprintsCreated ? `Proyecto creado con ${r.sprintsCreated} sprints` : "Proyecto creado",
       );
       setName("");
       setHours("");
@@ -536,10 +592,25 @@ function ProjectsSection({ contractId, workspaceId }: { contractId: string; work
         </span>
       </div>
       <div className="flex flex-wrap gap-2 items-center">
-        <Input placeholder="Nombre del proyecto (ej. Performance)" value={name} onChange={(e) => setName(e.target.value)} className="max-w-xs" />
-        <Input placeholder="Horas / sprint" type="number" value={hours} onChange={(e) => setHours(e.target.value)} className="w-32" />
+        <Input
+          placeholder="Nombre del proyecto (ej. Performance)"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="max-w-xs"
+        />
+        <Input
+          placeholder="Horas / sprint"
+          type="number"
+          value={hours}
+          onChange={(e) => setHours(e.target.value)}
+          className="w-32"
+        />
         <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <input type="checkbox" checked={withSprints} onChange={(e) => setWithSprints(e.target.checked)} />
+          <input
+            type="checkbox"
+            checked={withSprints}
+            onChange={(e) => setWithSprints(e.target.checked)}
+          />
           Generar sprints
         </label>
         <Button
@@ -561,7 +632,9 @@ function ProjectsSection({ contractId, workspaceId }: { contractId: string; work
         </Button>
       </div>
       {projects.length === 0 ? (
-        <div className="border border-dashed border-border rounded-md p-6 text-center text-sm text-muted-foreground">Sin proyectos.</div>
+        <div className="border border-dashed border-border rounded-md p-6 text-center text-sm text-muted-foreground">
+          Sin proyectos.
+        </div>
       ) : (
         <div className="space-y-2">
           {projects.map((p) => (
@@ -577,7 +650,9 @@ function ProjectsSection({ contractId, workspaceId }: { contractId: string; work
                     variant="ghost"
                     className="h-6 text-[11px]"
                     disabled={upd.isPending}
-                    onClick={() => upd.mutate({ data: { projectId: p.id, patch: { is_primary: true } } })}
+                    onClick={() =>
+                      upd.mutate({ data: { projectId: p.id, patch: { is_primary: true } } })
+                    }
                   >
                     Marcar principal
                   </Button>
@@ -603,7 +678,6 @@ function ProjectsSection({ contractId, workspaceId }: { contractId: string; work
   );
 }
 
-
 function ProjectBlock({ projectId, name }: { projectId: string; name: string }) {
   const { data: phases } = useQuery(phasesQO(projectId));
   const { data: milestones } = useQuery(milestonesQO(projectId));
@@ -621,12 +695,24 @@ function ProjectBlock({ projectId, name }: { projectId: string; name: string }) 
       <div>
         <div className="text-xs uppercase text-muted-foreground tracking-wider mb-1">Fases</div>
         <div className="flex gap-2 mb-2">
-          <Input placeholder="Nueva fase" value={phaseName} onChange={(e) => setPhaseName(e.target.value)} className="max-w-xs h-8 text-sm" />
-          <Button size="sm" variant="outline" disabled={!phaseName.trim()} onClick={async () => {
-            await phaseFn({ data: { projectId, name: phaseName.trim() } });
-            qc.invalidateQueries({ queryKey: ["phases", projectId] });
-            setPhaseName("");
-          }}>+ Fase</Button>
+          <Input
+            placeholder="Nueva fase"
+            value={phaseName}
+            onChange={(e) => setPhaseName(e.target.value)}
+            className="max-w-xs h-8 text-sm"
+          />
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={!phaseName.trim()}
+            onClick={async () => {
+              await phaseFn({ data: { projectId, name: phaseName.trim() } });
+              qc.invalidateQueries({ queryKey: ["phases", projectId] });
+              setPhaseName("");
+            }}
+          >
+            + Fase
+          </Button>
         </div>
         {(phases ?? []).length === 0 ? (
           <div className="text-xs text-muted-foreground">Sin fases.</div>
@@ -639,20 +725,53 @@ function ProjectBlock({ projectId, name }: { projectId: string; name: string }) 
         )}
       </div>
       <div>
-        <div className="text-xs uppercase text-muted-foreground tracking-wider mb-1">Milestones</div>
+        <div className="text-xs uppercase text-muted-foreground tracking-wider mb-1">
+          Milestones
+        </div>
         <div className="flex gap-2 mb-2 flex-wrap">
-          <Input placeholder="Nombre" value={msName} onChange={(e) => setMsName(e.target.value)} className="max-w-xs h-8 text-sm" />
-          <Input placeholder="Monto" value={msAmount} onChange={(e) => setMsAmount(e.target.value)} type="number" className="w-24 h-8 text-sm" />
+          <Input
+            placeholder="Nombre"
+            value={msName}
+            onChange={(e) => setMsName(e.target.value)}
+            className="max-w-xs h-8 text-sm"
+          />
+          <Input
+            placeholder="Monto"
+            value={msAmount}
+            onChange={(e) => setMsAmount(e.target.value)}
+            type="number"
+            className="w-24 h-8 text-sm"
+          />
           <label className="flex items-center gap-1.5 text-xs">
-            <input type="checkbox" checked={msBillable} onChange={(e) => setMsBillable(e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={msBillable}
+              onChange={(e) => setMsBillable(e.target.checked)}
+            />
             Facturable
           </label>
-          <Button size="sm" variant="outline" disabled={!msName.trim()} onClick={async () => {
-            await msFn({ data: { projectId, name: msName.trim(), isBillableEvent: msBillable, amount: msAmount ? Number(msAmount) : null } });
-            qc.invalidateQueries({ queryKey: ["milestones", projectId] });
-            qc.invalidateQueries({ queryKey: ["contract-payments"] });
-            setMsName(""); setMsAmount(""); setMsBillable(false);
-          }}>+ Milestone</Button>
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={!msName.trim()}
+            onClick={async () => {
+              await msFn({
+                data: {
+                  projectId,
+                  name: msName.trim(),
+                  isBillableEvent: msBillable,
+                  amount: msAmount ? Number(msAmount) : null,
+                },
+              });
+              qc.invalidateQueries({ queryKey: ["milestones", projectId] });
+              qc.invalidateQueries({ queryKey: ["contract-payments"] });
+              setMsName("");
+              setMsAmount("");
+              setMsBillable(false);
+            }}
+          >
+            + Milestone
+          </Button>
         </div>
         {(milestones ?? []).length === 0 ? (
           <div className="text-xs text-muted-foreground">Sin milestones.</div>
@@ -660,9 +779,15 @@ function ProjectBlock({ projectId, name }: { projectId: string; name: string }) 
           <ul className="text-sm space-y-1">
             {milestones?.map((m) => (
               <li key={m.id} className="flex items-center gap-2">
-                {m.status === "achieved" || m.status === "invoiced" ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> : <Circle className="w-3.5 h-3.5 text-muted-foreground" />}
+                {m.status === "achieved" || m.status === "invoiced" ? (
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                ) : (
+                  <Circle className="w-3.5 h-3.5 text-muted-foreground" />
+                )}
                 <span>{m.name}</span>
-                {m.is_billable_event && m.amount && <span className="text-xs text-muted-foreground">· {m.amount}</span>}
+                {m.is_billable_event && m.amount && (
+                  <span className="text-xs text-muted-foreground">· {m.amount}</span>
+                )}
               </li>
             ))}
           </ul>
@@ -774,69 +899,99 @@ function RegeneratePaymentsButton({ contractId }: { contractId: string }) {
   );
 }
 
-function PagosTab({ contractId, currency, accountId }: { contractId: string; currency: string; accountId: string | null }) {
+function PagosTab({
+  contractId,
+  currency,
+  accountId,
+}: {
+  contractId: string;
+  currency: string;
+  accountId: string | null;
+}) {
   const { data: payments } = useSuspenseQuery(contractPaymentsQO(contractId));
   const cuotaAmount = (() => {
-    const list = (payments as Array<{ due_date: string; amount: number | string; kind: string }>).filter((p) => p.kind === "monthly");
+    const list = (
+      payments as Array<{ due_date: string; amount: number | string; kind: string }>
+    ).filter((p) => p.kind === "monthly");
     if (!list.length) return null;
     const first = list.map((p) => p.due_date).sort()[0];
     return list.filter((p) => p.due_date === first).reduce((s, p) => s + Number(p.amount), 0);
   })();
   const splitsUi = accountId ? (
-    <ContractSplitsSection contractId={contractId} accountId={accountId} currency={currency} cuotaAmount={cuotaAmount} />
+    <ContractSplitsSection
+      contractId={contractId}
+      accountId={accountId}
+      currency={currency}
+      cuotaAmount={cuotaAmount}
+    />
   ) : null;
   const qc = useQueryClient();
   const fn = useServerFn(updatePaymentStatus);
   if (payments.length === 0) {
     return (
-      <div className="space-y-3">{splitsUi}<div className="border border-dashed border-border rounded-md p-6 text-center text-sm text-muted-foreground space-y-3">
-        <div>Sin pagos programados. Puedes generarlos desde las líneas de servicio del contrato.</div>
-        <RegeneratePaymentsButton contractId={contractId} />
-      </div></div>
+      <div className="space-y-3">
+        {splitsUi}
+        <div className="border border-dashed border-border rounded-md p-6 text-center text-sm text-muted-foreground space-y-3">
+          <div>
+            Sin pagos programados. Puedes generarlos desde las líneas de servicio del contrato.
+          </div>
+          <RegeneratePaymentsButton contractId={contractId} />
+        </div>
+      </div>
     );
   }
   return (
     <div className="space-y-2">
-    {splitsUi}
-    <div className="flex justify-end">
-      <RegeneratePaymentsButton contractId={contractId} />
-    </div>
-    <div className="border border-border rounded-md overflow-hidden">
-      <table className="w-full text-sm">
-        <thead className="bg-muted/30 text-xs text-muted-foreground uppercase">
-          <tr>
-            <th className="text-left px-3 py-2">Tipo</th>
-            <th className="text-left px-3 py-2">Período</th>
-            <th className="text-left px-3 py-2">Vence</th>
-            <th className="text-right px-3 py-2">Monto</th>
-            <th className="text-left px-3 py-2">Estado</th>
-            <th className="px-3 py-2"></th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-border">
-          {payments.map((p) => (
-            <tr key={p.id}>
-              <td className="px-3 py-2">{p.kind}</td>
-              <td className="px-3 py-2">{p.period_label ?? "—"}</td>
-              <td className="px-3 py-2">{p.due_date ?? "—"}</td>
-              <td className="px-3 py-2 text-right">{p.amount} {currency}</td>
-              <td className="px-3 py-2">
-                <span className="text-[10px] uppercase border border-border rounded px-1.5 py-0.5">{p.status}</span>
-              </td>
-              <td className="px-3 py-2 text-right">
-                {p.status !== "paid" && (
-                  <Button size="sm" variant="ghost" onClick={async () => {
-                    await fn({ data: { paymentId: p.id, status: "paid" } });
-                    qc.invalidateQueries({ queryKey: ["contract-payments", contractId] });
-                    toast.success("Pago marcado");
-                  }}>Marcar pagado</Button>
-                )}
-              </td>
+      {splitsUi}
+      <div className="flex justify-end">
+        <RegeneratePaymentsButton contractId={contractId} />
+      </div>
+      <div className="border border-border rounded-md overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-muted/30 text-xs text-muted-foreground uppercase">
+            <tr>
+              <th className="text-left px-3 py-2">Tipo</th>
+              <th className="text-left px-3 py-2">Período</th>
+              <th className="text-left px-3 py-2">Vence</th>
+              <th className="text-right px-3 py-2">Monto</th>
+              <th className="text-left px-3 py-2">Estado</th>
+              <th className="px-3 py-2"></th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {payments.map((p) => (
+              <tr key={p.id}>
+                <td className="px-3 py-2">{p.kind}</td>
+                <td className="px-3 py-2">{p.period_label ?? "—"}</td>
+                <td className="px-3 py-2">{p.due_date ?? "—"}</td>
+                <td className="px-3 py-2 text-right">
+                  {p.amount} {currency}
+                </td>
+                <td className="px-3 py-2">
+                  <span className="text-[10px] uppercase border border-border rounded px-1.5 py-0.5">
+                    {p.status}
+                  </span>
+                </td>
+                <td className="px-3 py-2 text-right">
+                  {p.status !== "paid" && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={async () => {
+                        await fn({ data: { paymentId: p.id, status: "paid" } });
+                        qc.invalidateQueries({ queryKey: ["contract-payments", contractId] });
+                        toast.success("Pago marcado");
+                      }}
+                    >
+                      Marcar pagado
+                    </Button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
@@ -857,7 +1012,10 @@ function FinancialsTab({ contractId }: { contractId: string }) {
     return (
       <div className="border border-border rounded-md p-6 max-w-md text-sm text-muted-foreground flex items-start gap-3">
         <Lock className="w-4 h-4 mt-0.5" />
-        <div>Solo el owner y los admins del workspace pueden ver los datos financieros de este contrato.</div>
+        <div>
+          Solo el owner y los admins del workspace pueden ver los datos financieros de este
+          contrato.
+        </div>
       </div>
     );
   }
@@ -872,10 +1030,22 @@ function FinancialsTab({ contractId }: { contractId: string }) {
 
   return (
     <div className="space-y-3 max-w-md">
-      <div><Label>Cuota mensual</Label><Input type="number" value={monthlyFee} onChange={(e) => setMonthlyFee(e.target.value)} /></div>
-      <div><Label>Valor total del contrato</Label><Input type="number" value={feeTotal} onChange={(e) => setFeeTotal(e.target.value)} /></div>
-      <div><Label>Tarifa por hora</Label><Input type="number" value={hourlyRate} onChange={(e) => setHourlyRate(e.target.value)} /></div>
-      <div><Label>Notas</Label><Textarea value={notes} onChange={(e) => setNotes(e.target.value)} /></div>
+      <div>
+        <Label>Cuota mensual</Label>
+        <Input type="number" value={monthlyFee} onChange={(e) => setMonthlyFee(e.target.value)} />
+      </div>
+      <div>
+        <Label>Valor total del contrato</Label>
+        <Input type="number" value={feeTotal} onChange={(e) => setFeeTotal(e.target.value)} />
+      </div>
+      <div>
+        <Label>Tarifa por hora</Label>
+        <Input type="number" value={hourlyRate} onChange={(e) => setHourlyRate(e.target.value)} />
+      </div>
+      <div>
+        <Label>Notas</Label>
+        <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} />
+      </div>
       <Button
         onClick={async () => {
           await fn({
@@ -894,7 +1064,9 @@ function FinancialsTab({ contractId }: { contractId: string }) {
       >
         Guardar
       </Button>
-      <p className="text-xs text-muted-foreground">Si defines una cuota mensual, se generarán pagos automáticos.</p>
+      <p className="text-xs text-muted-foreground">
+        Si defines una cuota mensual, se generarán pagos automáticos.
+      </p>
     </div>
   );
 }

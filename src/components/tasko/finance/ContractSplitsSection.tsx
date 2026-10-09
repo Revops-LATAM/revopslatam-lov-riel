@@ -5,7 +5,11 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { listBillingEntities, getContractSplits, saveContractSplits } from "@/lib/api/billing-entities.functions";
+import {
+  listBillingEntities,
+  getContractSplits,
+  saveContractSplits,
+} from "@/lib/api/billing-entities.functions";
 
 type Entity = { id: string; razon_social: string; rut: string | null; is_primary: boolean };
 
@@ -24,8 +28,14 @@ export function ContractSplitsSection({
   const listE = useServerFn(listBillingEntities);
   const getS = useServerFn(getContractSplits);
   const save = useServerFn(saveContractSplits);
-  const eq = useQuery({ queryKey: ["billing-entities", accountId], queryFn: () => listE({ data: { accountId } }) });
-  const sq = useQuery({ queryKey: ["contract-splits", contractId], queryFn: () => getS({ data: { contractId } }) });
+  const eq = useQuery({
+    queryKey: ["billing-entities", accountId],
+    queryFn: () => listE({ data: { accountId } }),
+  });
+  const sq = useQuery({
+    queryKey: ["contract-splits", contractId],
+    queryFn: () => getS({ data: { contractId } }),
+  });
   const [enabled, setEnabled] = useState(false);
   const [amounts, setAmounts] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
@@ -48,7 +58,10 @@ export function ContractSplitsSection({
     try {
       const splits = enabled
         ? entities
-            .map((e) => ({ billingEntityId: e.id, monto: Number((amounts[e.id] ?? "").replace(",", ".")) || 0 }))
+            .map((e) => ({
+              billingEntityId: e.id,
+              monto: Number((amounts[e.id] ?? "").replace(",", ".")) || 0,
+            }))
             .filter((s) => s.monto > 0)
         : [];
       const r = await save({ data: { contractId, splits } });
@@ -72,8 +85,8 @@ export function ContractSplitsSection({
         <div>
           <div className="text-sm font-semibold">Dividir facturación entre razones sociales</div>
           <p className="text-xs text-muted-foreground">
-            Cada cuota pendiente se emitirá como una factura por razón social, con el monto fijo indicado.
-            Las cuotas ya facturadas no se modifican.
+            Cada cuota pendiente se emitirá como una factura por razón social, con el monto fijo
+            indicado. Las cuotas ya facturadas no se modifican.
           </p>
         </div>
         <Switch checked={enabled} onCheckedChange={setEnabled} />
@@ -105,7 +118,8 @@ export function ContractSplitsSection({
           </div>
           <div className={`text-xs ${mismatch ? "text-destructive" : "text-muted-foreground"}`}>
             Suma: {currency} {sum.toLocaleString("es-CL")}
-            {cuotaAmount != null && ` · Valor cuota: ${currency} ${cuotaAmount.toLocaleString("es-CL")}`}
+            {cuotaAmount != null &&
+              ` · Valor cuota: ${currency} ${cuotaAmount.toLocaleString("es-CL")}`}
             {mismatch && " — no cuadra; se repartirá proporcionalmente."}
           </div>
         </>

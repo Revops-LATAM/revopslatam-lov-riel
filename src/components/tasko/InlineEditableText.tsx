@@ -122,7 +122,9 @@ export function InlineEditableText({
   }
 
   return (
-    <span className={cn("group/inline inline-flex items-center gap-1 max-w-full min-w-0", className)}>
+    <span
+      className={cn("group/inline inline-flex items-center gap-1 max-w-full min-w-0", className)}
+    >
       <As
         tabIndex={disabled ? undefined : 0}
         onKeyDown={(e) => {
@@ -137,7 +139,8 @@ export function InlineEditableText({
         }}
         className={cn(
           "truncate min-w-0",
-          !disabled && "rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/40",
+          !disabled &&
+            "rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/40",
         )}
       >
         {value || <span className="text-muted-foreground">{placeholder}</span>}

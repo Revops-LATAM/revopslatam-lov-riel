@@ -12,7 +12,11 @@ import {
 
 const RequestLinkSchema = z.object({
   action: z.literal("request-link"),
-  email: z.string().email().max(255).transform((s) => s.toLowerCase().trim()),
+  email: z
+    .string()
+    .email()
+    .max(255)
+    .transform((s) => s.toLowerCase().trim()),
 });
 const LogoutSchema = z.object({ action: z.literal("logout") });
 
@@ -95,7 +99,6 @@ export const Route = createFileRoute("/api/public/portal/$slug")({
           // Same-shape 200 response to avoid enumerating authorized emails.
           return Response.json({ ok: true });
         }
-
 
         // Rate limit: max 5 magic links per email per 15 min
         const cutoff = new Date(Date.now() - 15 * 60 * 1000).toISOString();

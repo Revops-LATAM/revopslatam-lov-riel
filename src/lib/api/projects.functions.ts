@@ -48,8 +48,14 @@ export const createProject = createServerFn({ method: "POST" })
         sprintCadence: z.enum(["weekly", "biweekly", "monthly"]).optional(),
         hoursPerSprint: z.number().nonnegative().max(10000).optional(),
         sprintCount: z.number().int().positive().max(52).optional(),
-        firstSprintStart: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-        startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+        firstSprintStart: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .optional(),
+        startDate: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .optional(),
       })
       .parse(input),
   )
@@ -78,12 +84,14 @@ export const createProject = createServerFn({ method: "POST" })
       const sprintDays = isRaas ? (data.sprintDurationDays ?? 14) : null;
       const hoursPerSprint = isRaas ? (data.hoursPerSprint ?? 0) : null;
       const sprintCount = isRaas ? (data.sprintCount ?? 0) : 0;
-      const startDate = (isRaas ? data.firstSprintStart : null) ?? new Date().toISOString().slice(0, 10);
-      const endDate = isRaas && sprintCount > 0 && sprintDays
-        ? new Date(new Date(startDate).getTime() + sprintCount * sprintDays * 86400000 - 86400000)
-            .toISOString()
-            .slice(0, 10)
-        : null;
+      const startDate =
+        (isRaas ? data.firstSprintStart : null) ?? new Date().toISOString().slice(0, 10);
+      const endDate =
+        isRaas && sprintCount > 0 && sprintDays
+          ? new Date(new Date(startDate).getTime() + sprintCount * sprintDays * 86400000 - 86400000)
+              .toISOString()
+              .slice(0, 10)
+          : null;
 
       const { data: contract, error: cErr } = await supabase
         .from("contracts")
@@ -151,7 +159,9 @@ export const listPartnerProjects = createServerFn({ method: "GET" })
     const { supabase } = context;
     const { data: rows, error } = await supabase
       .from("projects")
-      .select("id, name, description, color, archived, asana_project_gid, created_at, workspace_id, delivery_type, first_sprint_start_date, fecha_inicio_delivery, contract_id, contract:contract_id(sprint_cadence, sprint_duration_days, start_date, hours_per_sprint)")
+      .select(
+        "id, name, description, color, archived, asana_project_gid, created_at, workspace_id, delivery_type, first_sprint_start_date, fecha_inicio_delivery, contract_id, contract:contract_id(sprint_cadence, sprint_duration_days, start_date, hours_per_sprint)",
+      )
       .eq("partner_id", data.partnerId)
       .eq("billing_mode", "partner")
       .order("created_at", { ascending: false });
@@ -236,7 +246,6 @@ export const getProjectHoursSummary = createServerFn({ method: "GET" })
     };
   });
 
-
 export const updateProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
@@ -247,14 +256,21 @@ export const updateProject = createServerFn({ method: "POST" })
         description: z.string().max(500).nullable().optional(),
         color: z.string().optional(),
         archived: z.boolean().optional(),
-        firstSprintStartDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
-        fechaInicioDelivery: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+        firstSprintStartDate: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .nullable()
+          .optional(),
+        fechaInicioDelivery: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}$/)
+          .nullable()
+          .optional(),
         sprintCadence: z.enum(["weekly", "biweekly", "monthly"]).optional(),
         hoursPerSprint: z.number().nonnegative().max(100000).optional(),
         contractedHoursTotal: z.number().nonnegative().max(1000000).nullable().optional(),
         estimatedHoursTotal: z.number().nonnegative().max(1000000).optional(),
         sprintCount: z.number().int().positive().max(200).optional(),
-
       })
       .parse(input),
   )
@@ -276,7 +292,10 @@ export const updateProject = createServerFn({ method: "POST" })
     if (firstSprintStartDate !== undefined) patch.first_sprint_start_date = firstSprintStartDate;
     if (fechaInicioDelivery !== undefined) patch.fecha_inicio_delivery = fechaInicioDelivery;
     if (Object.keys(patch).length > 0) {
-      const { error } = await supabase.from("projects").update(patch as never).eq("id", projectId);
+      const { error } = await supabase
+        .from("projects")
+        .update(patch as never)
+        .eq("id", projectId);
       if (error) throw new Error(error.message);
     }
 
@@ -309,15 +328,13 @@ export const updateProject = createServerFn({ method: "POST" })
           if (cErr) throw new Error(cErr.message);
         }
         if (contractedHoursTotal !== undefined) {
-          const { error: fErr } = await supabase
-            .from("contract_financials")
-            .upsert(
-              {
-                contract_id: proj.contract_id,
-                contracted_hours_total: contractedHoursTotal,
-              } as never,
-              { onConflict: "contract_id" },
-            );
+          const { error: fErr } = await supabase.from("contract_financials").upsert(
+            {
+              contract_id: proj.contract_id,
+              contracted_hours_total: contractedHoursTotal,
+            } as never,
+            { onConflict: "contract_id" },
+          );
           if (fErr) throw new Error(fErr.message);
         }
       }
@@ -369,7 +386,11 @@ export const updateProject = createServerFn({ method: "POST" })
         // Derive hours_per_sprint from total when total is provided
         let effectiveHps = Number(c?.hours_per_sprint ?? 0);
         if (hoursPerSprint !== undefined) effectiveHps = hoursPerSprint;
-        if (contractedHoursTotal !== undefined && contractedHoursTotal !== null && targetCount > 0) {
+        if (
+          contractedHoursTotal !== undefined &&
+          contractedHoursTotal !== null &&
+          targetCount > 0
+        ) {
           effectiveHps = Math.round((contractedHoursTotal / targetCount) * 100) / 100;
           const { error: hErr } = await supabase
             .from("contracts")
@@ -446,7 +467,6 @@ export const updateProject = createServerFn({ method: "POST" })
 
     return { ok: true };
   });
-
 
 export const deleteProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

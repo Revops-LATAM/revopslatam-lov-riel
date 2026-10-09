@@ -1,12 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,8 +41,7 @@ type LineDraft = {
   expanded?: boolean;
 };
 
-const clp = (n: number) =>
-  new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(n);
+const clp = (n: number) => new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(n);
 
 function todayCL() {
   return new Date().toLocaleDateString("en-CA", { timeZone: "America/Santiago" });
@@ -124,9 +118,18 @@ export function EmitDteDialog({
       contracts?: { name?: string | null } | null;
     };
     const a = inv.accounts;
-    const be = (inv as unknown as {
-      billing_entity?: { rut?: string | null; razon_social?: string | null; giro?: string | null; direccion?: string | null; comuna?: string | null; email_facturacion?: string | null } | null;
-    }).billing_entity;
+    const be = (
+      inv as unknown as {
+        billing_entity?: {
+          rut?: string | null;
+          razon_social?: string | null;
+          giro?: string | null;
+          direccion?: string | null;
+          comuna?: string | null;
+          email_facturacion?: string | null;
+        } | null;
+      }
+    ).billing_entity;
     if (be) {
       setReceptor({
         rut: be.rut ? formatRut(be.rut) : "",
@@ -136,14 +139,15 @@ export function EmitDteDialog({
         comuna: be.comuna ?? "",
         email: be.email_facturacion ?? "",
       });
-    } else setReceptor({
-      rut: a?.tax_id ? formatRut(a.tax_id) : "",
-      razon_social: a?.legal_name ?? a?.name ?? "",
-      giro: a?.business_activity ?? "",
-      direccion: a?.address ?? "",
-      comuna: a?.commune ?? "",
-      email: a?.billing_email ?? "",
-    });
+    } else
+      setReceptor({
+        rut: a?.tax_id ? formatRut(a.tax_id) : "",
+        razon_social: a?.legal_name ?? a?.name ?? "",
+        giro: a?.business_activity ?? "",
+        direccion: a?.address ?? "",
+        comuna: a?.commune ?? "",
+        email: a?.billing_email ?? "",
+      });
     // El SII rechaza fechas de emisión futuras (OF-10 "Fecha Incorrecta").
     // Si la factura tiene una fecha programada a futuro, emitimos con hoy.
     const hoy = todayCL();
@@ -151,9 +155,7 @@ export function EmitDteDialog({
     const fe = stored > hoy ? hoy : stored;
     setFechaEmision(fe);
     setFechaVenc(
-      inv.fecha_vencimiento && inv.fecha_vencimiento >= fe
-        ? inv.fecha_vencimiento
-        : plus30(fe),
+      inv.fecha_vencimiento && inv.fecha_vencimiento >= fe ? inv.fecha_vencimiento : plus30(fe),
     );
 
     const sorted = [...(inv.invoice_lines ?? [])].sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0));
@@ -167,7 +169,13 @@ export function EmitDteDialog({
             monto_unitario: Number(l.monto_unitario),
           }))
         : fallbackAmount > 0
-          ? [{ descripcion: fallbackDescription || "Servicio", cantidad: 1, monto_unitario: fallbackAmount }]
+          ? [
+              {
+                descripcion: fallbackDescription || "Servicio",
+                cantidad: 1,
+                monto_unitario: fallbackAmount,
+              },
+            ]
           : [],
     );
     setStep("edit");
@@ -219,18 +227,20 @@ export function EmitDteDialog({
               cantidad: l.cantidad,
               monto_unitario: l.monto_unitario,
             })),
-            referencia_oc: includeOC && ocFolio.trim()
-              ? { folio: ocFolio.trim(), fecha: ocFecha }
-              : null,
+            referencia_oc:
+              includeOC && ocFolio.trim() ? { folio: ocFolio.trim(), fecha: ocFecha } : null,
           },
         },
       });
       const emitResult = result as { pending?: boolean };
-      toast.success(emitResult.pending ? "DTE enviado; folio pendiente" : "Factura emitida al SII", {
-        description: emitResult.pending
-          ? "No se reenviará. Vuelve a usar Recuperar folio en unos segundos."
-          : undefined,
-      });
+      toast.success(
+        emitResult.pending ? "DTE enviado; folio pendiente" : "Factura emitida al SII",
+        {
+          description: emitResult.pending
+            ? "No se reenviará. Vuelve a usar Recuperar folio en unos segundos."
+            : undefined,
+        },
+      );
       qc.invalidateQueries({ queryKey: ["ws-payments", workspaceId] });
       qc.invalidateQueries({ queryKey: ["invoices", workspaceId] });
       qc.invalidateQueries({ queryKey: ["invoice", invoiceId] });
@@ -419,14 +429,22 @@ export function EmitDteDialog({
                           )
                         }
                       >
-                        {l.expanded ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
+                        {l.expanded ? (
+                          <ChevronUp className="size-3" />
+                        ) : (
+                          <ChevronDown className="size-3" />
+                        )}
                         Agregar descripción
                       </button>
                       {l.expanded && (
                         <Textarea
                           rows={2}
                           placeholder="Descripción extendida (opcional)"
-                          value={l.descripcion.includes("\n") ? l.descripcion.split("\n").slice(1).join("\n") : ""}
+                          value={
+                            l.descripcion.includes("\n")
+                              ? l.descripcion.split("\n").slice(1).join("\n")
+                              : ""
+                          }
                           onChange={(e) => {
                             const head = l.descripcion.split("\n")[0];
                             setLines((ls) =>
@@ -434,7 +452,9 @@ export function EmitDteDialog({
                                 ix === i
                                   ? {
                                       ...x,
-                                      descripcion: e.target.value ? `${head}\n${e.target.value}` : head,
+                                      descripcion: e.target.value
+                                        ? `${head}\n${e.target.value}`
+                                        : head,
                                     }
                                   : x,
                               ),
@@ -521,9 +541,7 @@ export function EmitDteDialog({
                 className="pointer-events-none absolute inset-0 flex items-center justify-center select-none"
                 aria-hidden
               >
-                <span className="text-[110px] font-black text-red-500/10 -rotate-12">
-                  BORRADOR
-                </span>
+                <span className="text-[110px] font-black text-red-500/10 -rotate-12">BORRADOR</span>
               </div>
 
               <div className="relative flex items-start justify-between gap-4">
@@ -531,11 +549,14 @@ export function EmitDteDialog({
                   <div className="text-lg font-bold uppercase">{emisor?.razon_social ?? "—"}</div>
                   <div className="text-xs uppercase text-neutral-600">{emisor?.giro ?? ""}</div>
                   <div className="text-xs text-neutral-600">
-                    {emisor?.direccion ?? ""}{emisor?.comuna ? `, ${emisor.comuna}` : ""}
+                    {emisor?.direccion ?? ""}
+                    {emisor?.comuna ? `, ${emisor.comuna}` : ""}
                   </div>
                 </div>
                 <div className="border-2 border-red-600 text-red-600 rounded-md px-4 py-2 text-center min-w-[220px]">
-                  <div className="text-xs font-medium">R.U.T.: {emisor?.rut ? formatRut(emisor.rut) : "—"}</div>
+                  <div className="text-xs font-medium">
+                    R.U.T.: {emisor?.rut ? formatRut(emisor.rut) : "—"}
+                  </div>
                   <div className="text-sm font-bold">FACTURA ELECTRÓNICA</div>
                   <div className="text-xs">N° PENDIENTE</div>
                   <div className="text-[10px] mt-1 text-neutral-600">S.I.I. - CHILE</div>
@@ -591,7 +612,10 @@ export function EmitDteDialog({
                   <div className="col-span-2 text-right">Total</div>
                 </div>
                 {lines.map((l, i) => (
-                  <div key={i} className="grid grid-cols-12 gap-2 px-3 py-2 border-b border-neutral-100 text-xs">
+                  <div
+                    key={i}
+                    className="grid grid-cols-12 gap-2 px-3 py-2 border-b border-neutral-100 text-xs"
+                  >
                     <div className="col-span-6 whitespace-pre-wrap">{l.descripcion}</div>
                     <div className="col-span-2 text-center">{l.cantidad}</div>
                     <div className="col-span-2 text-right">${clp(l.monto_unitario)}</div>
@@ -645,7 +669,11 @@ export function EmitDteDialog({
               </Button>
               <Button onClick={submit} disabled={saving}>
                 <Send className="size-4 mr-1" />
-                {saving ? "Procesando…" : isEmissionPending ? "Recuperar folio" : "Confirmar y Emitir"}
+                {saving
+                  ? "Procesando…"
+                  : isEmissionPending
+                    ? "Recuperar folio"
+                    : "Confirmar y Emitir"}
               </Button>
             </div>
           </div>
