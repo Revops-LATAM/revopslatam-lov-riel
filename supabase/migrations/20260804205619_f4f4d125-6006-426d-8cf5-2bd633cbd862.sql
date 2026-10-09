@@ -1,0 +1,2 @@
+delete from public.client_portal_tokens where token_hash='e3890e786f69ee6026490b3d8f945c5ed43b43cd5ceebe700a3668cf6d2d60e9';
+update public.client_ticket_authorized_emails set portal_role='member' where form_id='8a4ee08e-544b-403f-abf2-d95a6ceedc87' and email='iosorio@activomas.cl';

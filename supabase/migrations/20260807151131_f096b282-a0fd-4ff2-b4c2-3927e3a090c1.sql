@@ -1,0 +1,1 @@
+ALTER TABLE public.project_share_tokens ADD COLUMN IF NOT EXISTS config jsonb NOT NULL DEFAULT '{}'::jsonb;

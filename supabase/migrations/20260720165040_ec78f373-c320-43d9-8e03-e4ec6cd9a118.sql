@@ -1,0 +1,1 @@
+UPDATE public.sprints s SET contracted_hours = 15 FROM public.projects p WHERE p.contract_id = s.contract_id AND p.id = '4fd0498e-6c36-4b2b-a286-2dc3994573d0';

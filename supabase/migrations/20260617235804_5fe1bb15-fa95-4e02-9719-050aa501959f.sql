@@ -1,0 +1,2 @@
+ALTER TABLE public.task_activity DROP CONSTRAINT task_activity_kind_check;
+ALTER TABLE public.task_activity ADD CONSTRAINT task_activity_kind_check CHECK (kind = ANY (ARRAY['status','assignee','due_date','priority','title','created','time_added','time_started','time_stopped']));

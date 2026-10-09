@@ -1,0 +1,1 @@
+DELETE FROM public.contracts WHERE id IN ('7e13b5d9-bc6e-4772-bdfb-d515e54656bd','d7fec2a2-51ff-4374-aec7-e8465a6c6988','4ed84978-93e3-4398-b0ef-ea46f437b38f') AND is_partner = true AND NOT EXISTS (SELECT 1 FROM public.projects p WHERE p.contract_id = contracts.id);

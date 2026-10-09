@@ -1,0 +1,2 @@
+UPDATE public.invoices SET estado = 'draft', emitido_at = NULL WHERE id = 'c95adf86-1421-4b9c-970c-b7a8e05edcbe' AND folio_sii IS NULL;
+UPDATE public.contract_payments SET status = 'scheduled' WHERE id IN (SELECT contract_payment_id FROM public.invoice_lines WHERE invoice_id = 'c95adf86-1421-4b9c-970c-b7a8e05edcbe' AND contract_payment_id IS NOT NULL);

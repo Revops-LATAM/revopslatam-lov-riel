@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790780021554,
+      "tag": "0000_billing_entities_splits",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790780578483,
+      "tag": "0001_revoke_email_queue_rpc_from_clients",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790787311667,
+      "tag": "0002_secure_definer_functions_step2",
+      "breakpoints": true
+    }
+  ]
+}

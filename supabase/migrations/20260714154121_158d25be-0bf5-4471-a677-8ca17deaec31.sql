@@ -1,0 +1,1 @@
+INSERT INTO client_portal_tokens(form_id, email, kind, token_hash, expires_at) VALUES ('8a4ee08e-544b-403f-abf2-d95a6ceedc87','pablomoena@gmail.com','magic','bfabe772c0923be64bf4b49b6e33cf2309dee19f8f58d41cc04cfae2754c80b5', now() + interval '30 minutes');

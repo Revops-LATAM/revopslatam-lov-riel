@@ -1,0 +1,1 @@
+update public.client_ticket_authorized_emails set portal_role='leader' where form_id='8a4ee08e-544b-403f-abf2-d95a6ceedc87' and email='iosorio@activomas.cl';

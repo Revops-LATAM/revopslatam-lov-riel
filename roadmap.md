@@ -1,0 +1,1 @@
+- [x] Fix seguridad #2: migración definer + guard con existencia en recompute/recalc; pruebas 1-4

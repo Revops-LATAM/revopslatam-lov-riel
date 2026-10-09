@@ -1,0 +1,2 @@
+ALTER TABLE public.contracts ADD COLUMN IF NOT EXISTS descripcion_factura text;
+COMMENT ON COLUMN public.contracts.descripcion_factura IS 'Glosa comercial que se usa como descripción de la factura DTE. Si es NULL se cae a contracts.name.';

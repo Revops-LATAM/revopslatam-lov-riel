@@ -1,0 +1,1 @@
+ALTER TABLE public.task_attachments ALTER COLUMN uploader_id DROP NOT NULL;

@@ -1,0 +1,597 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://zsziagvpbwygwmysvivy.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "riel-mcp",
+      "version": "0.5.0",
+      "title": "Riel"
+    },
+    "tools": [
+      {
+        "name": "echo",
+        "title": "Echo",
+        "description": "Echo back the provided text. Useful to verify MCP connectivity.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Text to echo back."
+            }
+          },
+          "required": [
+            "text"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_workspaces",
+        "title": "List workspaces",
+        "description": "List the Riel workspaces the signed-in user is a member of.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_my_tasks",
+        "title": "List my tasks",
+        "description": "List tasks assigned to the signed-in user, optionally filtered by status or sprint. Includes the sprint of each task.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "nueva",
+                "planificada",
+                "en_curso",
+                "en_pausa",
+                "revision_interna",
+                "revision_cliente",
+                "en_correccion",
+                "demorada",
+                "completada",
+                "cancelada"
+              ],
+              "description": "Optional task status filter (Spanish enum values from task_status)."
+            },
+            "sprintId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Optional sprint filter (use list_sprints first)."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "description": "Max rows to return (default 50)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_projects",
+        "title": "List projects",
+        "description": "List Riel projects in a workspace, with client, area, state and budgeted hours. Filter by text or state.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "workspaceId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Workspace id (use list_workspaces first)."
+            },
+            "search": {
+              "type": "string",
+              "description": "Case-insensitive match on project or client name."
+            },
+            "includeArchived": {
+              "type": "boolean",
+              "description": "Include archived projects (default false)."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "description": "Max rows (default 100)."
+            }
+          },
+          "required": [
+            "workspaceId"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_sprints",
+        "title": "List sprints",
+        "description": "List Riel sprints for a project or a contract, with dates, status, contracted hours and (optionally) task counts, estimated hours and logged hours per sprint.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Project id (use list_projects first)."
+            },
+            "contractId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Contract id. Use instead of projectId to see all sprints of a contract."
+            },
+            "includeTotals": {
+              "type": "boolean",
+              "description": "Compute tasks, estimated hours and logged hours per sprint (default true)."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "description": "Max sprints (default 60)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_project_overview",
+        "title": "Project overview",
+        "description": "Detail of one Riel project: tasks by status, estimated hours vs logged hours, and the most recent tasks.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Project id (use list_projects first)."
+            },
+            "sprintId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Optional: restrict to one sprint (use list_sprints first)."
+            },
+            "taskLimit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "description": "Recent tasks to list (default 50)."
+            }
+          },
+          "required": [
+            "projectId"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_task_details",
+        "title": "Task details",
+        "description": "Full detail of one Riel task for analysis: description, status, dates, estimated vs logged hours, assignees, comments (conversation, including client portal replies) and attachments.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "taskId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Task id (UUID). Use list_my_tasks or get_project_overview first."
+            },
+            "includeComments": {
+              "type": "boolean",
+              "description": "Include the conversation thread (default true)."
+            },
+            "commentLimit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "description": "Max comments to return (default 100)."
+            },
+            "includeTimeEntries": {
+              "type": "boolean",
+              "description": "Include individual time entries (default false)."
+            }
+          },
+          "required": [
+            "taskId"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "time_report",
+        "title": "Time report",
+        "description": "Aggregated logged hours in a date range for a workspace, grouped by member, project, client or sprint. Read-only.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "workspaceId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Workspace id (use list_workspaces first)."
+            },
+            "from": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "description": "Start date, YYYY-MM-DD (inclusive)."
+            },
+            "to": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "description": "End date, YYYY-MM-DD (inclusive)."
+            },
+            "groupBy": {
+              "type": "string",
+              "enum": [
+                "member",
+                "project",
+                "client",
+                "sprint"
+              ],
+              "description": "Grouping dimension."
+            },
+            "billableOnly": {
+              "type": "boolean",
+              "description": "Only billable entries (default false)."
+            }
+          },
+          "required": [
+            "workspaceId",
+            "from",
+            "to",
+            "groupBy"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "my_time_summary",
+        "title": "My time summary",
+        "description": "Logged hours of the signed-in user in a date range, with a per-day breakdown and totals by project. Dates use the workspace timezone.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "description": "Start date, YYYY-MM-DD (inclusive)."
+            },
+            "to": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "description": "End date, YYYY-MM-DD (inclusive)."
+            },
+            "workspaceId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Workspace whose timezone is used for day boundaries (optional)."
+            }
+          },
+          "required": [
+            "from",
+            "to"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "create_task",
+        "title": "Create task",
+        "description": "Create a task in a Riel project (optionally inside a sprint or phase). Writes as the signed-in user and respects their permissions.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "projectId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Project id (use list_projects first)."
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": "Task title."
+            },
+            "description": {
+              "type": "string",
+              "maxLength": 5000,
+              "description": "Optional description."
+            },
+            "sprintId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Optional sprint (use list_sprints first)."
+            },
+            "phaseId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Optional phase id."
+            },
+            "priority": {
+              "type": "string",
+              "enum": [
+                "none",
+                "low",
+                "medium",
+                "high",
+                "urgent"
+              ]
+            },
+            "startDate": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "description": "Start date YYYY-MM-DD."
+            },
+            "dueDate": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "description": "Due date YYYY-MM-DD."
+            },
+            "estimatedHours": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 999,
+              "description": "Estimated effort in hours."
+            },
+            "assigneeIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "maxItems": 20,
+              "description": "User ids to assign (omit to leave unassigned; defaults to nobody)."
+            },
+            "assignToMe": {
+              "type": "boolean",
+              "description": "Assign the task to the signed-in user."
+            }
+          },
+          "required": [
+            "projectId",
+            "title"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "update_task",
+        "title": "Update task",
+        "description": "Update fields of an existing Riel task: title, description, status, priority, dates, estimated hours, sprint or assignees. Only the provided fields change.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "taskId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Task id (use list_my_tasks or get_project_overview first)."
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "description": {
+              "type": "string",
+              "maxLength": 5000
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "nueva",
+                "planificada",
+                "en_curso",
+                "en_pausa",
+                "revision_interna",
+                "revision_cliente",
+                "en_correccion",
+                "demorada",
+                "completada",
+                "cancelada"
+              ],
+              "description": "New task status (Spanish enum values)."
+            },
+            "priority": {
+              "type": "string",
+              "enum": [
+                "none",
+                "low",
+                "medium",
+                "high",
+                "urgent"
+              ]
+            },
+            "startDate": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Start date YYYY-MM-DD, or null to clear."
+            },
+            "dueDate": {
+              "anyOf": [
+                {
+                  "$ref": "#/properties/startDate/anyOf/0"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Due date YYYY-MM-DD, or null to clear."
+            },
+            "estimatedHours": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 999
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "sprintId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Move to sprint, or null to move to backlog."
+            },
+            "assigneeIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "maxItems": 20,
+              "description": "Replace the full assignee list with these user ids."
+            }
+          },
+          "required": [
+            "taskId"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "add_task_comment",
+        "title": "Add task comment",
+        "description": "Add a comment to a Riel task. Internal by default; set clientVisible to true to make it visible in the client ticket portal.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "taskId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Task id."
+            },
+            "body": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 5000,
+              "description": "Comment text."
+            },
+            "clientVisible": {
+              "type": "boolean",
+              "description": "Make the comment visible to the client in the ticket portal (default false)."
+            }
+          },
+          "required": [
+            "taskId",
+            "body"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

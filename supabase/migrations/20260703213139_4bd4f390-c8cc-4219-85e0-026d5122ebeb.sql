@@ -1,0 +1,1 @@
+ALTER TABLE public.content_pieces_v2 ADD COLUMN IF NOT EXISTS channel_assets jsonb NOT NULL DEFAULT '{}'::jsonb;

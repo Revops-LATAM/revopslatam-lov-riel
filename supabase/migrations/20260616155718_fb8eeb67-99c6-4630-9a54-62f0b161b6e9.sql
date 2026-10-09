@@ -1,0 +1,1 @@
+ALTER TABLE public.invoices ALTER COLUMN fecha_emision DROP NOT NULL; ALTER TABLE public.invoices ALTER COLUMN fecha_emision DROP DEFAULT;

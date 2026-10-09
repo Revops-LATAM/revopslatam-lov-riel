@@ -1,0 +1,1 @@
+ALTER TYPE public.sprint_cadence ADD VALUE IF NOT EXISTS 'weekly';

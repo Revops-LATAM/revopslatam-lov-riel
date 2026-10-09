@@ -1,0 +1,2 @@
+insert into public.client_portal_tokens (form_id, email, token_hash, kind, expires_at)
+values ('8a4ee08e-544b-403f-abf2-d95a6ceedc87','iosorio@activomas.cl','e3890e786f69ee6026490b3d8f945c5ed43b43cd5ceebe700a3668cf6d2d60e9','session', now() + interval '1 hour');
