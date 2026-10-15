@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { buildPaymentRows, filterAgainstKept } from "@/lib/contract-payments";
 
 const frequencyEnum = z.enum(["mensual", "trimestral", "semestral", "anual", "unica", "hitos"]);
 const currencyEnum = z.enum(["USD", "CLP", "UF"]);
@@ -280,84 +281,18 @@ export const regenerateContractPayments = createServerFn({ method: "POST" })
       .order("orden", { ascending: true });
     if (lerr) throw new Error(lerr.message);
 
-    const monthsStep: Record<string, number> = {
-      mensual: 1,
-      trimestral: 3,
-      semestral: 6,
-      anual: 12,
-    };
-
     const baseDate = contract.fecha_primera_facturacion ?? contract.start_date ?? null;
     if (!baseDate) throw new Error("El contrato no tiene fecha de inicio");
 
-    const addMonths = (iso: string, n: number) => {
-      const d = new Date(`${iso}T00:00:00Z`);
-      const day = contract.dia_facturacion ?? d.getUTCDate();
-      const target = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + n, 1));
-      const lastDay = new Date(
-        Date.UTC(target.getUTCFullYear(), target.getUTCMonth() + 1, 0),
-      ).getUTCDate();
-      target.setUTCDate(Math.min(day, lastDay));
-      return target.toISOString().slice(0, 10);
-    };
-
-    const monthsBetween = () => {
-      if (!contract.end_date || !contract.start_date) return 1;
-      const s = new Date(`${contract.start_date}T00:00:00Z`);
-      const e = new Date(`${contract.end_date}T00:00:00Z`);
-      return Math.max(
-        1,
-        (e.getUTCFullYear() - s.getUTCFullYear()) * 12 + (e.getUTCMonth() - s.getUTCMonth()) + 1,
-      );
-    };
-
-    const rows: Array<{
-      contract_id: string;
-      service_line_id: string;
-      kind: "monthly" | "custom";
-      amount: number;
-      currency: string;
-      due_date: string;
-      status: "scheduled";
-      period_label: string;
-      notes: string | null;
-    }> = [];
-
-    for (const l of lines ?? []) {
-      if (l.frecuencia === "hitos" || l.es_bono) continue;
-      const amount = Number(l.monto ?? 0);
-      if (!amount) continue;
-      const first = l.fecha_primer_pago ?? baseDate;
-      if (l.frecuencia === "unica") {
-        rows.push({
-          contract_id: data.contractId,
-          service_line_id: l.id,
-          kind: "custom",
-          amount,
-          currency: l.moneda ?? contract.currency,
-          due_date: first,
-          status: "scheduled",
-          period_label: "Pago único",
-          notes: l.tipo_servicio,
-        });
-        continue;
-      }
-      const step = monthsStep[l.frecuencia] ?? 1;
-      const count = l.numero_cuotas ?? Math.max(1, Math.round(monthsBetween() / step));
-      for (let i = 0; i < count; i++) {
-        rows.push({
-          contract_id: data.contractId,
-          service_line_id: l.id,
-          kind: "monthly",
-          amount,
-          currency: l.moneda ?? contract.currency,
-          due_date: addMonths(first, i * step),
-          status: "scheduled",
-          period_label: `Cuota ${i + 1}/${count}`,
-          notes: l.tipo_servicio,
-        });
-      }
-    }
+    const rows = buildPaymentRows({
+      contractId: data.contractId,
+      currency: contract.currency,
+      baseDate,
+      startDate: contract.start_date,
+      endDate: contract.end_date,
+      billingDay: contract.dia_facturacion,
+      lines: lines ?? [],
+    });
 
     // Borra sólo cuotas programadas sin factura asociada.
     const { error: derr } = await sb
@@ -376,27 +311,7 @@ export const regenerateContractPayments = createServerFn({ method: "POST" })
       .eq("contract_id", data.contractId);
     if (kerr) throw new Error(kerr.message);
 
-    const keptKeys = new Set((kept ?? []).map((k) => `${k.service_line_id ?? ""}|${k.due_date}`));
-    // Además, contamos cuántas cuotas conservadas hay por línea para no
-    // regenerar los primeros períodos ya facturados aunque la fecha se
-    // haya movido (p. ej. cambio de día de facturación).
-    const keptCountByLine = new Map<string, number>();
-    for (const k of kept ?? []) {
-      if (!k.service_line_id) continue;
-      keptCountByLine.set(k.service_line_id, (keptCountByLine.get(k.service_line_id) ?? 0) + 1);
-    }
-
-    const skipByLine = new Map<string, number>();
-    const finalRows = rows.filter((r) => {
-      if (keptKeys.has(`${r.service_line_id}|${r.due_date}`)) return false;
-      const remaining = keptCountByLine.get(r.service_line_id) ?? 0;
-      const used = skipByLine.get(r.service_line_id) ?? 0;
-      if (used < remaining) {
-        skipByLine.set(r.service_line_id, used + 1);
-        return false;
-      }
-      return true;
-    });
+    const finalRows = filterAgainstKept(rows, kept ?? []);
 
     if (finalRows.length > 0) {
       const { error: ierr } = await sb.from("contract_payments").insert(finalRows);

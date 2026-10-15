@@ -9,7 +9,7 @@ Estrategia: modernización por fases sobre la misma base de datos (Supabase / Lo
 ## Fase 1 — Seguridad y deuda técnica
 - [x] `email_queue_dispatch` / `email_queue_wake`: permisos verificados (solo service_role y postgres); migración idempotente de refuerzo.
 - [x] `insert_task_assignees_bulk`: validar pertenencia al espacio (migración escrita, falta aplicar y probar en Lovable).
-- [ ] Hacer idempotente `regenerateContractPayments` (cuotas duplicadas).
+- [x] Cuotas duplicadas: lógica extraída y probada (`contract-payments.ts`, corrige cuota perdida) y migración que hace idempotente `generate_contract_monthly_payments` (falta aplicar y probar en Lovable).
 - [ ] Programar o eliminar el cron `invoice-reminders`.
 - [ ] Investigar pantalla en blanco al subir TanStack (react-start 1.168.60 / router 1.170.41).
 - [ ] Retirar `content_pieces` v1 y `CreateContractWizard` v1; limpiar metadatos y `drizzle`/Stripe sin uso.
