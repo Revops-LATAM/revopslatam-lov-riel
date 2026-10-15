@@ -30,3 +30,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Datos exportados de producción (nunca subir al repo)
+/data/
+*.dump
+*.sql.gz
+export-*.csv
+query-results-*.csv
