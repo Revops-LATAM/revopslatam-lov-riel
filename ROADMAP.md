@@ -8,7 +8,7 @@ Estrategia: modernización por fases sobre la misma base de datos (Supabase / Lo
 
 ## Fase 1 — Seguridad y deuda técnica
 - [ ] Restringir `email_queue_dispatch` / `email_queue_wake` al servidor.
-- [ ] `insert_task_assignees_bulk`: validar pertenencia al espacio.
+- [x] `insert_task_assignees_bulk`: validar pertenencia al espacio (migración escrita, falta aplicar y probar en Lovable).
 - [ ] Hacer idempotente `regenerateContractPayments` (cuotas duplicadas).
 - [ ] Programar o eliminar el cron `invoice-reminders`.
 - [ ] Investigar pantalla en blanco al subir TanStack (react-start 1.168.60 / router 1.170.41).
