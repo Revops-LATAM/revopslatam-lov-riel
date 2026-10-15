@@ -7,7 +7,7 @@ Estrategia: modernización por fases sobre la misma base de datos (Supabase / Lo
 - [x] Formato Prettier, Vitest y CI (typecheck, formato, tests, build).
 
 ## Fase 1 — Seguridad y deuda técnica
-- [ ] Restringir `email_queue_dispatch` / `email_queue_wake` al servidor.
+- [x] `email_queue_dispatch` / `email_queue_wake`: permisos verificados (solo service_role y postgres); migración idempotente de refuerzo.
 - [x] `insert_task_assignees_bulk`: validar pertenencia al espacio (migración escrita, falta aplicar y probar en Lovable).
 - [ ] Hacer idempotente `regenerateContractPayments` (cuotas duplicadas).
 - [ ] Programar o eliminar el cron `invoice-reminders`.
