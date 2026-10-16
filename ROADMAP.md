@@ -8,7 +8,8 @@ Estrategia: modernización por fases sobre la misma base de datos (Supabase / Lo
 
 ## Fase 1 — Seguridad y deuda técnica
 - [x] Salir de Lovable: correos directos por Resend, sin cola `pgmq` (ver `docs/correos.md`).
-- [ ] Salir de Lovable: login con Google propio, Slack y HubSpot sin `connector-gateway`.
+- [x] Salir de Lovable: login con Google nativo de Supabase (ver `docs/supabase.md`).
+- [ ] Salir de Lovable: Slack, HubSpot y servidor MCP sin `connector-gateway`/`mcp-js`.
 - [x] `email_queue_dispatch` / `email_queue_wake`: permisos verificados (solo service_role y postgres); migración idempotente de refuerzo.
 - [x] `insert_task_assignees_bulk`: validar pertenencia al espacio (migración escrita, falta aplicar y probar en Lovable).
 - [x] Cuotas duplicadas: lógica extraída y probada (`contract-payments.ts`, corrige cuota perdida) y migración que hace idempotente `generate_contract_monthly_payments` (falta aplicar y probar en Lovable).

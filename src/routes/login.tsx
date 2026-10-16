@@ -1,7 +1,6 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import rielLogo from "@/assets/riel-logo.svg";
@@ -24,10 +23,37 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
+function friendlyAuthError(message: string): { title: string; description: string } {
+  const msg = (message || "").toLowerCase();
+  if (
+    msg.includes("no está autorizado") ||
+    msg.includes("not allowed") ||
+    msg.includes("insufficient_privilege") ||
+    msg.includes("database error saving new user")
+  ) {
+    return {
+      title: "Acceso restringido",
+      description: "Tu correo no está autorizado. Pide a un administrador que te invite.",
+    };
+  }
+  return { title: "No se pudo iniciar sesión con Google", description: message };
+}
+
 function LoginPage() {
   const search = Route.useSearch();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  // Si el inicio de sesión falló al volver de Google, Supabase deja el error en la URL.
+  useEffect(() => {
+    const params = new URLSearchParams(
+      window.location.search + "&" + window.location.hash.slice(1),
+    );
+    const description = params.get("error_description");
+    if (!description) return;
+    toast.error(friendlyAuthError(description).title, {
+      description: friendlyAuthError(description).description,
+    });
+  }, []);
 
   const handleGoogle = async () => {
     setLoading(true);
@@ -36,28 +62,16 @@ function LoginPage() {
       search.redirect && search.redirect !== "/"
         ? `?redirect=${encodeURIComponent(search.redirect)}`
         : "";
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}/login${nextParam}`,
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/login${nextParam}` },
     });
-    if (result.error) {
+    if (error) {
       setLoading(false);
-      const msg = result.error.message || "";
-      if (
-        msg.includes("no está autorizado") ||
-        msg.toLowerCase().includes("not allowed") ||
-        msg.includes("insufficient_privilege")
-      ) {
-        toast.error("Acceso restringido", {
-          description: "Tu correo no está autorizado. Pide a un administrador que te invite.",
-        });
-      } else {
-        toast.error("No se pudo iniciar sesión con Google", { description: msg });
-      }
-      return;
+      const { title, description } = friendlyAuthError(error.message);
+      toast.error(title, { description });
     }
-    if (!result.redirected) {
-      navigate({ to: search.redirect, replace: true });
-    }
+    // Sin error, el navegador ya está yendo a Google; al volver, beforeLoad redirige.
   };
 
   return (

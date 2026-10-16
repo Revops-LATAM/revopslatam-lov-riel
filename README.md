@@ -19,4 +19,4 @@ npm run typecheck && npm test && npm run build
 
 - Ninguna credencial en código, commits ni prompts: solo variables de entorno.
 - Cambios por Pull Request con revisión humana y CI en verde.
-- No editar `src/routeTree.gen.ts` ni `src/integrations/supabase/*` (generados).
+- No editar `src/routeTree.gen.ts` ni `src/integrations/supabase/types.ts` (generados). Conexión y login: ver [`docs/supabase.md`](./docs/supabase.md).
