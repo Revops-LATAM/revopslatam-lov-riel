@@ -139,8 +139,8 @@ export const Route = createFileRoute("/api/public/portal/$slug")({
           .maybeSingle();
 
         try {
-          const { enqueueTransactionalEmailServer } = await import("@/lib/email/enqueue.server");
-          await enqueueTransactionalEmailServer({
+          const { sendTransactionalEmailServer } = await import("@/lib/email/transactional.server");
+          await sendTransactionalEmailServer({
             templateName: "portal-magic-link",
             to: email,
             idempotencyKey: `portal-magic-${hash}`,

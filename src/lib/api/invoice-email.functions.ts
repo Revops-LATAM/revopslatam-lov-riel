@@ -4,8 +4,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { template as invoiceSentTemplate } from "@/lib/email-templates/invoice-sent";
+import { sendViaResend } from "@/lib/email/resend.server";
 
-const RESEND_GATEWAY = "https://connector-gateway.lovable.dev/resend";
 const FROM = "Finanzas Grupo Revenue <finanzas@gruporevenue.com>";
 const REPLY_TO = "finanzas@gruporevenue.com";
 const BCC = "finanzas@gruporevenue.com";
@@ -108,9 +108,7 @@ export const sendInvoiceEmail = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    const lovableKey = process.env.LOVABLE_API_KEY;
-    const resendKey = process.env.RESEND_API_KEY;
-    if (!lovableKey || !resendKey) {
+    if (!process.env.RESEND_API_KEY) {
       throw new Error("Resend no está configurado en el proyecto");
     }
 
@@ -165,42 +163,43 @@ export const sendInvoiceEmail = createServerFn({ method: "POST" })
     });
     const filename = `FE ${inv.folio_sii}${clientName ? ` ${clientName}` : ""}.pdf`;
 
-    const payload = {
-      from: FROM,
-      to: [data.to],
-      cc: data.cc.length ? data.cc : undefined,
-      bcc: [BCC],
-      reply_to: REPLY_TO,
-      subject,
-      html,
-      text,
-      attachments: [{ filename, content: pdfBase64 }],
-    };
-
-    const resp = await fetch(`${RESEND_GATEWAY}/emails`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${lovableKey}`,
-        "X-Connection-Api-Key": resendKey,
-      },
-      body: JSON.stringify(payload),
-    });
-    const body = await resp.text();
-    if (!resp.ok) {
-      throw new Error(`Resend error ${resp.status}: ${body.slice(0, 500)}`);
-    }
-    let parsed: { id?: string } = {};
+    let providerId: string;
     try {
-      parsed = JSON.parse(body);
-    } catch {
-      /* ignore */
+      ({ id: providerId } = await sendViaResend(
+        {
+          from: FROM,
+          to: data.to,
+          cc: data.cc.length ? data.cc : undefined,
+          bcc: [BCC],
+          reply_to: REPLY_TO,
+          subject,
+          html,
+          text,
+          attachments: [{ filename, content: pdfBase64 }],
+        },
+        {
+          idempotencyKey: `invoice-sent-${inv.id}-${data.to}-${new Date().toISOString().slice(0, 10)}`,
+        },
+      ));
+    } catch (e) {
+      try {
+        await context.supabase.from("email_send_log").insert({
+          message_id: crypto.randomUUID(),
+          template_name: "invoice-sent",
+          recipient_email: data.to,
+          status: "failed",
+          error_message: (e instanceof Error ? e.message : String(e)).slice(0, 1000),
+        });
+      } catch {
+        /* non-fatal */
+      }
+      throw e;
     }
 
     // Log to email_send_log for record
     try {
       await context.supabase.from("email_send_log").insert({
-        message_id: parsed.id ?? crypto.randomUUID(),
+        message_id: providerId,
         template_name: "invoice-sent",
         recipient_email: data.to,
         status: "sent",
@@ -209,5 +208,5 @@ export const sendInvoiceEmail = createServerFn({ method: "POST" })
       /* non-fatal */
     }
 
-    return { ok: true, id: parsed.id ?? null, recipients: [data.to, ...data.cc, BCC] };
+    return { ok: true, id: providerId, recipients: [data.to, ...data.cc, BCC] };
   });

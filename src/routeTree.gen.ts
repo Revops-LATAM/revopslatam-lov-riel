@@ -26,7 +26,6 @@ import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]
 import { Route as TicketsSlugIndexRouteImport } from './routes/tickets.$slug.index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
 import { Route as TicketsSlugNewRouteImport } from './routes/tickets.$slug.new'
-import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as AuthenticatedWWorkspaceSlugRouteImport } from './routes/_authenticated.w.$workspaceSlug'
 import { Route as AuthenticatedTasksTaskIdRouteImport } from './routes/_authenticated.tasks.$taskId'
 import { Route as AuthenticatedMeSettingsRouteImport } from './routes/_authenticated.me.settings'
@@ -39,9 +38,7 @@ import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.
 import { Route as AuthenticatedWWorkspaceSlugIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.index'
 import { Route as AuthenticatedMeSettingsIndexRouteImport } from './routes/_authenticated.me.settings.index'
 import { Route as TicketsSlugPortalInboxRouteImport } from './routes/tickets.$slug.portal.inbox'
-import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
-import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
-import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
+import { Route as ApiPublicWebhooksResendRouteImport } from './routes/api/public/webhooks/resend'
 import { Route as ApiPublicWebhooksAsanaRouteImport } from './routes/api/public/webhooks/asana'
 import { Route as ApiPublicTicketsSlugRouteImport } from './routes/api/public/tickets.$slug'
 import { Route as ApiPublicReportTokenRouteImport } from './routes/api/public/report.$token'
@@ -206,11 +203,6 @@ const TicketsSlugNewRoute = TicketsSlugNewRouteImport.update({
   path: '/new',
   getParentRoute: () => TicketsSlugRoute,
 } as any)
-const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
-  id: '/lovable/email/suppression',
-  path: '/lovable/email/suppression',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedWWorkspaceSlugRoute =
   AuthenticatedWWorkspaceSlugRouteImport.update({
     id: '/w/$workspaceSlug',
@@ -279,24 +271,11 @@ const TicketsSlugPortalInboxRoute = TicketsSlugPortalInboxRouteImport.update({
   path: '/portal/inbox',
   getParentRoute: () => TicketsSlugRoute,
 } as any)
-const LovableEmailTransactionalSendRoute =
-  LovableEmailTransactionalSendRouteImport.update({
-    id: '/lovable/email/transactional/send',
-    path: '/lovable/email/transactional/send',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailTransactionalPreviewRoute =
-  LovableEmailTransactionalPreviewRouteImport.update({
-    id: '/lovable/email/transactional/preview',
-    path: '/lovable/email/transactional/preview',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailQueueProcessRoute =
-  LovableEmailQueueProcessRouteImport.update({
-    id: '/lovable/email/queue/process',
-    path: '/lovable/email/queue/process',
-    getParentRoute: () => rootRouteImport,
-  } as any)
+const ApiPublicWebhooksResendRoute = ApiPublicWebhooksResendRouteImport.update({
+  id: '/api/public/webhooks/resend',
+  path: '/api/public/webhooks/resend',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicWebhooksAsanaRoute = ApiPublicWebhooksAsanaRouteImport.update({
   id: '/api/public/webhooks/asana',
   path: '/api/public/webhooks/asana',
@@ -776,7 +755,6 @@ export interface FileRoutesByFullPath {
   '/me/settings': typeof AuthenticatedMeSettingsRouteWithChildren
   '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/w/$workspaceSlug': typeof AuthenticatedWWorkspaceSlugRouteWithChildren
-  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/tickets/$slug/new': typeof TicketsSlugNewRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/tickets/$slug/': typeof TicketsSlugIndexRoute
@@ -807,9 +785,7 @@ export interface FileRoutesByFullPath {
   '/api/public/report/$token': typeof ApiPublicReportTokenRoute
   '/api/public/tickets/$slug': typeof ApiPublicTicketsSlugRoute
   '/api/public/webhooks/asana': typeof ApiPublicWebhooksAsanaRoute
-  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
-  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
-  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
+  '/api/public/webhooks/resend': typeof ApiPublicWebhooksResendRoute
   '/tickets/$slug/portal/inbox': typeof TicketsSlugPortalInboxRoute
   '/me/settings/': typeof AuthenticatedMeSettingsIndexRoute
   '/w/$workspaceSlug/': typeof AuthenticatedWWorkspaceSlugIndexRoute
@@ -883,7 +859,6 @@ export interface FileRoutesByTo {
   '/admin/system': typeof AuthenticatedAdminSystemRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
-  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/tickets/$slug/new': typeof TicketsSlugNewRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/tickets/$slug': typeof TicketsSlugIndexRoute
@@ -908,9 +883,7 @@ export interface FileRoutesByTo {
   '/api/public/report/$token': typeof ApiPublicReportTokenRoute
   '/api/public/tickets/$slug': typeof ApiPublicTicketsSlugRoute
   '/api/public/webhooks/asana': typeof ApiPublicWebhooksAsanaRoute
-  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
-  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
-  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
+  '/api/public/webhooks/resend': typeof ApiPublicWebhooksResendRoute
   '/tickets/$slug/portal/inbox': typeof TicketsSlugPortalInboxRoute
   '/me/settings': typeof AuthenticatedMeSettingsIndexRoute
   '/w/$workspaceSlug': typeof AuthenticatedWWorkspaceSlugIndexRoute
@@ -989,7 +962,6 @@ export interface FileRoutesById {
   '/_authenticated/me/settings': typeof AuthenticatedMeSettingsRouteWithChildren
   '/_authenticated/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/_authenticated/w/$workspaceSlug': typeof AuthenticatedWWorkspaceSlugRouteWithChildren
-  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/tickets/$slug/new': typeof TicketsSlugNewRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/tickets/$slug/': typeof TicketsSlugIndexRoute
@@ -1020,9 +992,7 @@ export interface FileRoutesById {
   '/api/public/report/$token': typeof ApiPublicReportTokenRoute
   '/api/public/tickets/$slug': typeof ApiPublicTicketsSlugRoute
   '/api/public/webhooks/asana': typeof ApiPublicWebhooksAsanaRoute
-  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
-  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
-  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
+  '/api/public/webhooks/resend': typeof ApiPublicWebhooksResendRoute
   '/tickets/$slug/portal/inbox': typeof TicketsSlugPortalInboxRoute
   '/_authenticated/me/settings/': typeof AuthenticatedMeSettingsIndexRoute
   '/_authenticated/w/$workspaceSlug/': typeof AuthenticatedWWorkspaceSlugIndexRoute
@@ -1102,7 +1072,6 @@ export interface FileRouteTypes {
     | '/me/settings'
     | '/tasks/$taskId'
     | '/w/$workspaceSlug'
-    | '/lovable/email/suppression'
     | '/tickets/$slug/new'
     | '/admin/'
     | '/tickets/$slug/'
@@ -1133,9 +1102,7 @@ export interface FileRouteTypes {
     | '/api/public/report/$token'
     | '/api/public/tickets/$slug'
     | '/api/public/webhooks/asana'
-    | '/lovable/email/queue/process'
-    | '/lovable/email/transactional/preview'
-    | '/lovable/email/transactional/send'
+    | '/api/public/webhooks/resend'
     | '/tickets/$slug/portal/inbox'
     | '/me/settings/'
     | '/w/$workspaceSlug/'
@@ -1209,7 +1176,6 @@ export interface FileRouteTypes {
     | '/admin/system'
     | '/admin/users'
     | '/tasks/$taskId'
-    | '/lovable/email/suppression'
     | '/tickets/$slug/new'
     | '/admin'
     | '/tickets/$slug'
@@ -1234,9 +1200,7 @@ export interface FileRouteTypes {
     | '/api/public/report/$token'
     | '/api/public/tickets/$slug'
     | '/api/public/webhooks/asana'
-    | '/lovable/email/queue/process'
-    | '/lovable/email/transactional/preview'
-    | '/lovable/email/transactional/send'
+    | '/api/public/webhooks/resend'
     | '/tickets/$slug/portal/inbox'
     | '/me/settings'
     | '/w/$workspaceSlug'
@@ -1314,7 +1278,6 @@ export interface FileRouteTypes {
     | '/_authenticated/me/settings'
     | '/_authenticated/tasks/$taskId'
     | '/_authenticated/w/$workspaceSlug'
-    | '/lovable/email/suppression'
     | '/tickets/$slug/new'
     | '/_authenticated/admin/'
     | '/tickets/$slug/'
@@ -1345,9 +1308,7 @@ export interface FileRouteTypes {
     | '/api/public/report/$token'
     | '/api/public/tickets/$slug'
     | '/api/public/webhooks/asana'
-    | '/lovable/email/queue/process'
-    | '/lovable/email/transactional/preview'
-    | '/lovable/email/transactional/send'
+    | '/api/public/webhooks/resend'
     | '/tickets/$slug/portal/inbox'
     | '/_authenticated/me/settings/'
     | '/_authenticated/w/$workspaceSlug/'
@@ -1416,7 +1377,6 @@ export interface RootRouteChildren {
   TicketsSlugRoute: typeof TicketsSlugRouteWithChildren
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
-  LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicCronAsanaQueueRoute: typeof ApiPublicCronAsanaQueueRoute
   ApiPublicCronAsanaSyncRoute: typeof ApiPublicCronAsanaSyncRoute
   ApiPublicCronDispatchNotificationsRoute: typeof ApiPublicCronDispatchNotificationsRoute
@@ -1426,9 +1386,7 @@ export interface RootRouteChildren {
   ApiPublicReportTokenRoute: typeof ApiPublicReportTokenRoute
   ApiPublicTicketsSlugRoute: typeof ApiPublicTicketsSlugRoute
   ApiPublicWebhooksAsanaRoute: typeof ApiPublicWebhooksAsanaRoute
-  LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
-  LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
-  LovableEmailTransactionalSendRoute: typeof LovableEmailTransactionalSendRoute
+  ApiPublicWebhooksResendRoute: typeof ApiPublicWebhooksResendRoute
   ApiPublicOauthGoogleCalendarCallbackRoute: typeof ApiPublicOauthGoogleCalendarCallbackRoute
 }
 
@@ -1553,13 +1511,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TicketsSlugNewRouteImport
       parentRoute: typeof TicketsSlugRoute
     }
-    '/lovable/email/suppression': {
-      id: '/lovable/email/suppression'
-      path: '/lovable/email/suppression'
-      fullPath: '/lovable/email/suppression'
-      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_authenticated/w/$workspaceSlug': {
       id: '/_authenticated/w/$workspaceSlug'
       path: '/w/$workspaceSlug'
@@ -1644,25 +1595,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TicketsSlugPortalInboxRouteImport
       parentRoute: typeof TicketsSlugRoute
     }
-    '/lovable/email/transactional/send': {
-      id: '/lovable/email/transactional/send'
-      path: '/lovable/email/transactional/send'
-      fullPath: '/lovable/email/transactional/send'
-      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/transactional/preview': {
-      id: '/lovable/email/transactional/preview'
-      path: '/lovable/email/transactional/preview'
-      fullPath: '/lovable/email/transactional/preview'
-      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/queue/process': {
-      id: '/lovable/email/queue/process'
-      path: '/lovable/email/queue/process'
-      fullPath: '/lovable/email/queue/process'
-      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+    '/api/public/webhooks/resend': {
+      id: '/api/public/webhooks/resend'
+      path: '/api/public/webhooks/resend'
+      fullPath: '/api/public/webhooks/resend'
+      preLoaderRoute: typeof ApiPublicWebhooksResendRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/webhooks/asana': {
@@ -2624,7 +2561,6 @@ const rootRouteChildren: RootRouteChildren = {
   TicketsSlugRoute: TicketsSlugRouteWithChildren,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
-  LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicCronAsanaQueueRoute: ApiPublicCronAsanaQueueRoute,
   ApiPublicCronAsanaSyncRoute: ApiPublicCronAsanaSyncRoute,
   ApiPublicCronDispatchNotificationsRoute:
@@ -2635,9 +2571,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicReportTokenRoute: ApiPublicReportTokenRoute,
   ApiPublicTicketsSlugRoute: ApiPublicTicketsSlugRoute,
   ApiPublicWebhooksAsanaRoute: ApiPublicWebhooksAsanaRoute,
-  LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
-  LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
-  LovableEmailTransactionalSendRoute: LovableEmailTransactionalSendRoute,
+  ApiPublicWebhooksResendRoute: ApiPublicWebhooksResendRoute,
   ApiPublicOauthGoogleCalendarCallbackRoute:
     ApiPublicOauthGoogleCalendarCallbackRoute,
 }

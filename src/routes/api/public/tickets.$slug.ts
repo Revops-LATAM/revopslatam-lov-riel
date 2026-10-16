@@ -346,8 +346,8 @@ export const Route = createFileRoute("/api/public/tickets/$slug")({
           .maybeSingle();
 
         try {
-          const { enqueueTransactionalEmailServer } = await import("@/lib/email/enqueue.server");
-          await enqueueTransactionalEmailServer({
+          const { sendTransactionalEmailServer } = await import("@/lib/email/transactional.server");
+          await sendTransactionalEmailServer({
             templateName: "ticket-received",
             to: data.email,
             idempotencyKey: `ticket-received-${task.id}`,

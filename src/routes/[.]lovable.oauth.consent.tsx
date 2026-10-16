@@ -15,15 +15,11 @@ type OAuthNS = {
   getAuthorizationDetails: (
     id: string,
   ) => Promise<{ data: AuthorizationDetails | null; error: { message: string } | null }>;
-  approveAuthorization: (
-    id: string,
-  ) => Promise<{
+  approveAuthorization: (id: string) => Promise<{
     data: { redirect_url?: string; redirect_to?: string } | null;
     error: { message: string } | null;
   }>;
-  denyAuthorization: (
-    id: string,
-  ) => Promise<{
+  denyAuthorization: (id: string) => Promise<{
     data: { redirect_url?: string; redirect_to?: string } | null;
     error: { message: string } | null;
   }>;

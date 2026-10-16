@@ -37,8 +37,8 @@ export const notifyTicketResolved = createServerFn({ method: "POST" })
       throw new Error("Este ticket no tiene email del solicitante.");
     }
     const replyTo = await resolveAssigneeReplyTo(supabase, task.assignee_id);
-    const { enqueueTransactionalEmailServer } = await import("@/lib/email/enqueue.server");
-    await enqueueTransactionalEmailServer({
+    const { sendTransactionalEmailServer } = await import("@/lib/email/transactional.server");
+    await sendTransactionalEmailServer({
       templateName: "ticket-resolved",
       to: task.submitter_email,
       idempotencyKey: `ticket-resolved-${task.id}`,
@@ -92,8 +92,8 @@ export const notifyTicketQuestion = createServerFn({ method: "POST" })
     // Prefer the assignee's email as Reply-To; otherwise let enqueue fall back to victor@.
     const replyTo = await resolveAssigneeReplyTo(supabase, task.assignee_id);
 
-    const { enqueueTransactionalEmailServer } = await import("@/lib/email/enqueue.server");
-    await enqueueTransactionalEmailServer({
+    const { sendTransactionalEmailServer } = await import("@/lib/email/transactional.server");
+    await sendTransactionalEmailServer({
       templateName: "ticket-question",
       to: task.submitter_email,
       idempotencyKey: `ticket-question-${task.id}-${Date.now()}`,

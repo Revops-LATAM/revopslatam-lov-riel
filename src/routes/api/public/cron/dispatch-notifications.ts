@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
-import { enqueueTransactionalEmailServer } from "@/lib/email/enqueue.server";
+import { sendTransactionalEmailServer } from "@/lib/email/transactional.server";
 import { resolveSlackUserId, sendSlackDM } from "@/lib/slack/dm.server";
 
 const APP_BASE_URL = "https://riel.revopslatam.com";
@@ -67,7 +67,7 @@ export const Route = createFileRoute("/api/public/cron/dispatch-notifications")(
           // EMAIL
           if (ch.email && !sent.email && profile?.email) {
             try {
-              await enqueueTransactionalEmailServer({
+              await sendTransactionalEmailServer({
                 templateName: "notification-generic",
                 to: profile.email,
                 templateData: {

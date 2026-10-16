@@ -7,10 +7,12 @@ Estrategia: modernización por fases sobre la misma base de datos (Supabase / Lo
 - [x] Formato Prettier, Vitest y CI (typecheck, formato, tests, build).
 
 ## Fase 1 — Seguridad y deuda técnica
+- [x] Salir de Lovable: correos directos por Resend, sin cola `pgmq` (ver `docs/correos.md`).
+- [ ] Salir de Lovable: login con Google propio, Slack y HubSpot sin `connector-gateway`.
 - [x] `email_queue_dispatch` / `email_queue_wake`: permisos verificados (solo service_role y postgres); migración idempotente de refuerzo.
 - [x] `insert_task_assignees_bulk`: validar pertenencia al espacio (migración escrita, falta aplicar y probar en Lovable).
 - [x] Cuotas duplicadas: lógica extraída y probada (`contract-payments.ts`, corrige cuota perdida) y migración que hace idempotente `generate_contract_monthly_payments` (falta aplicar y probar en Lovable).
-- [ ] Programar o eliminar el cron `invoice-reminders`.
+- [ ] Programar el cron `invoice-reminders` (ya envía por Resend; falta crear el trabajo programado).
 - [ ] Investigar pantalla en blanco al subir TanStack (react-start 1.168.60 / router 1.170.41).
 - [ ] Retirar `content_pieces` v1 y `CreateContractWizard` v1; limpiar metadatos y `drizzle`/Stripe sin uso.
 

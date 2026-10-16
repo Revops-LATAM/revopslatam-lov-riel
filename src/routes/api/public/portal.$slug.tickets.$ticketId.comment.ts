@@ -75,8 +75,9 @@ export const Route = createFileRoute("/api/public/portal/$slug/tickets/$ticketId
             const appBase = process.env.PUBLIC_APP_URL || "https://riel.revopslatam.com";
             const ticketUrl = `${appBase}/tasks/${task.id}`;
 
-            const { enqueueTransactionalEmailServer } = await import("@/lib/email/enqueue.server");
-            await enqueueTransactionalEmailServer({
+            const { sendTransactionalEmailServer } =
+              await import("@/lib/email/transactional.server");
+            await sendTransactionalEmailServer({
               templateName: "ticket-client-reply",
               to: replyTo ?? "soporte@revopslatam.com",
               idempotencyKey: `ticket-client-reply-${task.id}-${Date.now()}`,

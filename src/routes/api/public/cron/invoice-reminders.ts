@@ -1,11 +1,6 @@
-import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { render } from "@react-email/components";
 import { createClient } from "@supabase/supabase-js";
-import { template as reminderTemplate } from "@/lib/email-templates/invoice-reminder";
-
-const SENDER_DOMAIN = "noti.revopslatam.com";
-const FROM_DOMAIN = "revopslatam.com";
+import { sendTransactionalEmailServer } from "@/lib/email/transactional.server";
 
 function formatCLP(n: number, currency: string) {
   if (currency === "CLP") return `$${Math.round(n).toLocaleString("es-CL")}`;
@@ -87,41 +82,27 @@ export const Route = createFileRoute("/api/public/cron/invoice-reminders")({
               emisor_nombre: (em.razon_social as string) ?? "Grupo Revenue SpA",
               emisor_email: (em.email_finanzas as string) ?? "finanzas@gruporevenue.com",
             };
-            const element = React.createElement(reminderTemplate.component, props);
-            const html = await render(element);
-            const text = await render(element, { plainText: true });
-            const subject =
-              typeof reminderTemplate.subject === "function"
-                ? reminderTemplate.subject(props)
-                : reminderTemplate.subject;
-
             const recipients = [to, ...ccList];
+            let delivered = 0;
             for (const r of recipients) {
-              const messageId = crypto.randomUUID();
-              await admin.from("email_send_log").insert({
-                message_id: messageId,
-                template_name: "invoice-reminder",
-                recipient_email: r,
-                status: "pending",
-              });
-              await admin.rpc("enqueue_email", {
-                queue_name: "transactional_emails",
-                payload: {
-                  message_id: messageId,
+              try {
+                const res = await sendTransactionalEmailServer({
+                  templateName: "invoice-reminder",
                   to: r,
-                  from: `${(em.razon_social as string) ?? "Riel"} <noreply@${FROM_DOMAIN}>`,
-                  sender_domain: SENDER_DOMAIN,
-                  subject,
-                  html,
-                  text,
-                  purpose: "transactional",
-                  label: "invoice-reminder",
-                  idempotency_key: `reminder-${inv.id}-${today}-${r}`,
-                  queued_at: new Date().toISOString(),
-                },
-              });
-              sent++;
+                  templateData: props,
+                  fromName: (em.razon_social as string) ?? "Riel",
+                  idempotencyKey: `reminder-${inv.id}-${today}-${r}`,
+                  skipBcc: true,
+                });
+                if (!res.skipped) delivered++;
+              } catch (e) {
+                console.error("[invoice-reminders] envío falló", inv.id, e);
+              }
             }
+            // Solo se registra el recordatorio si salió al menos un correo; así un fallo de
+            // envío se reintenta en la próxima corrida en lugar de quedar como "enviado".
+            if (delivered === 0) continue;
+            sent += delivered;
             await admin.from("invoice_reminders").insert({
               workspace_id: wsId,
               invoice_id: inv.id,

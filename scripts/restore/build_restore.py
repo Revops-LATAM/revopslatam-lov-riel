@@ -15,6 +15,16 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pgcustom as P
 
 SKIP_BUCKETS = {"database_export_15_10_26"}
+# Funciones de la cola de correos de Lovable (pgmq / vault / pg_cron / pg_net). Riel 2.0 envía
+# directo por Resend y ya no las usa, así que no se restauran.
+EMAIL_QUEUE_FUNCS = (
+    "email_queue_dispatch",
+    "email_queue_wake",
+    "enqueue_email",
+    "read_email_batch",
+    "delete_email",
+    "move_to_dlq",
+)
 FOREIGN_ROLES = ("sandbox_exec",)  # roles propios de Lovable que no existen en un Supabase nuevo
 
 
@@ -42,6 +52,8 @@ def main(src: str, out: str) -> None:
             e["desc"] == "TRIGGER" and e["tag"] == "users on_auth_user_created"
         )
         if not keep or e["desc"] in ("PUBLICATION TABLE", "SCHEMA"):
+            continue
+        if any(name in (e["tag"] or "") for name in EMAIL_QUEUE_FUNCS):
             continue
         d = clean(e["defn"])
         if d:
