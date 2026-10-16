@@ -43,7 +43,9 @@ def build_schema(toc) -> list[str]:
         "CREATE SCHEMA IF NOT EXISTS app_private;\n",
     ]
     for e in toc:
-        if e["desc"] == "TABLE DATA" or not e["defn"]:
+        if e["desc"] in ("TABLE DATA", "DEFAULT ACL") or not e["defn"]:
+            # DEFAULT ACL: privilegios por defecto de roles de Supabase (supabase_admin). Un
+            # proyecto nuevo ya los trae y el rol postgres no puede cambiarlos.
             continue
         keep = (
             e["ns"] in ("public", "app_private")
