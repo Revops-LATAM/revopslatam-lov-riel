@@ -15,7 +15,7 @@ Copiar `.env.example` a `.env` y completarlo. `.env` está en `.gitignore`.
 ## Login con Google (Supabase nativo)
 
 1. En Google Cloud Console crear un _OAuth Client ID_ (tipo Web). En _Authorized redirect URIs_
-   poner `https://<ref-del-proyecto>.supabase.co/auth/v1/callback`.
+   poner `https://qqvxwggngmuveptytybf.supabase.co/auth/v1/callback`.
 2. En Supabase → Authentication → Providers → Google: activarlo y pegar Client ID y Client Secret.
 3. En Supabase → Authentication → URL Configuration: _Site URL_ = la URL de la app y, en
    _Redirect URLs_, agregar `https://<app>/login` y `http://localhost:8080/login`.
@@ -27,13 +27,13 @@ con la misma cuenta y conserva su historial.
 
 ## CLI de Supabase
 
-`supabase/config.toml` todavía tiene el `project_id` del proyecto antiguo. Al usar la CLI:
+`supabase/config.toml` apunta al proyecto nuevo (`qqvxwggngmuveptytybf`). Para enlazar la CLI:
 
 ```sh
-supabase link --project-ref <ref-del-proyecto-nuevo>
+supabase link --project-ref qqvxwggngmuveptytybf
 ```
 
-Si se usa la CLI, regenerar los tipos con `supabase gen types typescript --project-id <ref> > src/integrations/supabase/types.ts`.
+Si se usa la CLI, regenerar los tipos con `supabase gen types typescript --project-id qqvxwggngmuveptytybf > src/integrations/supabase/types.ts`.
 
 ## Pendiente de Lovable
 
