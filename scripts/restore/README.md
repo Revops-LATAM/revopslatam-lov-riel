@@ -17,6 +17,16 @@ python3 -I scripts/restore/build_restore.py RESPALDO.backup ../riel-restore   # 
 
 Genera `01_schema.sql`, `02_data.sql` y `03_storage.sql`.
 
+## 1b. Alternativa sin psql: SQL Editor de Supabase
+```sh
+python3 -I scripts/restore/build_editor_sql.py RESPALDO.backup data/sql-editor   # data/ está en .gitignore
+```
+Genera `00_schema.sql`, `01_datos.sql` … `NN_datos.sql` (~600 KB cada uno, como INSERT, porque el
+editor no admite COPY) y `99_verificar.sql`. Se pegan y ejecutan en orden en el SQL Editor; al final
+`99_verificar.sql` debe mostrar `ok = true` en las 90 filas. Cada archivo de datos desactiva los
+triggers de su sesión (`session_replication_role = replica`), por lo que se pueden correr en cualquier orden
+una vez aplicado el esquema.
+
 ## 2. Aplicar en el Supabase nuevo (vacío)
 
 Usa la cadena de conexión _Session pooler_ o _Direct_ de _Project Settings → Database_, guardada

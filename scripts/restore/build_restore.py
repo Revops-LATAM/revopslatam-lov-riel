@@ -36,11 +36,8 @@ def clean(defn: str) -> str | None:
     return defn.strip() and defn.rstrip() + "\n"
 
 
-def main(src: str, out: str) -> None:
-    f, r, meta, toc = P.open_dump(src)
-    os.makedirs(out, exist_ok=True)
-    print(f"Respaldo {meta['version']} servidor {meta['server']} compresión {meta['compression']}")
-
+def build_schema(toc) -> list[str]:
+    """Sentencias DDL del esquema public/app_private, el trigger de auth y las políticas de Storage."""
     schema = [
         "SET check_function_bodies = false;\nSET client_min_messages = warning;\n",
         "CREATE SCHEMA IF NOT EXISTS app_private;\n",
@@ -48,8 +45,10 @@ def main(src: str, out: str) -> None:
     for e in toc:
         if e["desc"] == "TABLE DATA" or not e["defn"]:
             continue
-        keep = e["ns"] in ("public", "app_private") or (
-            e["desc"] == "TRIGGER" and e["tag"] == "users on_auth_user_created"
+        keep = (
+            e["ns"] in ("public", "app_private")
+            or (e["desc"] == "TRIGGER" and e["tag"] == "users on_auth_user_created")
+            or (e["desc"] == "POLICY" and e["ns"] == "storage")
         )
         if not keep or e["desc"] in ("PUBLICATION TABLE", "SCHEMA"):
             continue
@@ -58,6 +57,15 @@ def main(src: str, out: str) -> None:
         d = clean(e["defn"])
         if d:
             schema.append(d)
+    return schema
+
+
+def main(src: str, out: str) -> None:
+    f, r, meta, toc = P.open_dump(src)
+    os.makedirs(out, exist_ok=True)
+    print(f"Respaldo {meta['version']} servidor {meta['server']} compresión {meta['compression']}")
+
+    schema = build_schema(toc)
     open(os.path.join(out, "01_schema.sql"), "w").write("".join(schema))
 
     wanted = lambda e: e["desc"] == "TABLE DATA" and (
