@@ -10,5 +10,5 @@ src/integrations
 src/lib/sii-activities.json
 .lovable
 src/routes/mcp.ts
-src/routes/[.]mcp
-src/routes/[.]well-known
+src/routes/\[.mcp\]
+src/routes/\[.well-known\]
