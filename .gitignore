@@ -39,3 +39,4 @@ export-*.csv
 query-results-*.csv
 __pycache__/
 *.pyc
+.vercel

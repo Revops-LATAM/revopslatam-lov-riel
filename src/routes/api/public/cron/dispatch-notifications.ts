@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { sendTransactionalEmailServer } from "@/lib/email/transactional.server";
 import { resolveSlackUserId, sendSlackDM } from "@/lib/slack/dm.server";
 
-const APP_BASE_URL = "https://riel.revopslatam.com";
+const appBaseUrl = () => process.env.PUBLIC_APP_URL || "https://riel.revopslatam.com";
 
 interface ChannelsSent {
   email?: boolean;
@@ -62,7 +62,7 @@ export const Route = createFileRoute("/api/public/cron/dispatch-notifications")(
             .eq("id", n.user_id)
             .maybeSingle();
 
-          const url = n.url ? (n.url.startsWith("http") ? n.url : `${APP_BASE_URL}${n.url}`) : null;
+          const url = n.url ? (n.url.startsWith("http") ? n.url : `${appBaseUrl()}${n.url}`) : null;
 
           // EMAIL
           if (ch.email && !sent.email && profile?.email) {

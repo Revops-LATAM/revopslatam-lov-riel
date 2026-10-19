@@ -267,9 +267,8 @@ export const subscribeAsanaWebhook = createServerFn({ method: "POST" })
     const p = project as { workspace_id: string; asana_project_gid: string | null } | null;
     if (!p?.asana_project_gid) throw new Error("Proyecto sin Asana vinculado");
 
-    const baseUrl =
-      process.env.PUBLIC_BASE_URL ??
-      `https://project--310d0c09-7379-442d-bfc0-2277f67bc9bb.lovable.app`;
+    const baseUrl = process.env.PUBLIC_BASE_URL ?? process.env.PUBLIC_APP_URL;
+    if (!baseUrl) throw new Error("Configura PUBLIC_APP_URL para registrar el webhook de Asana");
     const target = `${baseUrl}/api/public/webhooks/asana?project=${data.projectId}`;
 
     // Create webhook (Asana responds with handshake X-Hook-Secret in initial POST)

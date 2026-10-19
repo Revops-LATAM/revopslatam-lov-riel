@@ -8,6 +8,8 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/tanstack/vite";
 
 export default defineConfig({
+  // Destino de despliegue. Por defecto Vercel; se puede cambiar con NITRO_PRESET (p. ej. cloudflare-module).
+  nitro: { preset: process.env.NITRO_PRESET || "vercel" },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
