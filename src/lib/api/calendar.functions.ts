@@ -19,7 +19,7 @@ function signState(payload: object): string {
 
 export const startGoogleCalendarOAuth = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -55,7 +55,7 @@ export const startGoogleCalendarOAuth = createServerFn({ method: "POST" })
 
 export const getMyCalendarConnection = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { data: row, error } = await supabase
@@ -70,7 +70,7 @@ export const getMyCalendarConnection = createServerFn({ method: "GET" })
 
 export const disconnectGoogleCalendar = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { error } = await supabase
@@ -137,7 +137,7 @@ async function refreshAccessTokenIfNeeded(conn: {
 
 export const syncMyCalendar = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
 
@@ -289,7 +289,7 @@ export const syncMyCalendar = createServerFn({ method: "POST" })
 
 export const listInboxEvents = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { data: rows, error } = await supabase
@@ -361,7 +361,7 @@ export const listInboxEvents = createServerFn({ method: "GET" })
 
 export const inboxPendingCount = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { count, error } = await supabase
@@ -416,7 +416,7 @@ export const listMyCalendarProjects = createServerFn({ method: "GET" })
 
 export const confirmCalendarEvent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         eventId: z.string().uuid(),
@@ -471,7 +471,7 @@ export const confirmCalendarEvent = createServerFn({ method: "POST" })
 
 export const ignoreInboxEvent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ eventId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ eventId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { error } = await supabase
@@ -489,7 +489,7 @@ export const ignoreInboxEvent = createServerFn({ method: "POST" })
 
 export const getProjectAnchors = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: project, error: pErr } = await supabase
@@ -564,7 +564,7 @@ async function getFreshTokenForConn(conn: GoogleTaskEventConn): Promise<string> 
 
 export const upsertTaskCalendarEvent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
 
@@ -705,7 +705,7 @@ export const upsertTaskCalendarEvent = createServerFn({ method: "POST" })
 
 export const deleteTaskCalendarEvent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: task } = await supabase

@@ -19,7 +19,7 @@ const lineInput = z.object({
 
 export const listContractServiceLines = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("contract_service_lines")
@@ -35,9 +35,7 @@ export const listContractServiceLines = createServerFn({ method: "GET" })
 
 export const createContractServiceLine = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ contractId: z.string().uuid(), line: lineInput }).parse(input),
-  )
+  .validator((input) => z.object({ contractId: z.string().uuid(), line: lineInput }).parse(input))
   .handler(async ({ data, context }) => {
     const l = data.line;
     const { data: row, error } = await context.supabase
@@ -62,7 +60,7 @@ export const createContractServiceLine = createServerFn({ method: "POST" })
 
 export const updateContractServiceLine = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z.object({ lineId: z.string().uuid(), patch: lineInput.partial() }).parse(input),
   )
   .handler(async ({ data, context }) => {
@@ -97,7 +95,7 @@ export const updateContractServiceLine = createServerFn({ method: "POST" })
 
 export const deleteContractServiceLine = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ lineId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ lineId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("contract_service_lines")
@@ -109,7 +107,7 @@ export const deleteContractServiceLine = createServerFn({ method: "POST" })
 
 export const reorderContractServiceLines = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         contractId: z.string().uuid(),

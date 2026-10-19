@@ -4,7 +4,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const listMarketingPhases = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows, error } = await supabase
@@ -18,7 +18,7 @@ export const listMarketingPhases = createServerFn({ method: "GET" })
 
 export const createMarketingPhase = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         projectId: z.string().uuid(),
@@ -67,7 +67,7 @@ export const createMarketingPhase = createServerFn({ method: "POST" })
 
 export const updateMarketingPhase = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         id: z.string().uuid(),
@@ -105,7 +105,7 @@ export const updateMarketingPhase = createServerFn({ method: "POST" })
 
 export const deleteMarketingPhase = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     // Unassign tasks first so the DELETE succeeds regardless of FK behavior.
@@ -120,7 +120,7 @@ export const deleteMarketingPhase = createServerFn({ method: "POST" })
 
 export const reorderMarketingPhases = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         projectId: z.string().uuid(),

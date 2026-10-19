@@ -14,7 +14,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
  */
 export const getFinancePaymentsBundle = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const workspaceId = data.workspaceId;
 
@@ -105,8 +105,7 @@ export const getFinancePaymentsBundle = createServerFn({ method: "GET" })
           ...row,
           api_key: null as string | null,
           api_key_preview: (k ? (k.length > 4 ? `••••${k.slice(-4)}` : "••••") : null) as
-            | `••••${string}`
-            | null,
+            `••••${string}` | null,
           has_api_key: !!k,
         };
       });

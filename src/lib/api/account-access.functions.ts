@@ -5,7 +5,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 /** List users that have explicit access to an account, plus the account's mode. */
 export const getAccountAccess = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ accountId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ accountId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
 
@@ -58,7 +58,7 @@ export const getAccountAccess = createServerFn({ method: "GET" })
 
 export const setAccountAccessMode = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         accountId: z.string().uuid(),
@@ -78,7 +78,7 @@ export const setAccountAccessMode = createServerFn({ method: "POST" })
 
 export const grantAccountAccess = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         accountId: z.string().uuid(),
@@ -102,7 +102,7 @@ export const grantAccountAccess = createServerFn({ method: "POST" })
 
 export const revokeAccountAccess = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         accountId: z.string().uuid(),

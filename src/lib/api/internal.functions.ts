@@ -4,7 +4,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const listInternalCategories = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: cats, error } = await supabase
@@ -18,7 +18,7 @@ export const listInternalCategories = createServerFn({ method: "GET" })
 
 export const createInternalCategory = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -54,7 +54,7 @@ export const createInternalCategory = createServerFn({ method: "POST" })
 
 export const updateInternalCategory = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         categoryId: z.string().uuid(),
@@ -88,7 +88,7 @@ export const updateInternalCategory = createServerFn({ method: "POST" })
 
 export const deleteInternalCategory = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ categoryId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ categoryId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { error } = await supabase
@@ -102,7 +102,7 @@ export const deleteInternalCategory = createServerFn({ method: "POST" })
 /** Lista proyectos internos del workspace con su categoría. */
 export const listInternalProjects = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),

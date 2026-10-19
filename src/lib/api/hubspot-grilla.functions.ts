@@ -38,7 +38,7 @@ export const listHubspotSocialChannels = createServerFn({ method: "GET" })
 
 export const setChannelHubspotId = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) =>
+  .validator((i) =>
     z
       .object({
         channelId: z.string().uuid(),
@@ -57,7 +57,7 @@ export const setChannelHubspotId = createServerFn({ method: "POST" })
 
 export const listMarketingChannelsWithHubspot = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ workspaceId: z.string().uuid() }).parse(i))
+  .validator((i) => z.object({ workspaceId: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("marketing_channels")
@@ -70,12 +70,12 @@ export const listMarketingChannelsWithHubspot = createServerFn({ method: "GET" }
 
 export const syncPieceToHubspot = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ pieceId: z.string().uuid() }).parse(i))
+  .validator((i) => z.object({ pieceId: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => syncPieceCore(context.supabase, data.pieceId));
 
 export const unsyncPieceFromHubspot = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ pieceId: z.string().uuid() }).parse(i))
+  .validator((i) => z.object({ pieceId: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     await unsyncPieceCore(context.supabase, data.pieceId);
     return { ok: true };
@@ -83,7 +83,7 @@ export const unsyncPieceFromHubspot = createServerFn({ method: "POST" })
 
 export const syncMonthToHubspot = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) =>
+  .validator((i) =>
     z
       .object({
         workspaceId: z.string().uuid(),

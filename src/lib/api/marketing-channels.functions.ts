@@ -4,7 +4,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const listMarketingChannels = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -27,7 +27,7 @@ export const listMarketingChannels = createServerFn({ method: "GET" })
 
 export const upsertMarketingChannel = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         id: z.string().uuid().optional(),
@@ -73,9 +73,7 @@ export const upsertMarketingChannel = createServerFn({ method: "POST" })
 
 export const toggleMarketingChannel = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ id: z.string().uuid(), isActive: z.boolean() }).parse(input),
-  )
+  .validator((input) => z.object({ id: z.string().uuid(), isActive: z.boolean() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { error } = await supabase

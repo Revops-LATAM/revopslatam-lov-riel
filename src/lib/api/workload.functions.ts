@@ -85,7 +85,7 @@ function chunk<T>(arr: T[], size = 150): T[][] {
 
 export const getWeeklyWorkload = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -569,10 +569,7 @@ export const getWeeklyWorkload = createServerFn({ method: "GET" })
                 project_name: proj?.name ?? "",
                 color: proj?.color ?? null,
                 area: (t?.area ?? "operations") as
-                  | "operations"
-                  | "marketing"
-                  | "finance"
-                  | "internal",
+                  "operations" | "marketing" | "finance" | "internal",
                 start_date: t?.start_date ?? null,
                 due_date: t?.due_date ?? null,
                 status: t?.status ?? "",
@@ -596,7 +593,7 @@ export const getWeeklyWorkload = createServerFn({ method: "GET" })
 // My weekly timesheet: time entries grouped by day with task+project info, TZ-aware.
 export const getMyWeeklyTime = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid().optional(),
@@ -884,7 +881,7 @@ export const getMyWeeklyTime = createServerFn({ method: "GET" })
  */
 export const getWorkloadCellTasks = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -1044,7 +1041,7 @@ export const getWorkloadCellTasks = createServerFn({ method: "GET" })
 // ===================== Mis tareas en un rango (para timeline Mi tiempo) =====================
 export const getMyTasksInRange = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid().optional(),
@@ -1193,7 +1190,7 @@ export type MyTaskInRange = {
 // ===================== Equipo: tareas + tiempo por miembro en un rango =====================
 export const getTeamTimeInRange = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),

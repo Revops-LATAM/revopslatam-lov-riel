@@ -12,7 +12,7 @@ type TemplatePiece = {
 
 export const listCampaignTemplates = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows, error } = await supabase
@@ -32,7 +32,7 @@ export const listCampaignTemplates = createServerFn({ method: "GET" })
  */
 export const applyCampaignTemplate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -93,13 +93,7 @@ export const applyCampaignTemplate = createServerFn({ method: "POST" })
           format: p.format ?? null,
           publish_at: publishAt.toISOString(),
           status_editorial: (p.status_editorial ?? "idea") as
-            | "idea"
-            | "draft"
-            | "in_review"
-            | "approved"
-            | "scheduled"
-            | "published"
-            | "archived",
+            "idea" | "draft" | "in_review" | "approved" | "scheduled" | "published" | "archived",
           owner_id: data.ownerId ?? userId,
           created_by: userId,
         };

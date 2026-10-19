@@ -37,7 +37,7 @@ async function assertAdminMembersByInvitation(supabase: any, userId: string, inv
 
 export const listWorkspaceMembers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: members, error } = await supabase
@@ -57,7 +57,7 @@ export const listWorkspaceMembers = createServerFn({ method: "GET" })
 
 export const listWorkspaceInvitations = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: invites, error } = await supabase
@@ -71,7 +71,7 @@ export const listWorkspaceInvitations = createServerFn({ method: "GET" })
 
 export const inviteWorkspaceMember = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -125,7 +125,7 @@ export const inviteWorkspaceMember = createServerFn({ method: "POST" })
 
 export const materializePendingInvitations = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     await assertAdminMembers(supabase, userId, data.workspaceId);
@@ -173,7 +173,7 @@ export const materializePendingInvitations = createServerFn({ method: "POST" })
 
 export const updateMemberRole = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         memberId: z.string().uuid(),
@@ -194,7 +194,7 @@ export const updateMemberRole = createServerFn({ method: "POST" })
 
 export const removeMember = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ memberId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ memberId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     await assertAdminMembersByMember(supabase, userId, data.memberId);
@@ -205,7 +205,7 @@ export const removeMember = createServerFn({ method: "POST" })
 
 export const cancelInvitation = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ invitationId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ invitationId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     await assertAdminMembersByInvitation(supabase, userId, data.invitationId);

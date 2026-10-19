@@ -6,7 +6,7 @@ const stateEnum = z.enum(["pendiente", "en_planificacion", "completado"]);
 
 export const listWorkspaceHandoffs = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -30,7 +30,7 @@ export const listWorkspaceHandoffs = createServerFn({ method: "GET" })
 
 export const countPendingHandoffs = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { count, error } = await context.supabase
       .from("contract_handoffs")
@@ -43,7 +43,7 @@ export const countPendingHandoffs = createServerFn({ method: "GET" })
 
 export const getHandoff = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ handoffId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ handoffId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: row, error } = await context.supabase
       .from("contract_handoffs")
@@ -59,7 +59,7 @@ export const getHandoff = createServerFn({ method: "GET" })
 
 export const updateHandoff = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         handoffId: z.string().uuid(),

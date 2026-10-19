@@ -9,7 +9,7 @@ function randomToken(len = 32) {
 
 export const createGanttShareToken = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { projectId: string; expiresInDays?: number | null }) => input)
+  .validator((input: { projectId: string; expiresInDays?: number | null }) => input)
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const token = randomToken(24);
@@ -34,7 +34,7 @@ export const createGanttShareToken = createServerFn({ method: "POST" })
 
 export const listGanttShareTokens = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { projectId: string }) => input)
+  .validator((input: { projectId: string }) => input)
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("project_share_tokens")
@@ -49,7 +49,7 @@ export const listGanttShareTokens = createServerFn({ method: "GET" })
 
 export const revokeGanttShareToken = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { id: string }) => input)
+  .validator((input: { id: string }) => input)
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("project_share_tokens")

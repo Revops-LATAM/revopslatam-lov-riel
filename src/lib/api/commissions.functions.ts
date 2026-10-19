@@ -6,7 +6,7 @@ const Status = z.enum(["pendiente", "aprobada", "pagada", "cancelada"]);
 
 export const listCommissions = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -54,7 +54,7 @@ export const listCommissions = createServerFn({ method: "GET" })
 
 export const markCommissionPaid = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         commissionId: z.string().uuid(),
@@ -74,9 +74,7 @@ export const markCommissionPaid = createServerFn({ method: "POST" })
 
 export const updateCommissionStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ commissionId: z.string().uuid(), estado: Status }).parse(input),
-  )
+  .validator((input) => z.object({ commissionId: z.string().uuid(), estado: Status }).parse(input))
   .handler(async ({ data, context }) => {
     const patch: { estado: typeof data.estado; fecha_pago?: string | null } = {
       estado: data.estado,
@@ -93,7 +91,7 @@ export const updateCommissionStatus = createServerFn({ method: "POST" })
 
 export const splitCommission = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         commissionId: z.string().uuid(),

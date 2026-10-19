@@ -49,7 +49,7 @@ export const countUnreadNotifications = createServerFn({ method: "GET" })
 
 export const markNotificationRead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { id: string }) => d)
+  .validator((d: { id: string }) => d)
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("notifications")
@@ -117,7 +117,7 @@ export const getNotificationPreferences = createServerFn({ method: "GET" })
 
 export const saveNotificationPreference = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(
+  .validator(
     (d: {
       kind: NotificationKind;
       desktop: boolean;
@@ -159,7 +159,7 @@ export const getMyNotificationProfile = createServerFn({ method: "GET" })
 
 export const updateMyNotificationProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { handle?: string | null; slack_user_id?: string | null }) => d)
+  .validator((d: { handle?: string | null; slack_user_id?: string | null }) => d)
   .handler(async ({ data, context }) => {
     const payload: { handle?: string; slack_user_id?: string | null } = {};
     if (data.handle !== undefined) {

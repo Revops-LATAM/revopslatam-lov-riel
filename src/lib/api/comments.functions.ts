@@ -4,7 +4,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const listTaskComments = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: comments, error } = await supabase
@@ -30,7 +30,7 @@ export const listTaskComments = createServerFn({ method: "GET" })
 
 export const addTaskComment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         taskId: z.string().uuid(),
@@ -53,7 +53,7 @@ export const addTaskComment = createServerFn({ method: "POST" })
 
 export const deleteTaskComment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ commentId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ commentId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { error } = await supabase.from("task_comments").delete().eq("id", data.commentId);

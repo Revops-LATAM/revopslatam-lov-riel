@@ -9,122 +9,116 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
-import { Route as McpRouteImport } from './routes/mcp'
-import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
-import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated.index'
-import { Route as TicketsSlugRouteImport } from './routes/tickets.$slug'
-import { Route as InformeTokenRouteImport } from './routes/informe.$token'
-import { Route as GanttTokenRouteImport } from './routes/gantt.$token'
-import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
-import { Route as AuthenticatedMyTimeRouteImport } from './routes/_authenticated.my-time'
-import { Route as AuthenticatedMyTasksRouteImport } from './routes/_authenticated.my-tasks'
-import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
-import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as McpRouteImport } from './routes/mcp'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
-import { Route as TicketsSlugIndexRouteImport } from './routes/tickets.$slug.index'
-import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
-import { Route as TicketsSlugNewRouteImport } from './routes/tickets.$slug.new'
-import { Route as AuthenticatedWWorkspaceSlugRouteImport } from './routes/_authenticated.w.$workspaceSlug'
-import { Route as AuthenticatedTasksTaskIdRouteImport } from './routes/_authenticated.tasks.$taskId'
-import { Route as AuthenticatedMeSettingsRouteImport } from './routes/_authenticated.me.settings'
-import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated.admin.users'
-import { Route as AuthenticatedAdminSystemRouteImport } from './routes/_authenticated.admin.system'
-import { Route as AuthenticatedAdminPermissionsRouteImport } from './routes/_authenticated.admin.permissions'
-import { Route as AuthenticatedAdminImportRouteImport } from './routes/_authenticated.admin.import'
-import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated.index'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
+import { Route as AuthenticatedMyTasksRouteImport } from './routes/_authenticated.my-tasks'
+import { Route as AuthenticatedMyTimeRouteImport } from './routes/_authenticated.my-time'
+import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
+import { Route as GanttTokenRouteImport } from './routes/gantt.$token'
+import { Route as InformeTokenRouteImport } from './routes/informe.$token'
+import { Route as TicketsSlugRouteImport } from './routes/tickets.$slug'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
-import { Route as AuthenticatedWWorkspaceSlugIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.index'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
+import { Route as AuthenticatedAdminImportRouteImport } from './routes/_authenticated.admin.import'
+import { Route as AuthenticatedAdminPermissionsRouteImport } from './routes/_authenticated.admin.permissions'
+import { Route as AuthenticatedAdminSystemRouteImport } from './routes/_authenticated.admin.system'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated.admin.users'
+import { Route as AuthenticatedMeSettingsRouteImport } from './routes/_authenticated.me.settings'
+import { Route as AuthenticatedTasksTaskIdRouteImport } from './routes/_authenticated.tasks.$taskId'
+import { Route as AuthenticatedWWorkspaceSlugRouteImport } from './routes/_authenticated.w.$workspaceSlug'
+import { Route as TicketsSlugIndexRouteImport } from './routes/tickets.$slug.index'
+import { Route as TicketsSlugNewRouteImport } from './routes/tickets.$slug.new'
 import { Route as AuthenticatedMeSettingsIndexRouteImport } from './routes/_authenticated.me.settings.index'
-import { Route as TicketsSlugPortalInboxRouteImport } from './routes/tickets.$slug.portal.inbox'
-import { Route as ApiPublicWebhooksResendRouteImport } from './routes/api/public/webhooks/resend'
-import { Route as ApiPublicWebhooksAsanaRouteImport } from './routes/api/public/webhooks/asana'
-import { Route as ApiPublicTicketsSlugRouteImport } from './routes/api/public/tickets.$slug'
-import { Route as ApiPublicReportTokenRouteImport } from './routes/api/public/report.$token'
-import { Route as ApiPublicPortalSlugRouteImport } from './routes/api/public/portal.$slug'
-import { Route as ApiPublicGanttTokenRouteImport } from './routes/api/public/gantt.$token'
-import { Route as ApiPublicCronInvoiceRemindersRouteImport } from './routes/api/public/cron/invoice-reminders'
-import { Route as ApiPublicCronDispatchNotificationsRouteImport } from './routes/api/public/cron/dispatch-notifications'
-import { Route as ApiPublicCronAsanaSyncRouteImport } from './routes/api/public/cron/asana-sync'
-import { Route as ApiPublicCronAsanaQueueRouteImport } from './routes/api/public/cron/asana-queue'
-import { Route as AuthenticatedWWorkspaceSlugWorkloadRouteImport } from './routes/_authenticated.w.$workspaceSlug.workload'
-import { Route as AuthenticatedWWorkspaceSlugTimeSettingsRouteImport } from './routes/_authenticated.w.$workspaceSlug.time-settings'
-import { Route as AuthenticatedWWorkspaceSlugSettingsRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings'
-import { Route as AuthenticatedWWorkspaceSlugReportsRouteImport } from './routes/_authenticated.w.$workspaceSlug.reports'
-import { Route as AuthenticatedWWorkspaceSlugProjectsRouteImport } from './routes/_authenticated.w.$workspaceSlug.projects'
-import { Route as AuthenticatedWWorkspaceSlugMyTimeRouteImport } from './routes/_authenticated.w.$workspaceSlug.my-time'
-import { Route as AuthenticatedWWorkspaceSlugMyTeamRouteImport } from './routes/_authenticated.w.$workspaceSlug.my-team'
-import { Route as AuthenticatedWWorkspaceSlugMyTasksRouteImport } from './routes/_authenticated.w.$workspaceSlug.my-tasks'
-import { Route as AuthenticatedWWorkspaceSlugMarketingRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing'
-import { Route as AuthenticatedWWorkspaceSlugInternalRouteImport } from './routes/_authenticated.w.$workspaceSlug.internal'
-import { Route as AuthenticatedWWorkspaceSlugInboxRouteImport } from './routes/_authenticated.w.$workspaceSlug.inbox'
-import { Route as AuthenticatedWWorkspaceSlugHandoffsRouteImport } from './routes/_authenticated.w.$workspaceSlug.handoffs'
-import { Route as AuthenticatedWWorkspaceSlugFinanceRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance'
-import { Route as AuthenticatedMeSettingsVacationsRouteImport } from './routes/_authenticated.me.settings.vacations'
-import { Route as AuthenticatedMeSettingsTimeRouteImport } from './routes/_authenticated.me.settings.time'
-import { Route as AuthenticatedMeSettingsPreferencesRouteImport } from './routes/_authenticated.me.settings.preferences'
-import { Route as AuthenticatedMeSettingsNotificationsRouteImport } from './routes/_authenticated.me.settings.notifications'
 import { Route as AuthenticatedMeSettingsConnectionsRouteImport } from './routes/_authenticated.me.settings.connections'
-import { Route as AuthenticatedWWorkspaceSlugSettingsIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.index'
-import { Route as AuthenticatedWWorkspaceSlugReportsIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.reports.index'
-import { Route as AuthenticatedWWorkspaceSlugProjectsIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.projects.index'
-import { Route as AuthenticatedWWorkspaceSlugMarketingIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.index'
-import { Route as AuthenticatedWWorkspaceSlugInternalIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.internal.index'
-import { Route as AuthenticatedWWorkspaceSlugFinanceIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.index'
-import { Route as AuthenticatedWWorkspaceSlugContractsIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.contracts.index'
+import { Route as AuthenticatedMeSettingsNotificationsRouteImport } from './routes/_authenticated.me.settings.notifications'
+import { Route as AuthenticatedMeSettingsPreferencesRouteImport } from './routes/_authenticated.me.settings.preferences'
+import { Route as AuthenticatedMeSettingsTimeRouteImport } from './routes/_authenticated.me.settings.time'
+import { Route as AuthenticatedMeSettingsVacationsRouteImport } from './routes/_authenticated.me.settings.vacations'
+import { Route as AuthenticatedWWorkspaceSlugIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.index'
+import { Route as AuthenticatedWWorkspaceSlugFinanceRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance'
+import { Route as AuthenticatedWWorkspaceSlugHandoffsRouteImport } from './routes/_authenticated.w.$workspaceSlug.handoffs'
+import { Route as AuthenticatedWWorkspaceSlugInboxRouteImport } from './routes/_authenticated.w.$workspaceSlug.inbox'
+import { Route as AuthenticatedWWorkspaceSlugInternalRouteImport } from './routes/_authenticated.w.$workspaceSlug.internal'
+import { Route as AuthenticatedWWorkspaceSlugMarketingRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing'
+import { Route as AuthenticatedWWorkspaceSlugMyTasksRouteImport } from './routes/_authenticated.w.$workspaceSlug.my-tasks'
+import { Route as AuthenticatedWWorkspaceSlugMyTeamRouteImport } from './routes/_authenticated.w.$workspaceSlug.my-team'
+import { Route as AuthenticatedWWorkspaceSlugMyTimeRouteImport } from './routes/_authenticated.w.$workspaceSlug.my-time'
+import { Route as AuthenticatedWWorkspaceSlugProjectsRouteImport } from './routes/_authenticated.w.$workspaceSlug.projects'
+import { Route as AuthenticatedWWorkspaceSlugReportsRouteImport } from './routes/_authenticated.w.$workspaceSlug.reports'
+import { Route as AuthenticatedWWorkspaceSlugSettingsRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings'
+import { Route as AuthenticatedWWorkspaceSlugTimeSettingsRouteImport } from './routes/_authenticated.w.$workspaceSlug.time-settings'
+import { Route as AuthenticatedWWorkspaceSlugWorkloadRouteImport } from './routes/_authenticated.w.$workspaceSlug.workload'
+import { Route as ApiPublicCronAsanaQueueRouteImport } from './routes/api/public/cron/asana-queue'
+import { Route as ApiPublicCronAsanaSyncRouteImport } from './routes/api/public/cron/asana-sync'
+import { Route as ApiPublicCronDispatchNotificationsRouteImport } from './routes/api/public/cron/dispatch-notifications'
+import { Route as ApiPublicCronInvoiceRemindersRouteImport } from './routes/api/public/cron/invoice-reminders'
+import { Route as ApiPublicGanttTokenRouteImport } from './routes/api/public/gantt.$token'
+import { Route as ApiPublicPortalSlugRouteImport } from './routes/api/public/portal.$slug'
+import { Route as ApiPublicReportTokenRouteImport } from './routes/api/public/report.$token'
+import { Route as ApiPublicTicketsSlugRouteImport } from './routes/api/public/tickets.$slug'
+import { Route as ApiPublicWebhooksAsanaRouteImport } from './routes/api/public/webhooks/asana'
+import { Route as ApiPublicWebhooksResendRouteImport } from './routes/api/public/webhooks/resend'
+import { Route as TicketsSlugPortalInboxRouteImport } from './routes/tickets.$slug.portal.inbox'
 import { Route as AuthenticatedWWorkspaceSlugAccountsIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.accounts.index'
-import { Route as TicketsSlugPortalTTicketIdRouteImport } from './routes/tickets.$slug.portal.t.$ticketId'
-import { Route as ApiPublicPortalSlugVerifyRouteImport } from './routes/api/public/portal.$slug.verify'
-import { Route as ApiPublicPortalSlugTicketsRouteImport } from './routes/api/public/portal.$slug.tickets'
-import { Route as ApiPublicOauthGoogleCalendarCallbackRouteImport } from './routes/api/public/oauth/google-calendar/callback'
-import { Route as AuthenticatedWWorkspaceSlugSettingsTrashRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.trash'
-import { Route as AuthenticatedWWorkspaceSlugSettingsTaskTypesRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.task-types'
-import { Route as AuthenticatedWWorkspaceSlugSettingsSlasRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.slas'
-import { Route as AuthenticatedWWorkspaceSlugSettingsServiceTypesRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.service-types'
-import { Route as AuthenticatedWWorkspaceSlugSettingsPartnersRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.partners'
-import { Route as AuthenticatedWWorkspaceSlugSettingsEmisorRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.emisor'
-import { Route as AuthenticatedWWorkspaceSlugSettingsDteRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.dte'
-import { Route as AuthenticatedWWorkspaceSlugSettingsCostsRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.costs'
-import { Route as AuthenticatedWWorkspaceSlugReportsTiempoRouteImport } from './routes/_authenticated.w.$workspaceSlug.reports.tiempo'
-import { Route as AuthenticatedWWorkspaceSlugReportsPlanVsRealRouteImport } from './routes/_authenticated.w.$workspaceSlug.reports.plan-vs-real'
-import { Route as AuthenticatedWWorkspaceSlugProjectsProjectIdRouteImport } from './routes/_authenticated.w.$workspaceSlug.projects.$projectId'
-import { Route as AuthenticatedWWorkspaceSlugMarketingGrillaRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.grilla'
-import { Route as AuthenticatedWWorkspaceSlugInternalSettingsRouteImport } from './routes/_authenticated.w.$workspaceSlug.internal.settings'
-import { Route as AuthenticatedWWorkspaceSlugFinanceSettingsRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.settings'
-import { Route as AuthenticatedWWorkspaceSlugFinanceRenewalsRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.renewals'
-import { Route as AuthenticatedWWorkspaceSlugFinancePaymentsRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.payments'
-import { Route as AuthenticatedWWorkspaceSlugFinanceInvoicesRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.invoices'
-import { Route as AuthenticatedWWorkspaceSlugFinanceCurrenciesRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.currencies'
-import { Route as AuthenticatedWWorkspaceSlugFinanceContractsRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.contracts'
-import { Route as AuthenticatedWWorkspaceSlugFinanceCommissionsRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.commissions'
-import { Route as AuthenticatedWWorkspaceSlugContractsContractIdRouteImport } from './routes/_authenticated.w.$workspaceSlug.contracts.$contractId'
 import { Route as AuthenticatedWWorkspaceSlugAccountsAccountIdRouteImport } from './routes/_authenticated.w.$workspaceSlug.accounts.$accountId'
-import { Route as AuthenticatedWWorkspaceSlugMarketingProjectsIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.projects.index'
-import { Route as AuthenticatedWWorkspaceSlugMarketingPiecesIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.pieces.index'
-import { Route as AuthenticatedWWorkspaceSlugMarketingCampaignsIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.campaigns.index'
+import { Route as AuthenticatedWWorkspaceSlugContractsIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.contracts.index'
+import { Route as AuthenticatedWWorkspaceSlugContractsContractIdRouteImport } from './routes/_authenticated.w.$workspaceSlug.contracts.$contractId'
+import { Route as AuthenticatedWWorkspaceSlugFinanceIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.index'
+import { Route as AuthenticatedWWorkspaceSlugFinanceCommissionsRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.commissions'
+import { Route as AuthenticatedWWorkspaceSlugFinanceContractsRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.contracts'
+import { Route as AuthenticatedWWorkspaceSlugFinanceCurrenciesRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.currencies'
+import { Route as AuthenticatedWWorkspaceSlugFinanceInvoicesRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.invoices'
+import { Route as AuthenticatedWWorkspaceSlugFinancePaymentsRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.payments'
+import { Route as AuthenticatedWWorkspaceSlugFinanceRenewalsRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.renewals'
+import { Route as AuthenticatedWWorkspaceSlugFinanceSettingsRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.settings'
+import { Route as AuthenticatedWWorkspaceSlugInternalIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.internal.index'
+import { Route as AuthenticatedWWorkspaceSlugInternalSettingsRouteImport } from './routes/_authenticated.w.$workspaceSlug.internal.settings'
+import { Route as AuthenticatedWWorkspaceSlugMarketingIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.index'
+import { Route as AuthenticatedWWorkspaceSlugMarketingGrillaRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.grilla'
+import { Route as AuthenticatedWWorkspaceSlugProjectsIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.projects.index'
+import { Route as AuthenticatedWWorkspaceSlugProjectsProjectIdRouteImport } from './routes/_authenticated.w.$workspaceSlug.projects.$projectId'
+import { Route as AuthenticatedWWorkspaceSlugReportsIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.reports.index'
+import { Route as AuthenticatedWWorkspaceSlugReportsPlanVsRealRouteImport } from './routes/_authenticated.w.$workspaceSlug.reports.plan-vs-real'
+import { Route as AuthenticatedWWorkspaceSlugReportsTiempoRouteImport } from './routes/_authenticated.w.$workspaceSlug.reports.tiempo'
+import { Route as AuthenticatedWWorkspaceSlugSettingsIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.index'
+import { Route as AuthenticatedWWorkspaceSlugSettingsCostsRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.costs'
+import { Route as AuthenticatedWWorkspaceSlugSettingsDteRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.dte'
+import { Route as AuthenticatedWWorkspaceSlugSettingsEmisorRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.emisor'
+import { Route as AuthenticatedWWorkspaceSlugSettingsPartnersRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.partners'
+import { Route as AuthenticatedWWorkspaceSlugSettingsServiceTypesRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.service-types'
+import { Route as AuthenticatedWWorkspaceSlugSettingsSlasRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.slas'
+import { Route as AuthenticatedWWorkspaceSlugSettingsTaskTypesRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.task-types'
+import { Route as AuthenticatedWWorkspaceSlugSettingsTrashRouteImport } from './routes/_authenticated.w.$workspaceSlug.settings.trash'
+import { Route as ApiPublicOauthGoogleCalendarCallbackRouteImport } from './routes/api/public/oauth/google-calendar/callback'
+import { Route as ApiPublicPortalSlugTicketsRouteImport } from './routes/api/public/portal.$slug.tickets'
+import { Route as ApiPublicPortalSlugVerifyRouteImport } from './routes/api/public/portal.$slug.verify'
+import { Route as TicketsSlugPortalTTicketIdRouteImport } from './routes/tickets.$slug.portal.t.$ticketId'
 import { Route as AuthenticatedWWorkspaceSlugFinanceSettingsIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.settings.index'
-import { Route as ApiPublicPortalSlugTicketsTicketIdRouteImport } from './routes/api/public/portal.$slug.tickets.$ticketId'
-import { Route as AuthenticatedWWorkspaceSlugMarketingSettingsPilaresRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.settings.pilares'
-import { Route as AuthenticatedWWorkspaceSlugMarketingSettingsChannelsRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.settings.channels'
-import { Route as AuthenticatedWWorkspaceSlugMarketingSettingsCadenciaRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.settings.cadencia'
-import { Route as AuthenticatedWWorkspaceSlugMarketingProjectsProjectIdRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.projects.$projectId'
-import { Route as AuthenticatedWWorkspaceSlugMarketingCampaignsCampaignIdRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.campaigns.$campaignId'
-import { Route as AuthenticatedWWorkspaceSlugInternalProjectsProjectIdRouteImport } from './routes/_authenticated.w.$workspaceSlug.internal.projects.$projectId'
-import { Route as AuthenticatedWWorkspaceSlugInternalCategoriesKeyRouteImport } from './routes/_authenticated.w.$workspaceSlug.internal.categories.$key'
-import { Route as AuthenticatedWWorkspaceSlugFinanceSettingsEmisorRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.settings.emisor'
-import { Route as AuthenticatedWWorkspaceSlugFinanceSettingsDteRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.settings.dte'
 import { Route as AuthenticatedWWorkspaceSlugFinanceSettingsCostsRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.settings.costs'
+import { Route as AuthenticatedWWorkspaceSlugFinanceSettingsDteRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.settings.dte'
+import { Route as AuthenticatedWWorkspaceSlugFinanceSettingsEmisorRouteImport } from './routes/_authenticated.w.$workspaceSlug.finance.settings.emisor'
+import { Route as AuthenticatedWWorkspaceSlugInternalCategoriesKeyRouteImport } from './routes/_authenticated.w.$workspaceSlug.internal.categories.$key'
+import { Route as AuthenticatedWWorkspaceSlugInternalProjectsProjectIdRouteImport } from './routes/_authenticated.w.$workspaceSlug.internal.projects.$projectId'
+import { Route as AuthenticatedWWorkspaceSlugMarketingCampaignsIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.campaigns.index'
+import { Route as AuthenticatedWWorkspaceSlugMarketingCampaignsCampaignIdRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.campaigns.$campaignId'
+import { Route as AuthenticatedWWorkspaceSlugMarketingPiecesIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.pieces.index'
+import { Route as AuthenticatedWWorkspaceSlugMarketingProjectsIndexRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.projects.index'
+import { Route as AuthenticatedWWorkspaceSlugMarketingProjectsProjectIdRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.projects.$projectId'
+import { Route as AuthenticatedWWorkspaceSlugMarketingSettingsCadenciaRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.settings.cadencia'
+import { Route as AuthenticatedWWorkspaceSlugMarketingSettingsChannelsRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.settings.channels'
+import { Route as AuthenticatedWWorkspaceSlugMarketingSettingsPilaresRouteImport } from './routes/_authenticated.w.$workspaceSlug.marketing.settings.pilares'
+import { Route as ApiPublicPortalSlugTicketsTicketIdRouteImport } from './routes/api/public/portal.$slug.tickets.$ticketId'
 import { Route as ApiPublicPortalSlugTicketsTicketIdCommentRouteImport } from './routes/api/public/portal.$slug.tickets.$ticketId.comment'
 
-const UnsubscribeRoute = UnsubscribeRouteImport.update({
-  id: '/unsubscribe',
-  path: '/unsubscribe',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -132,43 +126,31 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: '/_authenticated',
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const TicketsSlugRoute = TicketsSlugRouteImport.update({
-  id: '/tickets/$slug',
-  path: '/tickets/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InformeTokenRoute = InformeTokenRouteImport.update({
-  id: '/informe/$token',
-  path: '/informe/$token',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GanttTokenRoute = GanttTokenRouteImport.update({
-  id: '/gantt/$token',
-  path: '/gantt/$token',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
-  id: '/email/unsubscribe',
-  path: '/email/unsubscribe',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedMyTimeRoute = AuthenticatedMyTimeRouteImport.update({
-  id: '/my-time',
-  path: '/my-time',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedMyTasksRoute = AuthenticatedMyTasksRouteImport.update({
-  id: '/my-tasks',
-  path: '/my-tasks',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -176,59 +158,56 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const Char91DotwellKnownChar93OauthProtectedResourceRoute =
-  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
-    id: '/.well-known/oauth-protected-resource',
-    path: '/.well-known/oauth-protected-resource',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const Char91DotmcpChar93ListToolsRoute =
-  Char91DotmcpChar93ListToolsRouteImport.update({
-    id: '/.mcp/list-tools',
-    path: '/.mcp/list-tools',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const TicketsSlugIndexRoute = TicketsSlugIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => TicketsSlugRoute,
+const AuthenticatedMyTasksRoute = AuthenticatedMyTasksRouteImport.update({
+  id: '/my-tasks',
+  path: '/my-tasks',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedMyTimeRoute = AuthenticatedMyTimeRouteImport.update({
+  id: '/my-time',
+  path: '/my-time',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
+  id: '/email/unsubscribe',
+  path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GanttTokenRoute = GanttTokenRouteImport.update({
+  id: '/gantt/$token',
+  path: '/gantt/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InformeTokenRoute = InformeTokenRouteImport.update({
+  id: '/informe/$token',
+  path: '/informe/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TicketsSlugRoute = TicketsSlugRouteImport.update({
+  id: '/tickets/$slug',
+  path: '/tickets/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
-const TicketsSlugNewRoute = TicketsSlugNewRouteImport.update({
-  id: '/new',
-  path: '/new',
-  getParentRoute: () => TicketsSlugRoute,
-} as any)
-const AuthenticatedWWorkspaceSlugRoute =
-  AuthenticatedWWorkspaceSlugRouteImport.update({
-    id: '/w/$workspaceSlug',
-    path: '/w/$workspaceSlug',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedTasksTaskIdRoute =
-  AuthenticatedTasksTaskIdRouteImport.update({
-    id: '/tasks/$taskId',
-    path: '/tasks/$taskId',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedMeSettingsRoute = AuthenticatedMeSettingsRouteImport.update({
-  id: '/me/settings',
-  path: '/me/settings',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => AuthenticatedAdminRoute,
-} as any)
-const AuthenticatedAdminSystemRoute =
-  AuthenticatedAdminSystemRouteImport.update({
-    id: '/system',
-    path: '/system',
+const AuthenticatedAdminImportRoute =
+  AuthenticatedAdminImportRouteImport.update({
+    id: '/import',
+    path: '/import',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminPermissionsRoute =
@@ -237,192 +216,48 @@ const AuthenticatedAdminPermissionsRoute =
     path: '/permissions',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
-const AuthenticatedAdminImportRoute =
-  AuthenticatedAdminImportRouteImport.update({
-    id: '/import',
-    path: '/import',
+const AuthenticatedAdminSystemRoute =
+  AuthenticatedAdminSystemRouteImport.update({
+    id: '/system',
+    path: '/system',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
-const Char91DotmcpChar93InvokeToolToolRoute =
-  Char91DotmcpChar93InvokeToolToolRouteImport.update({
-    id: '/.mcp/invoke-tool/$tool',
-    path: '/.mcp/invoke-tool/$tool',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
-  id: '/.lovable/oauth/consent',
-  path: '/.lovable/oauth/consent',
-  getParentRoute: () => rootRouteImport,
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
-const AuthenticatedWWorkspaceSlugIndexRoute =
-  AuthenticatedWWorkspaceSlugIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
+const AuthenticatedMeSettingsRoute = AuthenticatedMeSettingsRouteImport.update({
+  id: '/me/settings',
+  path: '/me/settings',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedTasksTaskIdRoute =
+  AuthenticatedTasksTaskIdRouteImport.update({
+    id: '/tasks/$taskId',
+    path: '/tasks/$taskId',
+    getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedWWorkspaceSlugRoute =
+  AuthenticatedWWorkspaceSlugRouteImport.update({
+    id: '/w/$workspaceSlug',
+    path: '/w/$workspaceSlug',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const TicketsSlugIndexRoute = TicketsSlugIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TicketsSlugRoute,
+} as any)
+const TicketsSlugNewRoute = TicketsSlugNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => TicketsSlugRoute,
+} as any)
 const AuthenticatedMeSettingsIndexRoute =
   AuthenticatedMeSettingsIndexRouteImport.update({
     id: '/',
     path: '/',
-    getParentRoute: () => AuthenticatedMeSettingsRoute,
-  } as any)
-const TicketsSlugPortalInboxRoute = TicketsSlugPortalInboxRouteImport.update({
-  id: '/portal/inbox',
-  path: '/portal/inbox',
-  getParentRoute: () => TicketsSlugRoute,
-} as any)
-const ApiPublicWebhooksResendRoute = ApiPublicWebhooksResendRouteImport.update({
-  id: '/api/public/webhooks/resend',
-  path: '/api/public/webhooks/resend',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicWebhooksAsanaRoute = ApiPublicWebhooksAsanaRouteImport.update({
-  id: '/api/public/webhooks/asana',
-  path: '/api/public/webhooks/asana',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicTicketsSlugRoute = ApiPublicTicketsSlugRouteImport.update({
-  id: '/api/public/tickets/$slug',
-  path: '/api/public/tickets/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicReportTokenRoute = ApiPublicReportTokenRouteImport.update({
-  id: '/api/public/report/$token',
-  path: '/api/public/report/$token',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicPortalSlugRoute = ApiPublicPortalSlugRouteImport.update({
-  id: '/api/public/portal/$slug',
-  path: '/api/public/portal/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicGanttTokenRoute = ApiPublicGanttTokenRouteImport.update({
-  id: '/api/public/gantt/$token',
-  path: '/api/public/gantt/$token',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicCronInvoiceRemindersRoute =
-  ApiPublicCronInvoiceRemindersRouteImport.update({
-    id: '/api/public/cron/invoice-reminders',
-    path: '/api/public/cron/invoice-reminders',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicCronDispatchNotificationsRoute =
-  ApiPublicCronDispatchNotificationsRouteImport.update({
-    id: '/api/public/cron/dispatch-notifications',
-    path: '/api/public/cron/dispatch-notifications',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicCronAsanaSyncRoute = ApiPublicCronAsanaSyncRouteImport.update({
-  id: '/api/public/cron/asana-sync',
-  path: '/api/public/cron/asana-sync',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicCronAsanaQueueRoute = ApiPublicCronAsanaQueueRouteImport.update({
-  id: '/api/public/cron/asana-queue',
-  path: '/api/public/cron/asana-queue',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedWWorkspaceSlugWorkloadRoute =
-  AuthenticatedWWorkspaceSlugWorkloadRouteImport.update({
-    id: '/workload',
-    path: '/workload',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugTimeSettingsRoute =
-  AuthenticatedWWorkspaceSlugTimeSettingsRouteImport.update({
-    id: '/time-settings',
-    path: '/time-settings',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugSettingsRoute =
-  AuthenticatedWWorkspaceSlugSettingsRouteImport.update({
-    id: '/settings',
-    path: '/settings',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugReportsRoute =
-  AuthenticatedWWorkspaceSlugReportsRouteImport.update({
-    id: '/reports',
-    path: '/reports',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugProjectsRoute =
-  AuthenticatedWWorkspaceSlugProjectsRouteImport.update({
-    id: '/projects',
-    path: '/projects',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugMyTimeRoute =
-  AuthenticatedWWorkspaceSlugMyTimeRouteImport.update({
-    id: '/my-time',
-    path: '/my-time',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugMyTeamRoute =
-  AuthenticatedWWorkspaceSlugMyTeamRouteImport.update({
-    id: '/my-team',
-    path: '/my-team',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugMyTasksRoute =
-  AuthenticatedWWorkspaceSlugMyTasksRouteImport.update({
-    id: '/my-tasks',
-    path: '/my-tasks',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugMarketingRoute =
-  AuthenticatedWWorkspaceSlugMarketingRouteImport.update({
-    id: '/marketing',
-    path: '/marketing',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugInternalRoute =
-  AuthenticatedWWorkspaceSlugInternalRouteImport.update({
-    id: '/internal',
-    path: '/internal',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugInboxRoute =
-  AuthenticatedWWorkspaceSlugInboxRouteImport.update({
-    id: '/inbox',
-    path: '/inbox',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugHandoffsRoute =
-  AuthenticatedWWorkspaceSlugHandoffsRouteImport.update({
-    id: '/handoffs',
-    path: '/handoffs',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugFinanceRoute =
-  AuthenticatedWWorkspaceSlugFinanceRouteImport.update({
-    id: '/finance',
-    path: '/finance',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
-  } as any)
-const AuthenticatedMeSettingsVacationsRoute =
-  AuthenticatedMeSettingsVacationsRouteImport.update({
-    id: '/vacations',
-    path: '/vacations',
-    getParentRoute: () => AuthenticatedMeSettingsRoute,
-  } as any)
-const AuthenticatedMeSettingsTimeRoute =
-  AuthenticatedMeSettingsTimeRouteImport.update({
-    id: '/time',
-    path: '/time',
-    getParentRoute: () => AuthenticatedMeSettingsRoute,
-  } as any)
-const AuthenticatedMeSettingsPreferencesRoute =
-  AuthenticatedMeSettingsPreferencesRouteImport.update({
-    id: '/preferences',
-    path: '/preferences',
-    getParentRoute: () => AuthenticatedMeSettingsRoute,
-  } as any)
-const AuthenticatedMeSettingsNotificationsRoute =
-  AuthenticatedMeSettingsNotificationsRouteImport.update({
-    id: '/notifications',
-    path: '/notifications',
     getParentRoute: () => AuthenticatedMeSettingsRoute,
   } as any)
 const AuthenticatedMeSettingsConnectionsRoute =
@@ -431,202 +266,175 @@ const AuthenticatedMeSettingsConnectionsRoute =
     path: '/connections',
     getParentRoute: () => AuthenticatedMeSettingsRoute,
   } as any)
-const AuthenticatedWWorkspaceSlugSettingsIndexRoute =
-  AuthenticatedWWorkspaceSlugSettingsIndexRouteImport.update({
+const AuthenticatedMeSettingsNotificationsRoute =
+  AuthenticatedMeSettingsNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedMeSettingsRoute,
+  } as any)
+const AuthenticatedMeSettingsPreferencesRoute =
+  AuthenticatedMeSettingsPreferencesRouteImport.update({
+    id: '/preferences',
+    path: '/preferences',
+    getParentRoute: () => AuthenticatedMeSettingsRoute,
+  } as any)
+const AuthenticatedMeSettingsTimeRoute =
+  AuthenticatedMeSettingsTimeRouteImport.update({
+    id: '/time',
+    path: '/time',
+    getParentRoute: () => AuthenticatedMeSettingsRoute,
+  } as any)
+const AuthenticatedMeSettingsVacationsRoute =
+  AuthenticatedMeSettingsVacationsRouteImport.update({
+    id: '/vacations',
+    path: '/vacations',
+    getParentRoute: () => AuthenticatedMeSettingsRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugIndexRoute =
+  AuthenticatedWWorkspaceSlugIndexRouteImport.update({
     id: '/',
     path: '/',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugReportsIndexRoute =
-  AuthenticatedWWorkspaceSlugReportsIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugReportsRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugProjectsIndexRoute =
-  AuthenticatedWWorkspaceSlugProjectsIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugProjectsRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugMarketingIndexRoute =
-  AuthenticatedWWorkspaceSlugMarketingIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugInternalIndexRoute =
-  AuthenticatedWWorkspaceSlugInternalIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugInternalRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugFinanceIndexRoute =
-  AuthenticatedWWorkspaceSlugFinanceIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugContractsIndexRoute =
-  AuthenticatedWWorkspaceSlugContractsIndexRouteImport.update({
-    id: '/contracts/',
-    path: '/contracts/',
     getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
   } as any)
+const AuthenticatedWWorkspaceSlugFinanceRoute =
+  AuthenticatedWWorkspaceSlugFinanceRouteImport.update({
+    id: '/finance',
+    path: '/finance',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugHandoffsRoute =
+  AuthenticatedWWorkspaceSlugHandoffsRouteImport.update({
+    id: '/handoffs',
+    path: '/handoffs',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugInboxRoute =
+  AuthenticatedWWorkspaceSlugInboxRouteImport.update({
+    id: '/inbox',
+    path: '/inbox',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugInternalRoute =
+  AuthenticatedWWorkspaceSlugInternalRouteImport.update({
+    id: '/internal',
+    path: '/internal',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugMarketingRoute =
+  AuthenticatedWWorkspaceSlugMarketingRouteImport.update({
+    id: '/marketing',
+    path: '/marketing',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugMyTasksRoute =
+  AuthenticatedWWorkspaceSlugMyTasksRouteImport.update({
+    id: '/my-tasks',
+    path: '/my-tasks',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugMyTeamRoute =
+  AuthenticatedWWorkspaceSlugMyTeamRouteImport.update({
+    id: '/my-team',
+    path: '/my-team',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugMyTimeRoute =
+  AuthenticatedWWorkspaceSlugMyTimeRouteImport.update({
+    id: '/my-time',
+    path: '/my-time',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugProjectsRoute =
+  AuthenticatedWWorkspaceSlugProjectsRouteImport.update({
+    id: '/projects',
+    path: '/projects',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugReportsRoute =
+  AuthenticatedWWorkspaceSlugReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugSettingsRoute =
+  AuthenticatedWWorkspaceSlugSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugTimeSettingsRoute =
+  AuthenticatedWWorkspaceSlugTimeSettingsRouteImport.update({
+    id: '/time-settings',
+    path: '/time-settings',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugWorkloadRoute =
+  AuthenticatedWWorkspaceSlugWorkloadRouteImport.update({
+    id: '/workload',
+    path: '/workload',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
+  } as any)
+const ApiPublicCronAsanaQueueRoute = ApiPublicCronAsanaQueueRouteImport.update({
+  id: '/api/public/cron/asana-queue',
+  path: '/api/public/cron/asana-queue',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCronAsanaSyncRoute = ApiPublicCronAsanaSyncRouteImport.update({
+  id: '/api/public/cron/asana-sync',
+  path: '/api/public/cron/asana-sync',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCronDispatchNotificationsRoute =
+  ApiPublicCronDispatchNotificationsRouteImport.update({
+    id: '/api/public/cron/dispatch-notifications',
+    path: '/api/public/cron/dispatch-notifications',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronInvoiceRemindersRoute =
+  ApiPublicCronInvoiceRemindersRouteImport.update({
+    id: '/api/public/cron/invoice-reminders',
+    path: '/api/public/cron/invoice-reminders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicGanttTokenRoute = ApiPublicGanttTokenRouteImport.update({
+  id: '/api/public/gantt/$token',
+  path: '/api/public/gantt/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicPortalSlugRoute = ApiPublicPortalSlugRouteImport.update({
+  id: '/api/public/portal/$slug',
+  path: '/api/public/portal/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicReportTokenRoute = ApiPublicReportTokenRouteImport.update({
+  id: '/api/public/report/$token',
+  path: '/api/public/report/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicTicketsSlugRoute = ApiPublicTicketsSlugRouteImport.update({
+  id: '/api/public/tickets/$slug',
+  path: '/api/public/tickets/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicWebhooksAsanaRoute = ApiPublicWebhooksAsanaRouteImport.update({
+  id: '/api/public/webhooks/asana',
+  path: '/api/public/webhooks/asana',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicWebhooksResendRoute = ApiPublicWebhooksResendRouteImport.update({
+  id: '/api/public/webhooks/resend',
+  path: '/api/public/webhooks/resend',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TicketsSlugPortalInboxRoute = TicketsSlugPortalInboxRouteImport.update({
+  id: '/portal/inbox',
+  path: '/portal/inbox',
+  getParentRoute: () => TicketsSlugRoute,
+} as any)
 const AuthenticatedWWorkspaceSlugAccountsIndexRoute =
   AuthenticatedWWorkspaceSlugAccountsIndexRouteImport.update({
     id: '/accounts/',
     path: '/accounts/',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
-  } as any)
-const TicketsSlugPortalTTicketIdRoute =
-  TicketsSlugPortalTTicketIdRouteImport.update({
-    id: '/portal/t/$ticketId',
-    path: '/portal/t/$ticketId',
-    getParentRoute: () => TicketsSlugRoute,
-  } as any)
-const ApiPublicPortalSlugVerifyRoute =
-  ApiPublicPortalSlugVerifyRouteImport.update({
-    id: '/verify',
-    path: '/verify',
-    getParentRoute: () => ApiPublicPortalSlugRoute,
-  } as any)
-const ApiPublicPortalSlugTicketsRoute =
-  ApiPublicPortalSlugTicketsRouteImport.update({
-    id: '/tickets',
-    path: '/tickets',
-    getParentRoute: () => ApiPublicPortalSlugRoute,
-  } as any)
-const ApiPublicOauthGoogleCalendarCallbackRoute =
-  ApiPublicOauthGoogleCalendarCallbackRouteImport.update({
-    id: '/api/public/oauth/google-calendar/callback',
-    path: '/api/public/oauth/google-calendar/callback',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const AuthenticatedWWorkspaceSlugSettingsTrashRoute =
-  AuthenticatedWWorkspaceSlugSettingsTrashRouteImport.update({
-    id: '/trash',
-    path: '/trash',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugSettingsTaskTypesRoute =
-  AuthenticatedWWorkspaceSlugSettingsTaskTypesRouteImport.update({
-    id: '/task-types',
-    path: '/task-types',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugSettingsSlasRoute =
-  AuthenticatedWWorkspaceSlugSettingsSlasRouteImport.update({
-    id: '/slas',
-    path: '/slas',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugSettingsServiceTypesRoute =
-  AuthenticatedWWorkspaceSlugSettingsServiceTypesRouteImport.update({
-    id: '/service-types',
-    path: '/service-types',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugSettingsPartnersRoute =
-  AuthenticatedWWorkspaceSlugSettingsPartnersRouteImport.update({
-    id: '/partners',
-    path: '/partners',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugSettingsEmisorRoute =
-  AuthenticatedWWorkspaceSlugSettingsEmisorRouteImport.update({
-    id: '/emisor',
-    path: '/emisor',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugSettingsDteRoute =
-  AuthenticatedWWorkspaceSlugSettingsDteRouteImport.update({
-    id: '/dte',
-    path: '/dte',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugSettingsCostsRoute =
-  AuthenticatedWWorkspaceSlugSettingsCostsRouteImport.update({
-    id: '/costs',
-    path: '/costs',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugReportsTiempoRoute =
-  AuthenticatedWWorkspaceSlugReportsTiempoRouteImport.update({
-    id: '/tiempo',
-    path: '/tiempo',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugReportsRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugReportsPlanVsRealRoute =
-  AuthenticatedWWorkspaceSlugReportsPlanVsRealRouteImport.update({
-    id: '/plan-vs-real',
-    path: '/plan-vs-real',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugReportsRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugProjectsProjectIdRoute =
-  AuthenticatedWWorkspaceSlugProjectsProjectIdRouteImport.update({
-    id: '/$projectId',
-    path: '/$projectId',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugProjectsRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugMarketingGrillaRoute =
-  AuthenticatedWWorkspaceSlugMarketingGrillaRouteImport.update({
-    id: '/grilla',
-    path: '/grilla',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugInternalSettingsRoute =
-  AuthenticatedWWorkspaceSlugInternalSettingsRouteImport.update({
-    id: '/settings',
-    path: '/settings',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugInternalRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugFinanceSettingsRoute =
-  AuthenticatedWWorkspaceSlugFinanceSettingsRouteImport.update({
-    id: '/settings',
-    path: '/settings',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugFinanceRenewalsRoute =
-  AuthenticatedWWorkspaceSlugFinanceRenewalsRouteImport.update({
-    id: '/renewals',
-    path: '/renewals',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugFinancePaymentsRoute =
-  AuthenticatedWWorkspaceSlugFinancePaymentsRouteImport.update({
-    id: '/payments',
-    path: '/payments',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugFinanceInvoicesRoute =
-  AuthenticatedWWorkspaceSlugFinanceInvoicesRouteImport.update({
-    id: '/invoices',
-    path: '/invoices',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugFinanceCurrenciesRoute =
-  AuthenticatedWWorkspaceSlugFinanceCurrenciesRouteImport.update({
-    id: '/currencies',
-    path: '/currencies',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugFinanceContractsRoute =
-  AuthenticatedWWorkspaceSlugFinanceContractsRouteImport.update({
-    id: '/contracts',
-    path: '/contracts',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugFinanceCommissionsRoute =
-  AuthenticatedWWorkspaceSlugFinanceCommissionsRouteImport.update({
-    id: '/commissions',
-    path: '/commissions',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugContractsContractIdRoute =
-  AuthenticatedWWorkspaceSlugContractsContractIdRouteImport.update({
-    id: '/contracts/$contractId',
-    path: '/contracts/$contractId',
     getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
   } as any)
 const AuthenticatedWWorkspaceSlugAccountsAccountIdRoute =
@@ -635,23 +443,197 @@ const AuthenticatedWWorkspaceSlugAccountsAccountIdRoute =
     path: '/accounts/$accountId',
     getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
   } as any)
-const AuthenticatedWWorkspaceSlugMarketingProjectsIndexRoute =
-  AuthenticatedWWorkspaceSlugMarketingProjectsIndexRouteImport.update({
-    id: '/projects/',
-    path: '/projects/',
+const AuthenticatedWWorkspaceSlugContractsIndexRoute =
+  AuthenticatedWWorkspaceSlugContractsIndexRouteImport.update({
+    id: '/contracts/',
+    path: '/contracts/',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugContractsContractIdRoute =
+  AuthenticatedWWorkspaceSlugContractsContractIdRouteImport.update({
+    id: '/contracts/$contractId',
+    path: '/contracts/$contractId',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugFinanceIndexRoute =
+  AuthenticatedWWorkspaceSlugFinanceIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugFinanceCommissionsRoute =
+  AuthenticatedWWorkspaceSlugFinanceCommissionsRouteImport.update({
+    id: '/commissions',
+    path: '/commissions',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugFinanceContractsRoute =
+  AuthenticatedWWorkspaceSlugFinanceContractsRouteImport.update({
+    id: '/contracts',
+    path: '/contracts',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugFinanceCurrenciesRoute =
+  AuthenticatedWWorkspaceSlugFinanceCurrenciesRouteImport.update({
+    id: '/currencies',
+    path: '/currencies',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugFinanceInvoicesRoute =
+  AuthenticatedWWorkspaceSlugFinanceInvoicesRouteImport.update({
+    id: '/invoices',
+    path: '/invoices',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugFinancePaymentsRoute =
+  AuthenticatedWWorkspaceSlugFinancePaymentsRouteImport.update({
+    id: '/payments',
+    path: '/payments',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugFinanceRenewalsRoute =
+  AuthenticatedWWorkspaceSlugFinanceRenewalsRouteImport.update({
+    id: '/renewals',
+    path: '/renewals',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugFinanceSettingsRoute =
+  AuthenticatedWWorkspaceSlugFinanceSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugInternalIndexRoute =
+  AuthenticatedWWorkspaceSlugInternalIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugInternalRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugInternalSettingsRoute =
+  AuthenticatedWWorkspaceSlugInternalSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugInternalRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugMarketingIndexRoute =
+  AuthenticatedWWorkspaceSlugMarketingIndexRouteImport.update({
+    id: '/',
+    path: '/',
     getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
   } as any)
-const AuthenticatedWWorkspaceSlugMarketingPiecesIndexRoute =
-  AuthenticatedWWorkspaceSlugMarketingPiecesIndexRouteImport.update({
-    id: '/pieces/',
-    path: '/pieces/',
+const AuthenticatedWWorkspaceSlugMarketingGrillaRoute =
+  AuthenticatedWWorkspaceSlugMarketingGrillaRouteImport.update({
+    id: '/grilla',
+    path: '/grilla',
     getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
   } as any)
-const AuthenticatedWWorkspaceSlugMarketingCampaignsIndexRoute =
-  AuthenticatedWWorkspaceSlugMarketingCampaignsIndexRouteImport.update({
-    id: '/campaigns/',
-    path: '/campaigns/',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
+const AuthenticatedWWorkspaceSlugProjectsIndexRoute =
+  AuthenticatedWWorkspaceSlugProjectsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugProjectsRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugProjectsProjectIdRoute =
+  AuthenticatedWWorkspaceSlugProjectsProjectIdRouteImport.update({
+    id: '/$projectId',
+    path: '/$projectId',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugProjectsRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugReportsIndexRoute =
+  AuthenticatedWWorkspaceSlugReportsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugReportsRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugReportsPlanVsRealRoute =
+  AuthenticatedWWorkspaceSlugReportsPlanVsRealRouteImport.update({
+    id: '/plan-vs-real',
+    path: '/plan-vs-real',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugReportsRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugReportsTiempoRoute =
+  AuthenticatedWWorkspaceSlugReportsTiempoRouteImport.update({
+    id: '/tiempo',
+    path: '/tiempo',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugReportsRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugSettingsIndexRoute =
+  AuthenticatedWWorkspaceSlugSettingsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugSettingsCostsRoute =
+  AuthenticatedWWorkspaceSlugSettingsCostsRouteImport.update({
+    id: '/costs',
+    path: '/costs',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugSettingsDteRoute =
+  AuthenticatedWWorkspaceSlugSettingsDteRouteImport.update({
+    id: '/dte',
+    path: '/dte',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugSettingsEmisorRoute =
+  AuthenticatedWWorkspaceSlugSettingsEmisorRouteImport.update({
+    id: '/emisor',
+    path: '/emisor',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugSettingsPartnersRoute =
+  AuthenticatedWWorkspaceSlugSettingsPartnersRouteImport.update({
+    id: '/partners',
+    path: '/partners',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugSettingsServiceTypesRoute =
+  AuthenticatedWWorkspaceSlugSettingsServiceTypesRouteImport.update({
+    id: '/service-types',
+    path: '/service-types',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugSettingsSlasRoute =
+  AuthenticatedWWorkspaceSlugSettingsSlasRouteImport.update({
+    id: '/slas',
+    path: '/slas',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugSettingsTaskTypesRoute =
+  AuthenticatedWWorkspaceSlugSettingsTaskTypesRouteImport.update({
+    id: '/task-types',
+    path: '/task-types',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugSettingsTrashRoute =
+  AuthenticatedWWorkspaceSlugSettingsTrashRouteImport.update({
+    id: '/trash',
+    path: '/trash',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugSettingsRoute,
+  } as any)
+const ApiPublicOauthGoogleCalendarCallbackRoute =
+  ApiPublicOauthGoogleCalendarCallbackRouteImport.update({
+    id: '/api/public/oauth/google-calendar/callback',
+    path: '/api/public/oauth/google-calendar/callback',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicPortalSlugTicketsRoute =
+  ApiPublicPortalSlugTicketsRouteImport.update({
+    id: '/tickets',
+    path: '/tickets',
+    getParentRoute: () => ApiPublicPortalSlugRoute,
+  } as any)
+const ApiPublicPortalSlugVerifyRoute =
+  ApiPublicPortalSlugVerifyRouteImport.update({
+    id: '/verify',
+    path: '/verify',
+    getParentRoute: () => ApiPublicPortalSlugRoute,
+  } as any)
+const TicketsSlugPortalTTicketIdRoute =
+  TicketsSlugPortalTTicketIdRouteImport.update({
+    id: '/portal/t/$ticketId',
+    path: '/portal/t/$ticketId',
+    getParentRoute: () => TicketsSlugRoute,
   } as any)
 const AuthenticatedWWorkspaceSlugFinanceSettingsIndexRoute =
   AuthenticatedWWorkspaceSlugFinanceSettingsIndexRouteImport.update({
@@ -659,58 +641,10 @@ const AuthenticatedWWorkspaceSlugFinanceSettingsIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceSettingsRoute,
   } as any)
-const ApiPublicPortalSlugTicketsTicketIdRoute =
-  ApiPublicPortalSlugTicketsTicketIdRouteImport.update({
-    id: '/$ticketId',
-    path: '/$ticketId',
-    getParentRoute: () => ApiPublicPortalSlugTicketsRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugMarketingSettingsPilaresRoute =
-  AuthenticatedWWorkspaceSlugMarketingSettingsPilaresRouteImport.update({
-    id: '/settings/pilares',
-    path: '/settings/pilares',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugMarketingSettingsChannelsRoute =
-  AuthenticatedWWorkspaceSlugMarketingSettingsChannelsRouteImport.update({
-    id: '/settings/channels',
-    path: '/settings/channels',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugMarketingSettingsCadenciaRoute =
-  AuthenticatedWWorkspaceSlugMarketingSettingsCadenciaRouteImport.update({
-    id: '/settings/cadencia',
-    path: '/settings/cadencia',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugMarketingProjectsProjectIdRoute =
-  AuthenticatedWWorkspaceSlugMarketingProjectsProjectIdRouteImport.update({
-    id: '/projects/$projectId',
-    path: '/projects/$projectId',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugMarketingCampaignsCampaignIdRoute =
-  AuthenticatedWWorkspaceSlugMarketingCampaignsCampaignIdRouteImport.update({
-    id: '/campaigns/$campaignId',
-    path: '/campaigns/$campaignId',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugInternalProjectsProjectIdRoute =
-  AuthenticatedWWorkspaceSlugInternalProjectsProjectIdRouteImport.update({
-    id: '/projects/$projectId',
-    path: '/projects/$projectId',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugInternalRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugInternalCategoriesKeyRoute =
-  AuthenticatedWWorkspaceSlugInternalCategoriesKeyRouteImport.update({
-    id: '/categories/$key',
-    path: '/categories/$key',
-    getParentRoute: () => AuthenticatedWWorkspaceSlugInternalRoute,
-  } as any)
-const AuthenticatedWWorkspaceSlugFinanceSettingsEmisorRoute =
-  AuthenticatedWWorkspaceSlugFinanceSettingsEmisorRouteImport.update({
-    id: '/emisor',
-    path: '/emisor',
+const AuthenticatedWWorkspaceSlugFinanceSettingsCostsRoute =
+  AuthenticatedWWorkspaceSlugFinanceSettingsCostsRouteImport.update({
+    id: '/costs',
+    path: '/costs',
     getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceSettingsRoute,
   } as any)
 const AuthenticatedWWorkspaceSlugFinanceSettingsDteRoute =
@@ -719,11 +653,77 @@ const AuthenticatedWWorkspaceSlugFinanceSettingsDteRoute =
     path: '/dte',
     getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceSettingsRoute,
   } as any)
-const AuthenticatedWWorkspaceSlugFinanceSettingsCostsRoute =
-  AuthenticatedWWorkspaceSlugFinanceSettingsCostsRouteImport.update({
-    id: '/costs',
-    path: '/costs',
+const AuthenticatedWWorkspaceSlugFinanceSettingsEmisorRoute =
+  AuthenticatedWWorkspaceSlugFinanceSettingsEmisorRouteImport.update({
+    id: '/emisor',
+    path: '/emisor',
     getParentRoute: () => AuthenticatedWWorkspaceSlugFinanceSettingsRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugInternalCategoriesKeyRoute =
+  AuthenticatedWWorkspaceSlugInternalCategoriesKeyRouteImport.update({
+    id: '/categories/$key',
+    path: '/categories/$key',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugInternalRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugInternalProjectsProjectIdRoute =
+  AuthenticatedWWorkspaceSlugInternalProjectsProjectIdRouteImport.update({
+    id: '/projects/$projectId',
+    path: '/projects/$projectId',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugInternalRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugMarketingCampaignsIndexRoute =
+  AuthenticatedWWorkspaceSlugMarketingCampaignsIndexRouteImport.update({
+    id: '/campaigns/',
+    path: '/campaigns/',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugMarketingCampaignsCampaignIdRoute =
+  AuthenticatedWWorkspaceSlugMarketingCampaignsCampaignIdRouteImport.update({
+    id: '/campaigns/$campaignId',
+    path: '/campaigns/$campaignId',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugMarketingPiecesIndexRoute =
+  AuthenticatedWWorkspaceSlugMarketingPiecesIndexRouteImport.update({
+    id: '/pieces/',
+    path: '/pieces/',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugMarketingProjectsIndexRoute =
+  AuthenticatedWWorkspaceSlugMarketingProjectsIndexRouteImport.update({
+    id: '/projects/',
+    path: '/projects/',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugMarketingProjectsProjectIdRoute =
+  AuthenticatedWWorkspaceSlugMarketingProjectsProjectIdRouteImport.update({
+    id: '/projects/$projectId',
+    path: '/projects/$projectId',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugMarketingSettingsCadenciaRoute =
+  AuthenticatedWWorkspaceSlugMarketingSettingsCadenciaRouteImport.update({
+    id: '/settings/cadencia',
+    path: '/settings/cadencia',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugMarketingSettingsChannelsRoute =
+  AuthenticatedWWorkspaceSlugMarketingSettingsChannelsRouteImport.update({
+    id: '/settings/channels',
+    path: '/settings/channels',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
+  } as any)
+const AuthenticatedWWorkspaceSlugMarketingSettingsPilaresRoute =
+  AuthenticatedWWorkspaceSlugMarketingSettingsPilaresRouteImport.update({
+    id: '/settings/pilares',
+    path: '/settings/pilares',
+    getParentRoute: () => AuthenticatedWWorkspaceSlugMarketingRoute,
+  } as any)
+const ApiPublicPortalSlugTicketsTicketIdRoute =
+  ApiPublicPortalSlugTicketsTicketIdRouteImport.update({
+    id: '/$ticketId',
+    path: '/$ticketId',
+    getParentRoute: () => ApiPublicPortalSlugTicketsRoute,
   } as any)
 const ApiPublicPortalSlugTicketsTicketIdCommentRoute =
   ApiPublicPortalSlugTicketsTicketIdCommentRouteImport.update({
@@ -1392,18 +1392,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/unsubscribe': {
-      id: '/unsubscribe'
-      path: '/unsubscribe'
-      fullPath: '/unsubscribe'
-      preLoaderRoute: typeof UnsubscribeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -1413,74 +1406,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteImport
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/': {
-      id: '/_authenticated/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/tickets/$slug': {
-      id: '/tickets/$slug'
-      path: '/tickets/$slug'
-      fullPath: '/tickets/$slug'
-      preLoaderRoute: typeof TicketsSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/informe/$token': {
-      id: '/informe/$token'
-      path: '/informe/$token'
-      fullPath: '/informe/$token'
-      preLoaderRoute: typeof InformeTokenRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/gantt/$token': {
-      id: '/gantt/$token'
-      path: '/gantt/$token'
-      fullPath: '/gantt/$token'
-      preLoaderRoute: typeof GanttTokenRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/email/unsubscribe': {
-      id: '/email/unsubscribe'
-      path: '/email/unsubscribe'
-      fullPath: '/email/unsubscribe'
-      preLoaderRoute: typeof EmailUnsubscribeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/my-time': {
-      id: '/_authenticated/my-time'
-      path: '/my-time'
-      fullPath: '/my-time'
-      preLoaderRoute: typeof AuthenticatedMyTimeRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/my-tasks': {
-      id: '/_authenticated/my-tasks'
-      path: '/my-tasks'
-      fullPath: '/my-tasks'
-      preLoaderRoute: typeof AuthenticatedMyTasksRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/admin': {
-      id: '/_authenticated/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AuthenticatedAdminRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/.well-known/oauth-protected-resource': {
-      id: '/.well-known/oauth-protected-resource'
-      path: '/.well-known/oauth-protected-resource'
-      fullPath: '/.well-known/oauth-protected-resource'
-      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.mcp/list-tools': {
@@ -1490,81 +1427,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tickets/$slug/': {
-      id: '/tickets/$slug/'
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/': {
+      id: '/_authenticated/'
       path: '/'
-      fullPath: '/tickets/$slug/'
-      preLoaderRoute: typeof TicketsSlugIndexRouteImport
-      parentRoute: typeof TicketsSlugRoute
-    }
-    '/_authenticated/admin/': {
-      id: '/_authenticated/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/tickets/$slug/new': {
-      id: '/tickets/$slug/new'
-      path: '/new'
-      fullPath: '/tickets/$slug/new'
-      preLoaderRoute: typeof TicketsSlugNewRouteImport
-      parentRoute: typeof TicketsSlugRoute
-    }
-    '/_authenticated/w/$workspaceSlug': {
-      id: '/_authenticated/w/$workspaceSlug'
-      path: '/w/$workspaceSlug'
-      fullPath: '/w/$workspaceSlug'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugRouteImport
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/tasks/$taskId': {
-      id: '/_authenticated/tasks/$taskId'
-      path: '/tasks/$taskId'
-      fullPath: '/tasks/$taskId'
-      preLoaderRoute: typeof AuthenticatedTasksTaskIdRouteImport
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/me/settings': {
-      id: '/_authenticated/me/settings'
-      path: '/me/settings'
-      fullPath: '/me/settings'
-      preLoaderRoute: typeof AuthenticatedMeSettingsRouteImport
+    '/_authenticated/my-tasks': {
+      id: '/_authenticated/my-tasks'
+      path: '/my-tasks'
+      fullPath: '/my-tasks'
+      preLoaderRoute: typeof AuthenticatedMyTasksRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/admin/users': {
-      id: '/_authenticated/admin/users'
-      path: '/users'
-      fullPath: '/admin/users'
-      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+    '/_authenticated/my-time': {
+      id: '/_authenticated/my-time'
+      path: '/my-time'
+      fullPath: '/my-time'
+      preLoaderRoute: typeof AuthenticatedMyTimeRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/admin/system': {
-      id: '/_authenticated/admin/system'
-      path: '/system'
-      fullPath: '/admin/system'
-      preLoaderRoute: typeof AuthenticatedAdminSystemRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+    '/email/unsubscribe': {
+      id: '/email/unsubscribe'
+      path: '/email/unsubscribe'
+      fullPath: '/email/unsubscribe'
+      preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/admin/permissions': {
-      id: '/_authenticated/admin/permissions'
-      path: '/permissions'
-      fullPath: '/admin/permissions'
-      preLoaderRoute: typeof AuthenticatedAdminPermissionsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+    '/gantt/$token': {
+      id: '/gantt/$token'
+      path: '/gantt/$token'
+      fullPath: '/gantt/$token'
+      preLoaderRoute: typeof GanttTokenRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/admin/import': {
-      id: '/_authenticated/admin/import'
-      path: '/import'
-      fullPath: '/admin/import'
-      preLoaderRoute: typeof AuthenticatedAdminImportRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+    '/informe/$token': {
+      id: '/informe/$token'
+      path: '/informe/$token'
+      fullPath: '/informe/$token'
+      preLoaderRoute: typeof InformeTokenRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/.mcp/invoke-tool/$tool': {
-      id: '/.mcp/invoke-tool/$tool'
-      path: '/.mcp/invoke-tool/$tool'
-      fullPath: '/.mcp/invoke-tool/$tool'
-      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+    '/tickets/$slug': {
+      id: '/tickets/$slug'
+      path: '/tickets/$slug'
+      fullPath: '/tickets/$slug'
+      preLoaderRoute: typeof TicketsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.lovable/oauth/consent': {
@@ -1574,214 +1497,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/w/$workspaceSlug/': {
-      id: '/_authenticated/w/$workspaceSlug/'
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
       path: '/'
-      fullPath: '/w/$workspaceSlug/'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugIndexRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/import': {
+      id: '/_authenticated/admin/import'
+      path: '/import'
+      fullPath: '/admin/import'
+      preLoaderRoute: typeof AuthenticatedAdminImportRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/permissions': {
+      id: '/_authenticated/admin/permissions'
+      path: '/permissions'
+      fullPath: '/admin/permissions'
+      preLoaderRoute: typeof AuthenticatedAdminPermissionsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/system': {
+      id: '/_authenticated/admin/system'
+      path: '/system'
+      fullPath: '/admin/system'
+      preLoaderRoute: typeof AuthenticatedAdminSystemRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/me/settings': {
+      id: '/_authenticated/me/settings'
+      path: '/me/settings'
+      fullPath: '/me/settings'
+      preLoaderRoute: typeof AuthenticatedMeSettingsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/tasks/$taskId': {
+      id: '/_authenticated/tasks/$taskId'
+      path: '/tasks/$taskId'
+      fullPath: '/tasks/$taskId'
+      preLoaderRoute: typeof AuthenticatedTasksTaskIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/w/$workspaceSlug': {
+      id: '/_authenticated/w/$workspaceSlug'
+      path: '/w/$workspaceSlug'
+      fullPath: '/w/$workspaceSlug'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/tickets/$slug/': {
+      id: '/tickets/$slug/'
+      path: '/'
+      fullPath: '/tickets/$slug/'
+      preLoaderRoute: typeof TicketsSlugIndexRouteImport
+      parentRoute: typeof TicketsSlugRoute
+    }
+    '/tickets/$slug/new': {
+      id: '/tickets/$slug/new'
+      path: '/new'
+      fullPath: '/tickets/$slug/new'
+      preLoaderRoute: typeof TicketsSlugNewRouteImport
+      parentRoute: typeof TicketsSlugRoute
     }
     '/_authenticated/me/settings/': {
       id: '/_authenticated/me/settings/'
       path: '/'
       fullPath: '/me/settings/'
       preLoaderRoute: typeof AuthenticatedMeSettingsIndexRouteImport
-      parentRoute: typeof AuthenticatedMeSettingsRoute
-    }
-    '/tickets/$slug/portal/inbox': {
-      id: '/tickets/$slug/portal/inbox'
-      path: '/portal/inbox'
-      fullPath: '/tickets/$slug/portal/inbox'
-      preLoaderRoute: typeof TicketsSlugPortalInboxRouteImport
-      parentRoute: typeof TicketsSlugRoute
-    }
-    '/api/public/webhooks/resend': {
-      id: '/api/public/webhooks/resend'
-      path: '/api/public/webhooks/resend'
-      fullPath: '/api/public/webhooks/resend'
-      preLoaderRoute: typeof ApiPublicWebhooksResendRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/webhooks/asana': {
-      id: '/api/public/webhooks/asana'
-      path: '/api/public/webhooks/asana'
-      fullPath: '/api/public/webhooks/asana'
-      preLoaderRoute: typeof ApiPublicWebhooksAsanaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/tickets/$slug': {
-      id: '/api/public/tickets/$slug'
-      path: '/api/public/tickets/$slug'
-      fullPath: '/api/public/tickets/$slug'
-      preLoaderRoute: typeof ApiPublicTicketsSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/report/$token': {
-      id: '/api/public/report/$token'
-      path: '/api/public/report/$token'
-      fullPath: '/api/public/report/$token'
-      preLoaderRoute: typeof ApiPublicReportTokenRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/portal/$slug': {
-      id: '/api/public/portal/$slug'
-      path: '/api/public/portal/$slug'
-      fullPath: '/api/public/portal/$slug'
-      preLoaderRoute: typeof ApiPublicPortalSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/gantt/$token': {
-      id: '/api/public/gantt/$token'
-      path: '/api/public/gantt/$token'
-      fullPath: '/api/public/gantt/$token'
-      preLoaderRoute: typeof ApiPublicGanttTokenRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/cron/invoice-reminders': {
-      id: '/api/public/cron/invoice-reminders'
-      path: '/api/public/cron/invoice-reminders'
-      fullPath: '/api/public/cron/invoice-reminders'
-      preLoaderRoute: typeof ApiPublicCronInvoiceRemindersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/cron/dispatch-notifications': {
-      id: '/api/public/cron/dispatch-notifications'
-      path: '/api/public/cron/dispatch-notifications'
-      fullPath: '/api/public/cron/dispatch-notifications'
-      preLoaderRoute: typeof ApiPublicCronDispatchNotificationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/cron/asana-sync': {
-      id: '/api/public/cron/asana-sync'
-      path: '/api/public/cron/asana-sync'
-      fullPath: '/api/public/cron/asana-sync'
-      preLoaderRoute: typeof ApiPublicCronAsanaSyncRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/cron/asana-queue': {
-      id: '/api/public/cron/asana-queue'
-      path: '/api/public/cron/asana-queue'
-      fullPath: '/api/public/cron/asana-queue'
-      preLoaderRoute: typeof ApiPublicCronAsanaQueueRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/w/$workspaceSlug/workload': {
-      id: '/_authenticated/w/$workspaceSlug/workload'
-      path: '/workload'
-      fullPath: '/w/$workspaceSlug/workload'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugWorkloadRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
-    }
-    '/_authenticated/w/$workspaceSlug/time-settings': {
-      id: '/_authenticated/w/$workspaceSlug/time-settings'
-      path: '/time-settings'
-      fullPath: '/w/$workspaceSlug/time-settings'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugTimeSettingsRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
-    }
-    '/_authenticated/w/$workspaceSlug/settings': {
-      id: '/_authenticated/w/$workspaceSlug/settings'
-      path: '/settings'
-      fullPath: '/w/$workspaceSlug/settings'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
-    }
-    '/_authenticated/w/$workspaceSlug/reports': {
-      id: '/_authenticated/w/$workspaceSlug/reports'
-      path: '/reports'
-      fullPath: '/w/$workspaceSlug/reports'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugReportsRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
-    }
-    '/_authenticated/w/$workspaceSlug/projects': {
-      id: '/_authenticated/w/$workspaceSlug/projects'
-      path: '/projects'
-      fullPath: '/w/$workspaceSlug/projects'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugProjectsRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
-    }
-    '/_authenticated/w/$workspaceSlug/my-time': {
-      id: '/_authenticated/w/$workspaceSlug/my-time'
-      path: '/my-time'
-      fullPath: '/w/$workspaceSlug/my-time'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMyTimeRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
-    }
-    '/_authenticated/w/$workspaceSlug/my-team': {
-      id: '/_authenticated/w/$workspaceSlug/my-team'
-      path: '/my-team'
-      fullPath: '/w/$workspaceSlug/my-team'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMyTeamRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
-    }
-    '/_authenticated/w/$workspaceSlug/my-tasks': {
-      id: '/_authenticated/w/$workspaceSlug/my-tasks'
-      path: '/my-tasks'
-      fullPath: '/w/$workspaceSlug/my-tasks'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMyTasksRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
-    }
-    '/_authenticated/w/$workspaceSlug/marketing': {
-      id: '/_authenticated/w/$workspaceSlug/marketing'
-      path: '/marketing'
-      fullPath: '/w/$workspaceSlug/marketing'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
-    }
-    '/_authenticated/w/$workspaceSlug/internal': {
-      id: '/_authenticated/w/$workspaceSlug/internal'
-      path: '/internal'
-      fullPath: '/w/$workspaceSlug/internal'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugInternalRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
-    }
-    '/_authenticated/w/$workspaceSlug/inbox': {
-      id: '/_authenticated/w/$workspaceSlug/inbox'
-      path: '/inbox'
-      fullPath: '/w/$workspaceSlug/inbox'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugInboxRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
-    }
-    '/_authenticated/w/$workspaceSlug/handoffs': {
-      id: '/_authenticated/w/$workspaceSlug/handoffs'
-      path: '/handoffs'
-      fullPath: '/w/$workspaceSlug/handoffs'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugHandoffsRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
-    }
-    '/_authenticated/w/$workspaceSlug/finance': {
-      id: '/_authenticated/w/$workspaceSlug/finance'
-      path: '/finance'
-      fullPath: '/w/$workspaceSlug/finance'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
-    }
-    '/_authenticated/me/settings/vacations': {
-      id: '/_authenticated/me/settings/vacations'
-      path: '/vacations'
-      fullPath: '/me/settings/vacations'
-      preLoaderRoute: typeof AuthenticatedMeSettingsVacationsRouteImport
-      parentRoute: typeof AuthenticatedMeSettingsRoute
-    }
-    '/_authenticated/me/settings/time': {
-      id: '/_authenticated/me/settings/time'
-      path: '/time'
-      fullPath: '/me/settings/time'
-      preLoaderRoute: typeof AuthenticatedMeSettingsTimeRouteImport
-      parentRoute: typeof AuthenticatedMeSettingsRoute
-    }
-    '/_authenticated/me/settings/preferences': {
-      id: '/_authenticated/me/settings/preferences'
-      path: '/preferences'
-      fullPath: '/me/settings/preferences'
-      preLoaderRoute: typeof AuthenticatedMeSettingsPreferencesRouteImport
-      parentRoute: typeof AuthenticatedMeSettingsRoute
-    }
-    '/_authenticated/me/settings/notifications': {
-      id: '/_authenticated/me/settings/notifications'
-      path: '/notifications'
-      fullPath: '/me/settings/notifications'
-      preLoaderRoute: typeof AuthenticatedMeSettingsNotificationsRouteImport
       parentRoute: typeof AuthenticatedMeSettingsRoute
     }
     '/_authenticated/me/settings/connections': {
@@ -1791,235 +1588,214 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMeSettingsConnectionsRouteImport
       parentRoute: typeof AuthenticatedMeSettingsRoute
     }
-    '/_authenticated/w/$workspaceSlug/settings/': {
-      id: '/_authenticated/w/$workspaceSlug/settings/'
-      path: '/'
-      fullPath: '/w/$workspaceSlug/settings/'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsIndexRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
+    '/_authenticated/me/settings/notifications': {
+      id: '/_authenticated/me/settings/notifications'
+      path: '/notifications'
+      fullPath: '/me/settings/notifications'
+      preLoaderRoute: typeof AuthenticatedMeSettingsNotificationsRouteImport
+      parentRoute: typeof AuthenticatedMeSettingsRoute
     }
-    '/_authenticated/w/$workspaceSlug/reports/': {
-      id: '/_authenticated/w/$workspaceSlug/reports/'
-      path: '/'
-      fullPath: '/w/$workspaceSlug/reports/'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugReportsIndexRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugReportsRoute
+    '/_authenticated/me/settings/preferences': {
+      id: '/_authenticated/me/settings/preferences'
+      path: '/preferences'
+      fullPath: '/me/settings/preferences'
+      preLoaderRoute: typeof AuthenticatedMeSettingsPreferencesRouteImport
+      parentRoute: typeof AuthenticatedMeSettingsRoute
     }
-    '/_authenticated/w/$workspaceSlug/projects/': {
-      id: '/_authenticated/w/$workspaceSlug/projects/'
-      path: '/'
-      fullPath: '/w/$workspaceSlug/projects/'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugProjectsIndexRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugProjectsRoute
+    '/_authenticated/me/settings/time': {
+      id: '/_authenticated/me/settings/time'
+      path: '/time'
+      fullPath: '/me/settings/time'
+      preLoaderRoute: typeof AuthenticatedMeSettingsTimeRouteImport
+      parentRoute: typeof AuthenticatedMeSettingsRoute
     }
-    '/_authenticated/w/$workspaceSlug/marketing/': {
-      id: '/_authenticated/w/$workspaceSlug/marketing/'
-      path: '/'
-      fullPath: '/w/$workspaceSlug/marketing/'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingIndexRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
+    '/_authenticated/me/settings/vacations': {
+      id: '/_authenticated/me/settings/vacations'
+      path: '/vacations'
+      fullPath: '/me/settings/vacations'
+      preLoaderRoute: typeof AuthenticatedMeSettingsVacationsRouteImport
+      parentRoute: typeof AuthenticatedMeSettingsRoute
     }
-    '/_authenticated/w/$workspaceSlug/internal/': {
-      id: '/_authenticated/w/$workspaceSlug/internal/'
+    '/_authenticated/w/$workspaceSlug/': {
+      id: '/_authenticated/w/$workspaceSlug/'
       path: '/'
-      fullPath: '/w/$workspaceSlug/internal/'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugInternalIndexRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugInternalRoute
-    }
-    '/_authenticated/w/$workspaceSlug/finance/': {
-      id: '/_authenticated/w/$workspaceSlug/finance/'
-      path: '/'
-      fullPath: '/w/$workspaceSlug/finance/'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceIndexRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceRoute
-    }
-    '/_authenticated/w/$workspaceSlug/contracts/': {
-      id: '/_authenticated/w/$workspaceSlug/contracts/'
-      path: '/contracts'
-      fullPath: '/w/$workspaceSlug/contracts/'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugContractsIndexRouteImport
+      fullPath: '/w/$workspaceSlug/'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugIndexRouteImport
       parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
+    }
+    '/_authenticated/w/$workspaceSlug/finance': {
+      id: '/_authenticated/w/$workspaceSlug/finance'
+      path: '/finance'
+      fullPath: '/w/$workspaceSlug/finance'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
+    }
+    '/_authenticated/w/$workspaceSlug/handoffs': {
+      id: '/_authenticated/w/$workspaceSlug/handoffs'
+      path: '/handoffs'
+      fullPath: '/w/$workspaceSlug/handoffs'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugHandoffsRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
+    }
+    '/_authenticated/w/$workspaceSlug/inbox': {
+      id: '/_authenticated/w/$workspaceSlug/inbox'
+      path: '/inbox'
+      fullPath: '/w/$workspaceSlug/inbox'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugInboxRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
+    }
+    '/_authenticated/w/$workspaceSlug/internal': {
+      id: '/_authenticated/w/$workspaceSlug/internal'
+      path: '/internal'
+      fullPath: '/w/$workspaceSlug/internal'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugInternalRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
+    }
+    '/_authenticated/w/$workspaceSlug/marketing': {
+      id: '/_authenticated/w/$workspaceSlug/marketing'
+      path: '/marketing'
+      fullPath: '/w/$workspaceSlug/marketing'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
+    }
+    '/_authenticated/w/$workspaceSlug/my-tasks': {
+      id: '/_authenticated/w/$workspaceSlug/my-tasks'
+      path: '/my-tasks'
+      fullPath: '/w/$workspaceSlug/my-tasks'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMyTasksRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
+    }
+    '/_authenticated/w/$workspaceSlug/my-team': {
+      id: '/_authenticated/w/$workspaceSlug/my-team'
+      path: '/my-team'
+      fullPath: '/w/$workspaceSlug/my-team'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMyTeamRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
+    }
+    '/_authenticated/w/$workspaceSlug/my-time': {
+      id: '/_authenticated/w/$workspaceSlug/my-time'
+      path: '/my-time'
+      fullPath: '/w/$workspaceSlug/my-time'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMyTimeRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
+    }
+    '/_authenticated/w/$workspaceSlug/projects': {
+      id: '/_authenticated/w/$workspaceSlug/projects'
+      path: '/projects'
+      fullPath: '/w/$workspaceSlug/projects'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugProjectsRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
+    }
+    '/_authenticated/w/$workspaceSlug/reports': {
+      id: '/_authenticated/w/$workspaceSlug/reports'
+      path: '/reports'
+      fullPath: '/w/$workspaceSlug/reports'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugReportsRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
+    }
+    '/_authenticated/w/$workspaceSlug/settings': {
+      id: '/_authenticated/w/$workspaceSlug/settings'
+      path: '/settings'
+      fullPath: '/w/$workspaceSlug/settings'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
+    }
+    '/_authenticated/w/$workspaceSlug/time-settings': {
+      id: '/_authenticated/w/$workspaceSlug/time-settings'
+      path: '/time-settings'
+      fullPath: '/w/$workspaceSlug/time-settings'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugTimeSettingsRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
+    }
+    '/_authenticated/w/$workspaceSlug/workload': {
+      id: '/_authenticated/w/$workspaceSlug/workload'
+      path: '/workload'
+      fullPath: '/w/$workspaceSlug/workload'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugWorkloadRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
+    }
+    '/api/public/cron/asana-queue': {
+      id: '/api/public/cron/asana-queue'
+      path: '/api/public/cron/asana-queue'
+      fullPath: '/api/public/cron/asana-queue'
+      preLoaderRoute: typeof ApiPublicCronAsanaQueueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/asana-sync': {
+      id: '/api/public/cron/asana-sync'
+      path: '/api/public/cron/asana-sync'
+      fullPath: '/api/public/cron/asana-sync'
+      preLoaderRoute: typeof ApiPublicCronAsanaSyncRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/dispatch-notifications': {
+      id: '/api/public/cron/dispatch-notifications'
+      path: '/api/public/cron/dispatch-notifications'
+      fullPath: '/api/public/cron/dispatch-notifications'
+      preLoaderRoute: typeof ApiPublicCronDispatchNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/invoice-reminders': {
+      id: '/api/public/cron/invoice-reminders'
+      path: '/api/public/cron/invoice-reminders'
+      fullPath: '/api/public/cron/invoice-reminders'
+      preLoaderRoute: typeof ApiPublicCronInvoiceRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/gantt/$token': {
+      id: '/api/public/gantt/$token'
+      path: '/api/public/gantt/$token'
+      fullPath: '/api/public/gantt/$token'
+      preLoaderRoute: typeof ApiPublicGanttTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/portal/$slug': {
+      id: '/api/public/portal/$slug'
+      path: '/api/public/portal/$slug'
+      fullPath: '/api/public/portal/$slug'
+      preLoaderRoute: typeof ApiPublicPortalSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/report/$token': {
+      id: '/api/public/report/$token'
+      path: '/api/public/report/$token'
+      fullPath: '/api/public/report/$token'
+      preLoaderRoute: typeof ApiPublicReportTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/tickets/$slug': {
+      id: '/api/public/tickets/$slug'
+      path: '/api/public/tickets/$slug'
+      fullPath: '/api/public/tickets/$slug'
+      preLoaderRoute: typeof ApiPublicTicketsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/asana': {
+      id: '/api/public/webhooks/asana'
+      path: '/api/public/webhooks/asana'
+      fullPath: '/api/public/webhooks/asana'
+      preLoaderRoute: typeof ApiPublicWebhooksAsanaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/resend': {
+      id: '/api/public/webhooks/resend'
+      path: '/api/public/webhooks/resend'
+      fullPath: '/api/public/webhooks/resend'
+      preLoaderRoute: typeof ApiPublicWebhooksResendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tickets/$slug/portal/inbox': {
+      id: '/tickets/$slug/portal/inbox'
+      path: '/portal/inbox'
+      fullPath: '/tickets/$slug/portal/inbox'
+      preLoaderRoute: typeof TicketsSlugPortalInboxRouteImport
+      parentRoute: typeof TicketsSlugRoute
     }
     '/_authenticated/w/$workspaceSlug/accounts/': {
       id: '/_authenticated/w/$workspaceSlug/accounts/'
       path: '/accounts'
       fullPath: '/w/$workspaceSlug/accounts/'
       preLoaderRoute: typeof AuthenticatedWWorkspaceSlugAccountsIndexRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
-    }
-    '/tickets/$slug/portal/t/$ticketId': {
-      id: '/tickets/$slug/portal/t/$ticketId'
-      path: '/portal/t/$ticketId'
-      fullPath: '/tickets/$slug/portal/t/$ticketId'
-      preLoaderRoute: typeof TicketsSlugPortalTTicketIdRouteImport
-      parentRoute: typeof TicketsSlugRoute
-    }
-    '/api/public/portal/$slug/verify': {
-      id: '/api/public/portal/$slug/verify'
-      path: '/verify'
-      fullPath: '/api/public/portal/$slug/verify'
-      preLoaderRoute: typeof ApiPublicPortalSlugVerifyRouteImport
-      parentRoute: typeof ApiPublicPortalSlugRoute
-    }
-    '/api/public/portal/$slug/tickets': {
-      id: '/api/public/portal/$slug/tickets'
-      path: '/tickets'
-      fullPath: '/api/public/portal/$slug/tickets'
-      preLoaderRoute: typeof ApiPublicPortalSlugTicketsRouteImport
-      parentRoute: typeof ApiPublicPortalSlugRoute
-    }
-    '/api/public/oauth/google-calendar/callback': {
-      id: '/api/public/oauth/google-calendar/callback'
-      path: '/api/public/oauth/google-calendar/callback'
-      fullPath: '/api/public/oauth/google-calendar/callback'
-      preLoaderRoute: typeof ApiPublicOauthGoogleCalendarCallbackRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/w/$workspaceSlug/settings/trash': {
-      id: '/_authenticated/w/$workspaceSlug/settings/trash'
-      path: '/trash'
-      fullPath: '/w/$workspaceSlug/settings/trash'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsTrashRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
-    }
-    '/_authenticated/w/$workspaceSlug/settings/task-types': {
-      id: '/_authenticated/w/$workspaceSlug/settings/task-types'
-      path: '/task-types'
-      fullPath: '/w/$workspaceSlug/settings/task-types'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsTaskTypesRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
-    }
-    '/_authenticated/w/$workspaceSlug/settings/slas': {
-      id: '/_authenticated/w/$workspaceSlug/settings/slas'
-      path: '/slas'
-      fullPath: '/w/$workspaceSlug/settings/slas'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsSlasRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
-    }
-    '/_authenticated/w/$workspaceSlug/settings/service-types': {
-      id: '/_authenticated/w/$workspaceSlug/settings/service-types'
-      path: '/service-types'
-      fullPath: '/w/$workspaceSlug/settings/service-types'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsServiceTypesRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
-    }
-    '/_authenticated/w/$workspaceSlug/settings/partners': {
-      id: '/_authenticated/w/$workspaceSlug/settings/partners'
-      path: '/partners'
-      fullPath: '/w/$workspaceSlug/settings/partners'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsPartnersRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
-    }
-    '/_authenticated/w/$workspaceSlug/settings/emisor': {
-      id: '/_authenticated/w/$workspaceSlug/settings/emisor'
-      path: '/emisor'
-      fullPath: '/w/$workspaceSlug/settings/emisor'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsEmisorRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
-    }
-    '/_authenticated/w/$workspaceSlug/settings/dte': {
-      id: '/_authenticated/w/$workspaceSlug/settings/dte'
-      path: '/dte'
-      fullPath: '/w/$workspaceSlug/settings/dte'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsDteRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
-    }
-    '/_authenticated/w/$workspaceSlug/settings/costs': {
-      id: '/_authenticated/w/$workspaceSlug/settings/costs'
-      path: '/costs'
-      fullPath: '/w/$workspaceSlug/settings/costs'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsCostsRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
-    }
-    '/_authenticated/w/$workspaceSlug/reports/tiempo': {
-      id: '/_authenticated/w/$workspaceSlug/reports/tiempo'
-      path: '/tiempo'
-      fullPath: '/w/$workspaceSlug/reports/tiempo'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugReportsTiempoRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugReportsRoute
-    }
-    '/_authenticated/w/$workspaceSlug/reports/plan-vs-real': {
-      id: '/_authenticated/w/$workspaceSlug/reports/plan-vs-real'
-      path: '/plan-vs-real'
-      fullPath: '/w/$workspaceSlug/reports/plan-vs-real'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugReportsPlanVsRealRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugReportsRoute
-    }
-    '/_authenticated/w/$workspaceSlug/projects/$projectId': {
-      id: '/_authenticated/w/$workspaceSlug/projects/$projectId'
-      path: '/$projectId'
-      fullPath: '/w/$workspaceSlug/projects/$projectId'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugProjectsProjectIdRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugProjectsRoute
-    }
-    '/_authenticated/w/$workspaceSlug/marketing/grilla': {
-      id: '/_authenticated/w/$workspaceSlug/marketing/grilla'
-      path: '/grilla'
-      fullPath: '/w/$workspaceSlug/marketing/grilla'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingGrillaRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
-    }
-    '/_authenticated/w/$workspaceSlug/internal/settings': {
-      id: '/_authenticated/w/$workspaceSlug/internal/settings'
-      path: '/settings'
-      fullPath: '/w/$workspaceSlug/internal/settings'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugInternalSettingsRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugInternalRoute
-    }
-    '/_authenticated/w/$workspaceSlug/finance/settings': {
-      id: '/_authenticated/w/$workspaceSlug/finance/settings'
-      path: '/settings'
-      fullPath: '/w/$workspaceSlug/finance/settings'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceSettingsRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceRoute
-    }
-    '/_authenticated/w/$workspaceSlug/finance/renewals': {
-      id: '/_authenticated/w/$workspaceSlug/finance/renewals'
-      path: '/renewals'
-      fullPath: '/w/$workspaceSlug/finance/renewals'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceRenewalsRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceRoute
-    }
-    '/_authenticated/w/$workspaceSlug/finance/payments': {
-      id: '/_authenticated/w/$workspaceSlug/finance/payments'
-      path: '/payments'
-      fullPath: '/w/$workspaceSlug/finance/payments'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinancePaymentsRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceRoute
-    }
-    '/_authenticated/w/$workspaceSlug/finance/invoices': {
-      id: '/_authenticated/w/$workspaceSlug/finance/invoices'
-      path: '/invoices'
-      fullPath: '/w/$workspaceSlug/finance/invoices'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceInvoicesRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceRoute
-    }
-    '/_authenticated/w/$workspaceSlug/finance/currencies': {
-      id: '/_authenticated/w/$workspaceSlug/finance/currencies'
-      path: '/currencies'
-      fullPath: '/w/$workspaceSlug/finance/currencies'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceCurrenciesRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceRoute
-    }
-    '/_authenticated/w/$workspaceSlug/finance/contracts': {
-      id: '/_authenticated/w/$workspaceSlug/finance/contracts'
-      path: '/contracts'
-      fullPath: '/w/$workspaceSlug/finance/contracts'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceContractsRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceRoute
-    }
-    '/_authenticated/w/$workspaceSlug/finance/commissions': {
-      id: '/_authenticated/w/$workspaceSlug/finance/commissions'
-      path: '/commissions'
-      fullPath: '/w/$workspaceSlug/finance/commissions'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceCommissionsRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceRoute
-    }
-    '/_authenticated/w/$workspaceSlug/contracts/$contractId': {
-      id: '/_authenticated/w/$workspaceSlug/contracts/$contractId'
-      path: '/contracts/$contractId'
-      fullPath: '/w/$workspaceSlug/contracts/$contractId'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugContractsContractIdRouteImport
       parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
     }
     '/_authenticated/w/$workspaceSlug/accounts/$accountId': {
@@ -2029,26 +1805,229 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWWorkspaceSlugAccountsAccountIdRouteImport
       parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
     }
-    '/_authenticated/w/$workspaceSlug/marketing/projects/': {
-      id: '/_authenticated/w/$workspaceSlug/marketing/projects/'
-      path: '/projects'
-      fullPath: '/w/$workspaceSlug/marketing/projects/'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingProjectsIndexRouteImport
+    '/_authenticated/w/$workspaceSlug/contracts/': {
+      id: '/_authenticated/w/$workspaceSlug/contracts/'
+      path: '/contracts'
+      fullPath: '/w/$workspaceSlug/contracts/'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugContractsIndexRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
+    }
+    '/_authenticated/w/$workspaceSlug/contracts/$contractId': {
+      id: '/_authenticated/w/$workspaceSlug/contracts/$contractId'
+      path: '/contracts/$contractId'
+      fullPath: '/w/$workspaceSlug/contracts/$contractId'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugContractsContractIdRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugRoute
+    }
+    '/_authenticated/w/$workspaceSlug/finance/': {
+      id: '/_authenticated/w/$workspaceSlug/finance/'
+      path: '/'
+      fullPath: '/w/$workspaceSlug/finance/'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceIndexRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceRoute
+    }
+    '/_authenticated/w/$workspaceSlug/finance/commissions': {
+      id: '/_authenticated/w/$workspaceSlug/finance/commissions'
+      path: '/commissions'
+      fullPath: '/w/$workspaceSlug/finance/commissions'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceCommissionsRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceRoute
+    }
+    '/_authenticated/w/$workspaceSlug/finance/contracts': {
+      id: '/_authenticated/w/$workspaceSlug/finance/contracts'
+      path: '/contracts'
+      fullPath: '/w/$workspaceSlug/finance/contracts'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceContractsRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceRoute
+    }
+    '/_authenticated/w/$workspaceSlug/finance/currencies': {
+      id: '/_authenticated/w/$workspaceSlug/finance/currencies'
+      path: '/currencies'
+      fullPath: '/w/$workspaceSlug/finance/currencies'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceCurrenciesRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceRoute
+    }
+    '/_authenticated/w/$workspaceSlug/finance/invoices': {
+      id: '/_authenticated/w/$workspaceSlug/finance/invoices'
+      path: '/invoices'
+      fullPath: '/w/$workspaceSlug/finance/invoices'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceInvoicesRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceRoute
+    }
+    '/_authenticated/w/$workspaceSlug/finance/payments': {
+      id: '/_authenticated/w/$workspaceSlug/finance/payments'
+      path: '/payments'
+      fullPath: '/w/$workspaceSlug/finance/payments'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinancePaymentsRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceRoute
+    }
+    '/_authenticated/w/$workspaceSlug/finance/renewals': {
+      id: '/_authenticated/w/$workspaceSlug/finance/renewals'
+      path: '/renewals'
+      fullPath: '/w/$workspaceSlug/finance/renewals'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceRenewalsRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceRoute
+    }
+    '/_authenticated/w/$workspaceSlug/finance/settings': {
+      id: '/_authenticated/w/$workspaceSlug/finance/settings'
+      path: '/settings'
+      fullPath: '/w/$workspaceSlug/finance/settings'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceSettingsRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceRoute
+    }
+    '/_authenticated/w/$workspaceSlug/internal/': {
+      id: '/_authenticated/w/$workspaceSlug/internal/'
+      path: '/'
+      fullPath: '/w/$workspaceSlug/internal/'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugInternalIndexRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugInternalRoute
+    }
+    '/_authenticated/w/$workspaceSlug/internal/settings': {
+      id: '/_authenticated/w/$workspaceSlug/internal/settings'
+      path: '/settings'
+      fullPath: '/w/$workspaceSlug/internal/settings'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugInternalSettingsRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugInternalRoute
+    }
+    '/_authenticated/w/$workspaceSlug/marketing/': {
+      id: '/_authenticated/w/$workspaceSlug/marketing/'
+      path: '/'
+      fullPath: '/w/$workspaceSlug/marketing/'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingIndexRouteImport
       parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
     }
-    '/_authenticated/w/$workspaceSlug/marketing/pieces/': {
-      id: '/_authenticated/w/$workspaceSlug/marketing/pieces/'
-      path: '/pieces'
-      fullPath: '/w/$workspaceSlug/marketing/pieces/'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingPiecesIndexRouteImport
+    '/_authenticated/w/$workspaceSlug/marketing/grilla': {
+      id: '/_authenticated/w/$workspaceSlug/marketing/grilla'
+      path: '/grilla'
+      fullPath: '/w/$workspaceSlug/marketing/grilla'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingGrillaRouteImport
       parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
     }
-    '/_authenticated/w/$workspaceSlug/marketing/campaigns/': {
-      id: '/_authenticated/w/$workspaceSlug/marketing/campaigns/'
-      path: '/campaigns'
-      fullPath: '/w/$workspaceSlug/marketing/campaigns/'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingCampaignsIndexRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
+    '/_authenticated/w/$workspaceSlug/projects/': {
+      id: '/_authenticated/w/$workspaceSlug/projects/'
+      path: '/'
+      fullPath: '/w/$workspaceSlug/projects/'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugProjectsIndexRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugProjectsRoute
+    }
+    '/_authenticated/w/$workspaceSlug/projects/$projectId': {
+      id: '/_authenticated/w/$workspaceSlug/projects/$projectId'
+      path: '/$projectId'
+      fullPath: '/w/$workspaceSlug/projects/$projectId'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugProjectsProjectIdRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugProjectsRoute
+    }
+    '/_authenticated/w/$workspaceSlug/reports/': {
+      id: '/_authenticated/w/$workspaceSlug/reports/'
+      path: '/'
+      fullPath: '/w/$workspaceSlug/reports/'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugReportsIndexRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugReportsRoute
+    }
+    '/_authenticated/w/$workspaceSlug/reports/plan-vs-real': {
+      id: '/_authenticated/w/$workspaceSlug/reports/plan-vs-real'
+      path: '/plan-vs-real'
+      fullPath: '/w/$workspaceSlug/reports/plan-vs-real'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugReportsPlanVsRealRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugReportsRoute
+    }
+    '/_authenticated/w/$workspaceSlug/reports/tiempo': {
+      id: '/_authenticated/w/$workspaceSlug/reports/tiempo'
+      path: '/tiempo'
+      fullPath: '/w/$workspaceSlug/reports/tiempo'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugReportsTiempoRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugReportsRoute
+    }
+    '/_authenticated/w/$workspaceSlug/settings/': {
+      id: '/_authenticated/w/$workspaceSlug/settings/'
+      path: '/'
+      fullPath: '/w/$workspaceSlug/settings/'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsIndexRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
+    }
+    '/_authenticated/w/$workspaceSlug/settings/costs': {
+      id: '/_authenticated/w/$workspaceSlug/settings/costs'
+      path: '/costs'
+      fullPath: '/w/$workspaceSlug/settings/costs'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsCostsRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
+    }
+    '/_authenticated/w/$workspaceSlug/settings/dte': {
+      id: '/_authenticated/w/$workspaceSlug/settings/dte'
+      path: '/dte'
+      fullPath: '/w/$workspaceSlug/settings/dte'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsDteRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
+    }
+    '/_authenticated/w/$workspaceSlug/settings/emisor': {
+      id: '/_authenticated/w/$workspaceSlug/settings/emisor'
+      path: '/emisor'
+      fullPath: '/w/$workspaceSlug/settings/emisor'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsEmisorRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
+    }
+    '/_authenticated/w/$workspaceSlug/settings/partners': {
+      id: '/_authenticated/w/$workspaceSlug/settings/partners'
+      path: '/partners'
+      fullPath: '/w/$workspaceSlug/settings/partners'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsPartnersRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
+    }
+    '/_authenticated/w/$workspaceSlug/settings/service-types': {
+      id: '/_authenticated/w/$workspaceSlug/settings/service-types'
+      path: '/service-types'
+      fullPath: '/w/$workspaceSlug/settings/service-types'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsServiceTypesRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
+    }
+    '/_authenticated/w/$workspaceSlug/settings/slas': {
+      id: '/_authenticated/w/$workspaceSlug/settings/slas'
+      path: '/slas'
+      fullPath: '/w/$workspaceSlug/settings/slas'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsSlasRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
+    }
+    '/_authenticated/w/$workspaceSlug/settings/task-types': {
+      id: '/_authenticated/w/$workspaceSlug/settings/task-types'
+      path: '/task-types'
+      fullPath: '/w/$workspaceSlug/settings/task-types'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsTaskTypesRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
+    }
+    '/_authenticated/w/$workspaceSlug/settings/trash': {
+      id: '/_authenticated/w/$workspaceSlug/settings/trash'
+      path: '/trash'
+      fullPath: '/w/$workspaceSlug/settings/trash'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugSettingsTrashRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugSettingsRoute
+    }
+    '/api/public/oauth/google-calendar/callback': {
+      id: '/api/public/oauth/google-calendar/callback'
+      path: '/api/public/oauth/google-calendar/callback'
+      fullPath: '/api/public/oauth/google-calendar/callback'
+      preLoaderRoute: typeof ApiPublicOauthGoogleCalendarCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/portal/$slug/tickets': {
+      id: '/api/public/portal/$slug/tickets'
+      path: '/tickets'
+      fullPath: '/api/public/portal/$slug/tickets'
+      preLoaderRoute: typeof ApiPublicPortalSlugTicketsRouteImport
+      parentRoute: typeof ApiPublicPortalSlugRoute
+    }
+    '/api/public/portal/$slug/verify': {
+      id: '/api/public/portal/$slug/verify'
+      path: '/verify'
+      fullPath: '/api/public/portal/$slug/verify'
+      preLoaderRoute: typeof ApiPublicPortalSlugVerifyRouteImport
+      parentRoute: typeof ApiPublicPortalSlugRoute
+    }
+    '/tickets/$slug/portal/t/$ticketId': {
+      id: '/tickets/$slug/portal/t/$ticketId'
+      path: '/portal/t/$ticketId'
+      fullPath: '/tickets/$slug/portal/t/$ticketId'
+      preLoaderRoute: typeof TicketsSlugPortalTTicketIdRouteImport
+      parentRoute: typeof TicketsSlugRoute
     }
     '/_authenticated/w/$workspaceSlug/finance/settings/': {
       id: '/_authenticated/w/$workspaceSlug/finance/settings/'
@@ -2057,67 +2036,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceSettingsIndexRouteImport
       parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceSettingsRoute
     }
-    '/api/public/portal/$slug/tickets/$ticketId': {
-      id: '/api/public/portal/$slug/tickets/$ticketId'
-      path: '/$ticketId'
-      fullPath: '/api/public/portal/$slug/tickets/$ticketId'
-      preLoaderRoute: typeof ApiPublicPortalSlugTicketsTicketIdRouteImport
-      parentRoute: typeof ApiPublicPortalSlugTicketsRoute
-    }
-    '/_authenticated/w/$workspaceSlug/marketing/settings/pilares': {
-      id: '/_authenticated/w/$workspaceSlug/marketing/settings/pilares'
-      path: '/settings/pilares'
-      fullPath: '/w/$workspaceSlug/marketing/settings/pilares'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingSettingsPilaresRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
-    }
-    '/_authenticated/w/$workspaceSlug/marketing/settings/channels': {
-      id: '/_authenticated/w/$workspaceSlug/marketing/settings/channels'
-      path: '/settings/channels'
-      fullPath: '/w/$workspaceSlug/marketing/settings/channels'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingSettingsChannelsRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
-    }
-    '/_authenticated/w/$workspaceSlug/marketing/settings/cadencia': {
-      id: '/_authenticated/w/$workspaceSlug/marketing/settings/cadencia'
-      path: '/settings/cadencia'
-      fullPath: '/w/$workspaceSlug/marketing/settings/cadencia'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingSettingsCadenciaRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
-    }
-    '/_authenticated/w/$workspaceSlug/marketing/projects/$projectId': {
-      id: '/_authenticated/w/$workspaceSlug/marketing/projects/$projectId'
-      path: '/projects/$projectId'
-      fullPath: '/w/$workspaceSlug/marketing/projects/$projectId'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingProjectsProjectIdRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
-    }
-    '/_authenticated/w/$workspaceSlug/marketing/campaigns/$campaignId': {
-      id: '/_authenticated/w/$workspaceSlug/marketing/campaigns/$campaignId'
-      path: '/campaigns/$campaignId'
-      fullPath: '/w/$workspaceSlug/marketing/campaigns/$campaignId'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingCampaignsCampaignIdRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
-    }
-    '/_authenticated/w/$workspaceSlug/internal/projects/$projectId': {
-      id: '/_authenticated/w/$workspaceSlug/internal/projects/$projectId'
-      path: '/projects/$projectId'
-      fullPath: '/w/$workspaceSlug/internal/projects/$projectId'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugInternalProjectsProjectIdRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugInternalRoute
-    }
-    '/_authenticated/w/$workspaceSlug/internal/categories/$key': {
-      id: '/_authenticated/w/$workspaceSlug/internal/categories/$key'
-      path: '/categories/$key'
-      fullPath: '/w/$workspaceSlug/internal/categories/$key'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugInternalCategoriesKeyRouteImport
-      parentRoute: typeof AuthenticatedWWorkspaceSlugInternalRoute
-    }
-    '/_authenticated/w/$workspaceSlug/finance/settings/emisor': {
-      id: '/_authenticated/w/$workspaceSlug/finance/settings/emisor'
-      path: '/emisor'
-      fullPath: '/w/$workspaceSlug/finance/settings/emisor'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceSettingsEmisorRouteImport
+    '/_authenticated/w/$workspaceSlug/finance/settings/costs': {
+      id: '/_authenticated/w/$workspaceSlug/finance/settings/costs'
+      path: '/costs'
+      fullPath: '/w/$workspaceSlug/finance/settings/costs'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceSettingsCostsRouteImport
       parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceSettingsRoute
     }
     '/_authenticated/w/$workspaceSlug/finance/settings/dte': {
@@ -2127,12 +2050,89 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceSettingsDteRouteImport
       parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceSettingsRoute
     }
-    '/_authenticated/w/$workspaceSlug/finance/settings/costs': {
-      id: '/_authenticated/w/$workspaceSlug/finance/settings/costs'
-      path: '/costs'
-      fullPath: '/w/$workspaceSlug/finance/settings/costs'
-      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceSettingsCostsRouteImport
+    '/_authenticated/w/$workspaceSlug/finance/settings/emisor': {
+      id: '/_authenticated/w/$workspaceSlug/finance/settings/emisor'
+      path: '/emisor'
+      fullPath: '/w/$workspaceSlug/finance/settings/emisor'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugFinanceSettingsEmisorRouteImport
       parentRoute: typeof AuthenticatedWWorkspaceSlugFinanceSettingsRoute
+    }
+    '/_authenticated/w/$workspaceSlug/internal/categories/$key': {
+      id: '/_authenticated/w/$workspaceSlug/internal/categories/$key'
+      path: '/categories/$key'
+      fullPath: '/w/$workspaceSlug/internal/categories/$key'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugInternalCategoriesKeyRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugInternalRoute
+    }
+    '/_authenticated/w/$workspaceSlug/internal/projects/$projectId': {
+      id: '/_authenticated/w/$workspaceSlug/internal/projects/$projectId'
+      path: '/projects/$projectId'
+      fullPath: '/w/$workspaceSlug/internal/projects/$projectId'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugInternalProjectsProjectIdRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugInternalRoute
+    }
+    '/_authenticated/w/$workspaceSlug/marketing/campaigns/': {
+      id: '/_authenticated/w/$workspaceSlug/marketing/campaigns/'
+      path: '/campaigns'
+      fullPath: '/w/$workspaceSlug/marketing/campaigns/'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingCampaignsIndexRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
+    }
+    '/_authenticated/w/$workspaceSlug/marketing/campaigns/$campaignId': {
+      id: '/_authenticated/w/$workspaceSlug/marketing/campaigns/$campaignId'
+      path: '/campaigns/$campaignId'
+      fullPath: '/w/$workspaceSlug/marketing/campaigns/$campaignId'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingCampaignsCampaignIdRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
+    }
+    '/_authenticated/w/$workspaceSlug/marketing/pieces/': {
+      id: '/_authenticated/w/$workspaceSlug/marketing/pieces/'
+      path: '/pieces'
+      fullPath: '/w/$workspaceSlug/marketing/pieces/'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingPiecesIndexRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
+    }
+    '/_authenticated/w/$workspaceSlug/marketing/projects/': {
+      id: '/_authenticated/w/$workspaceSlug/marketing/projects/'
+      path: '/projects'
+      fullPath: '/w/$workspaceSlug/marketing/projects/'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingProjectsIndexRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
+    }
+    '/_authenticated/w/$workspaceSlug/marketing/projects/$projectId': {
+      id: '/_authenticated/w/$workspaceSlug/marketing/projects/$projectId'
+      path: '/projects/$projectId'
+      fullPath: '/w/$workspaceSlug/marketing/projects/$projectId'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingProjectsProjectIdRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
+    }
+    '/_authenticated/w/$workspaceSlug/marketing/settings/cadencia': {
+      id: '/_authenticated/w/$workspaceSlug/marketing/settings/cadencia'
+      path: '/settings/cadencia'
+      fullPath: '/w/$workspaceSlug/marketing/settings/cadencia'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingSettingsCadenciaRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
+    }
+    '/_authenticated/w/$workspaceSlug/marketing/settings/channels': {
+      id: '/_authenticated/w/$workspaceSlug/marketing/settings/channels'
+      path: '/settings/channels'
+      fullPath: '/w/$workspaceSlug/marketing/settings/channels'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingSettingsChannelsRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
+    }
+    '/_authenticated/w/$workspaceSlug/marketing/settings/pilares': {
+      id: '/_authenticated/w/$workspaceSlug/marketing/settings/pilares'
+      path: '/settings/pilares'
+      fullPath: '/w/$workspaceSlug/marketing/settings/pilares'
+      preLoaderRoute: typeof AuthenticatedWWorkspaceSlugMarketingSettingsPilaresRouteImport
+      parentRoute: typeof AuthenticatedWWorkspaceSlugMarketingRoute
+    }
+    '/api/public/portal/$slug/tickets/$ticketId': {
+      id: '/api/public/portal/$slug/tickets/$ticketId'
+      path: '/$ticketId'
+      fullPath: '/api/public/portal/$slug/tickets/$ticketId'
+      preLoaderRoute: typeof ApiPublicPortalSlugTicketsTicketIdRouteImport
+      parentRoute: typeof ApiPublicPortalSlugTicketsRoute
     }
     '/api/public/portal/$slug/tickets/$ticketId/comment': {
       id: '/api/public/portal/$slug/tickets/$ticketId/comment'

@@ -74,9 +74,14 @@ export const Route = createFileRoute("/_authenticated")({
     if (error || !data.user) {
       await context.queryClient.cancelQueries();
       context.queryClient.clear();
-      try {
-        await supabase.auth.signOut();
-      } catch {}
+      // Solo se cierra la sesión local si había una caducada o revocada. Sin sesión, signOut()
+      // emite SIGNED_OUT, AuthListener invalida el router y la carga se reinicia antes de que
+      // termine la redirección: con TanStack Router >=1.170.4x eso deja un bucle y pantalla en blanco.
+      if (error?.name !== "AuthSessionMissingError") {
+        try {
+          await supabase.auth.signOut({ scope: "local" });
+        } catch {}
+      }
       throw redirect({ to: "/login", search: { redirect: location.href } });
     }
     context.queryClient.setQueryData(["auth-user"], data.user.id);

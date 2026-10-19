@@ -16,8 +16,9 @@ Estrategia: modernización por fases sobre la misma base de datos (Supabase / Lo
 - [x] `insert_task_assignees_bulk`: validar pertenencia al espacio (migración escrita, falta aplicar y probar en Lovable).
 - [x] Cuotas duplicadas: lógica extraída y probada (`contract-payments.ts`, corrige cuota perdida) y migración que hace idempotente `generate_contract_monthly_payments` (falta aplicar y probar en Lovable).
 - [ ] Programar el cron `invoice-reminders` (ya envía por Resend; falta crear el trabajo programado).
-- [ ] Investigar pantalla en blanco al subir TanStack (react-start 1.168.60 / router 1.170.41).
-- [ ] Retirar `content_pieces` v1 y `CreateContractWizard` v1; limpiar metadatos y `drizzle`/Stripe sin uso.
+- [x] TanStack actualizado (react-start 1.168.61 / router 1.170.45): causa de la pantalla en blanco corregida y `npm run smoke` en el CI.
+- [x] Limpieza: `CreateContractWizard` v1, metadatos duplicados, drizzle y Stripe sin uso.
+- [ ] `content_pieces` v1 sigue en uso por campañas y plantillas de marketing: migrarlas a `content_pieces_v2` antes de retirarlo.
 
 ## Fase 2 — Diseño y UX
 - [ ] Sistema de diseño 2.0 (tokens), modo oscuro, responsive real, navegación simplificada.

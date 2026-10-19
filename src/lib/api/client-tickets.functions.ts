@@ -4,7 +4,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const getProjectTicketForm = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: form, error } = await supabase
@@ -66,7 +66,7 @@ export const getProjectTicketForm = createServerFn({ method: "GET" })
 
 export const ensureProjectTicketForm = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: formId, error } = await supabase.rpc("ensure_client_ticket_form", {
@@ -78,7 +78,7 @@ export const ensureProjectTicketForm = createServerFn({ method: "POST" })
 
 export const updateProjectTicketForm = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         formId: z.string().uuid(),
@@ -103,7 +103,7 @@ export const updateProjectTicketForm = createServerFn({ method: "POST" })
 
 export const updateProjectTicketAreas = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         formId: z.string().uuid(),
@@ -143,7 +143,7 @@ const FieldsSchema = z.object({
 
 export const updateProjectTicketFields = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         formId: z.string().uuid(),
@@ -171,7 +171,7 @@ export const updateProjectTicketFields = createServerFn({ method: "POST" })
 
 export const updateProjectSlaOverride = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         projectId: z.string().uuid(),
@@ -191,7 +191,7 @@ export const updateProjectSlaOverride = createServerFn({ method: "POST" })
 
 export const addAuthorizedEmail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         formId: z.string().uuid(),
@@ -213,7 +213,7 @@ export const addAuthorizedEmail = createServerFn({ method: "POST" })
 
 export const removeAuthorizedEmail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ emailId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ emailId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { error } = await supabase
@@ -226,7 +226,7 @@ export const removeAuthorizedEmail = createServerFn({ method: "POST" })
 
 export const setAuthorizedEmailRole = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         emailId: z.string().uuid(),

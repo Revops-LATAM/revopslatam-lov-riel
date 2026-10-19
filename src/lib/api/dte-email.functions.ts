@@ -9,7 +9,7 @@ function formatCLP(n: number, currency: string) {
 
 export const getInvoiceEmailData = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ invoiceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ invoiceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: inv, error } = await context.supabase
       .from("invoices")
@@ -90,7 +90,7 @@ export const getInvoiceEmailData = createServerFn({ method: "GET" })
 
 export const reconcileDte = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         invoiceId: z.string().uuid(),

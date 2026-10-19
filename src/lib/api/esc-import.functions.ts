@@ -184,7 +184,7 @@ function toHours(v: unknown): number | null {
 
 export const setupEscContractAndProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         dryRun: z.boolean().default(false),
@@ -347,7 +347,7 @@ type ImportRow = {
 
 export const importEscTasksFromXlsx = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         projectId: z.string().uuid(),
@@ -741,7 +741,7 @@ export const importEscTasksFromXlsx = createServerFn({ method: "POST" })
 
 export const createEscGhostUser = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         email: z.string().email(),

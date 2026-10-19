@@ -4,7 +4,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const listTaskAttachments = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows, error } = await supabase
@@ -34,7 +34,7 @@ export const listTaskAttachments = createServerFn({ method: "GET" })
 
 export const registerTaskAttachment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         taskId: z.string().uuid(),
@@ -61,7 +61,7 @@ export const registerTaskAttachment = createServerFn({ method: "POST" })
 
 export const deleteTaskAttachment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ attachmentId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ attachmentId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: row } = await supabase

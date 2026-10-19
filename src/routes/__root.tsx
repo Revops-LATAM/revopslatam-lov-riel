@@ -11,7 +11,6 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 import { supabase } from "../integrations/supabase/client";
 import { Toaster } from "../components/ui/sonner";
 
@@ -41,9 +40,6 @@ function ErrorComponent({ error: rawError, reset }: ErrorComponentProps) {
   const error = rawError instanceof Error ? rawError : new Error(String(rawError));
   console.error(error);
   const router = useRouter();
-  useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -81,45 +77,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Riel· Donde corre nuestra operación" },
+      { title: "Riel · Donde corre nuestra operación" },
       {
         name: "description",
         content:
-          "Tasko es un gestor de proyectos y tareas estilo Linear: rápido, minimalista y colaborativo.",
+          "Riel es la plataforma de operación de Revops LATAM: proyectos, tareas, horas, contratos y facturación en un solo lugar.",
       },
-      { name: "author", content: "Tasko" },
-      { property: "og:title", content: "Riel· Donde corre nuestra operación" },
+      { name: "author", content: "Revops LATAM" },
+      { property: "og:title", content: "Riel · Donde corre nuestra operación" },
       {
         property: "og:description",
-        content: "Organiza proyectos, tareas y equipos en un espacio rápido y minimalista.",
+        content:
+          "Proyectos, tareas, horas, contratos y facturación de Revops LATAM en un solo lugar.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Riel· Donde corre nuestra operación" },
-      {
-        name: "description",
-        content:
-          "Riel is a project and task management application designed for operational workflows.",
-      },
-      {
-        property: "og:description",
-        content:
-          "Riel is a project and task management application designed for operational workflows.",
-      },
+      { name: "twitter:title", content: "Riel · Donde corre nuestra operación" },
       {
         name: "twitter:description",
         content:
-          "Riel is a project and task management application designed for operational workflows.",
-      },
-      {
-        property: "og:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7e0663e3-4693-40a9-8d70-3d6c9884dec4/id-preview-a695236a--310d0c09-7379-442d-bfc0-2277f67bc9bb.lovable.app-1780616580953.png",
-      },
-      {
-        name: "twitter:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7e0663e3-4693-40a9-8d70-3d6c9884dec4/id-preview-a695236a--310d0c09-7379-442d-bfc0-2277f67bc9bb.lovable.app-1780616580953.png",
+          "Proyectos, tareas, horas, contratos y facturación de Revops LATAM en un solo lugar.",
       },
     ],
     links: [{ rel: "stylesheet", href: appCss }],

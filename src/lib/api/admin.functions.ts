@@ -119,7 +119,7 @@ export const listAllWorkspaces = createServerFn({ method: "GET" })
 
 export const grantAppRole = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         userId: z.string().uuid(),
@@ -139,7 +139,7 @@ export const grantAppRole = createServerFn({ method: "POST" })
 
 export const revokeAppRole = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         userId: z.string().uuid(),
@@ -170,7 +170,7 @@ export const revokeAppRole = createServerFn({ method: "POST" })
 
 export const renameWorkspaceAsAdmin = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),

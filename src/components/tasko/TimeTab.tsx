@@ -356,10 +356,7 @@ export function TimeTab({ taskId, members }: { taskId: string; members: Member[]
       {(() => {
         const task = taskQ.data;
         const mode = (task?.effort_mode ?? "flexible") as
-          | "basic"
-          | "flexible"
-          | "fixed_daily"
-          | "due_date";
+          "basic" | "flexible" | "fixed_daily" | "due_date";
         const totalHours =
           task?.total_effort_hours != null ? Number(task.total_effort_hours) : null;
         const displayValue = totalHours == null ? "" : formatDuration(totalHours);

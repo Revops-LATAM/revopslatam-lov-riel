@@ -95,7 +95,7 @@ async function fetchInvoicePdfBase64(params: {
 
 export const sendInvoiceEmail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         invoiceId: z.string().uuid(),

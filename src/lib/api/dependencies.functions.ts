@@ -5,7 +5,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 /** Lista todas las dependencias de tareas de un proyecto. */
 export const listTaskDependencies = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ projectId: z.string().uuid() }).parse(i))
+  .validator((i) => z.object({ projectId: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("task_dependencies")
@@ -17,7 +17,7 @@ export const listTaskDependencies = createServerFn({ method: "GET" })
 
 export const addTaskDependency = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) =>
+  .validator((i) =>
     z
       .object({
         predecessorTaskId: z.string().uuid(),
@@ -45,7 +45,7 @@ export const addTaskDependency = createServerFn({ method: "POST" })
 
 export const removeTaskDependency = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ id: z.string().uuid() }).parse(i))
+  .validator((i) => z.object({ id: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("task_dependencies").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -55,7 +55,7 @@ export const removeTaskDependency = createServerFn({ method: "POST" })
 /** Fases */
 export const listPhaseDependencies = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ projectId: z.string().uuid() }).parse(i))
+  .validator((i) => z.object({ projectId: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("phase_dependencies")
@@ -67,7 +67,7 @@ export const listPhaseDependencies = createServerFn({ method: "GET" })
 
 export const addPhaseDependency = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) =>
+  .validator((i) =>
     z
       .object({
         predecessorPhaseId: z.string().uuid(),
@@ -94,7 +94,7 @@ export const addPhaseDependency = createServerFn({ method: "POST" })
 
 export const removePhaseDependency = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ id: z.string().uuid() }).parse(i))
+  .validator((i) => z.object({ id: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("phase_dependencies").delete().eq("id", data.id);
     if (error) throw new Error(error.message);

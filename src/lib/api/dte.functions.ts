@@ -215,7 +215,7 @@ async function resolveClpAmount(
 
 export const getDteConfig = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: row, error } = await context.supabase
       .from("workspace_dte_config")
@@ -245,7 +245,7 @@ export const getDteConfig = createServerFn({ method: "GET" })
 
 export const upsertDteConfig = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -292,7 +292,7 @@ export const upsertDteConfig = createServerFn({ method: "POST" })
 
 export const listInvoices = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -329,7 +329,7 @@ export const listInvoices = createServerFn({ method: "GET" })
 
 export const getInvoice = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ invoiceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ invoiceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: inv, error } = await context.supabase
       .from("invoices")
@@ -437,7 +437,7 @@ const lineInput = z.object({
 
 export const createInvoice = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -518,7 +518,7 @@ const referenciaOC = z.object({
 
 export const emitDte = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         invoiceId: z.string().uuid(),
@@ -1089,7 +1089,7 @@ export const emitDte = createServerFn({ method: "POST" })
 
 export const getInvoicePdf = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ invoiceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ invoiceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     // Verify caller has access to the invoice (RLS-checked via authenticated client)
     const { data: invMeta, error: metaErr } = await context.supabase
@@ -1174,7 +1174,7 @@ export const getInvoicePdf = createServerFn({ method: "GET" })
 
 export const markInvoicePaid = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z.object({ invoiceId: z.string().uuid(), fechaPago: z.string().optional() }).parse(input),
   )
   .handler(async ({ data, context }) => {
@@ -1204,7 +1204,7 @@ export const markInvoicePaid = createServerFn({ method: "POST" })
 
 export const cancelInvoice = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z.object({ invoiceId: z.string().uuid(), motivo: z.string().max(500) }).parse(input),
   )
   .handler(async ({ data, context }) => {
@@ -1372,14 +1372,14 @@ async function buildInvoiceFromPayment(
 
 export const createInvoiceFromPayment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ paymentId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ paymentId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     return buildInvoiceFromPayment(context.supabase, context.userId, data.paymentId);
   });
 
 export const generatePendingInvoices = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),

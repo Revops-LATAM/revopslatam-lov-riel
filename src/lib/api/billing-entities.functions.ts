@@ -17,7 +17,7 @@ const entityInput = z.object({
 
 export const listBillingEntities = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ accountId: z.string().uuid() }).parse(i))
+  .validator((i) => z.object({ accountId: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("account_billing_entities")
@@ -33,7 +33,7 @@ export const listBillingEntities = createServerFn({ method: "GET" })
 
 export const upsertBillingEntity = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => entityInput.parse(i))
+  .validator((i) => entityInput.parse(i))
   .handler(async ({ data, context }) => {
     const payload = {
       account_id: data.accountId,
@@ -65,7 +65,7 @@ export const upsertBillingEntity = createServerFn({ method: "POST" })
 
 export const archiveBillingEntity = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ id: z.string().uuid() }).parse(i))
+  .validator((i) => z.object({ id: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("account_billing_entities")
@@ -77,7 +77,7 @@ export const archiveBillingEntity = createServerFn({ method: "POST" })
 
 export const getContractSplits = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ contractId: z.string().uuid() }).parse(i))
+  .validator((i) => z.object({ contractId: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("contract_billing_splits")
@@ -90,7 +90,7 @@ export const getContractSplits = createServerFn({ method: "GET" })
 
 export const saveContractSplits = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) =>
+  .validator((i) =>
     z
       .object({
         contractId: z.string().uuid(),

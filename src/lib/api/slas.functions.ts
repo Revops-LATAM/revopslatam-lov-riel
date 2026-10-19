@@ -7,7 +7,7 @@ const LEVELS = ["normal", "urgente_critico"] as const;
 
 export const listSlas = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: slas, error } = await supabase
@@ -24,7 +24,7 @@ export const listSlas = createServerFn({ method: "GET" })
 
 export const createSla = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z.object({ workspaceId: z.string().uuid(), name: z.string().min(1).max(80) }).parse(input),
   )
   .handler(async ({ data, context }) => {
@@ -56,7 +56,7 @@ export const createSla = createServerFn({ method: "POST" })
 
 export const updateSla = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         slaId: z.string().uuid(),
@@ -77,7 +77,7 @@ export const updateSla = createServerFn({ method: "POST" })
 
 export const deleteSla = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ slaId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ slaId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     // Refuse if any contract references it
@@ -96,7 +96,7 @@ export const deleteSla = createServerFn({ method: "POST" })
 
 export const upsertSlaTarget = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         slaId: z.string().uuid(),

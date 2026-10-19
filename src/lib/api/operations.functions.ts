@@ -55,7 +55,7 @@ const secondaryContactsSchema = z
 
 export const listAccounts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -122,7 +122,7 @@ export const listAccounts = createServerFn({ method: "GET" })
 
 export const getAccount = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ accountId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ accountId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: row, error } = await context.supabase
       .from("accounts")
@@ -141,7 +141,7 @@ export const getAccount = createServerFn({ method: "GET" })
 
 export const createAccount = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -203,7 +203,7 @@ export const createAccount = createServerFn({ method: "POST" })
 
 export const updateAccount = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         accountId: z.string().uuid(),
@@ -256,7 +256,7 @@ export const updateAccount = createServerFn({ method: "POST" })
 
 export const deleteAccount = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ accountId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ accountId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { count, error: countErr } = await supabase
@@ -278,7 +278,7 @@ export const deleteAccount = createServerFn({ method: "POST" })
 
 export const listContracts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -358,7 +358,7 @@ export const listContracts = createServerFn({ method: "GET" })
 
 export const getContract = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: row, error } = await context.supabase
       .from("contracts")
@@ -374,7 +374,7 @@ export const getContract = createServerFn({ method: "GET" })
 
 export const createContract = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -440,7 +440,7 @@ export const createContract = createServerFn({ method: "POST" })
 
 export const updateContract = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         contractId: z.string().uuid(),
@@ -483,7 +483,7 @@ export const updateContract = createServerFn({ method: "POST" })
 
 export const getContractFinancials = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: row, error } = await context.supabase
       .from("contract_financials")
@@ -500,7 +500,7 @@ export const getContractFinancials = createServerFn({ method: "GET" })
 
 export const upsertContractFinancials = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         contractId: z.string().uuid(),
@@ -534,7 +534,7 @@ export const upsertContractFinancials = createServerFn({ method: "POST" })
 
 export const listSprints = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({ contractId: z.string().uuid(), projectId: z.string().uuid().nullish() })
       .parse(input),
@@ -549,7 +549,7 @@ export const listSprints = createServerFn({ method: "GET" })
 
 export const createSprint = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         contractId: z.string().uuid(),
@@ -587,7 +587,7 @@ export const createSprint = createServerFn({ method: "POST" })
 
 export const updateSprintStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         sprintId: z.string().uuid(),
@@ -609,7 +609,7 @@ export const updateSprintStatus = createServerFn({ method: "POST" })
 // reales (suma de time_entries.duration_minutes / 60 de esas tareas).
 export const getSprintMetrics = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z.object({ contractId: z.string().uuid(), projectId: z.string().uuid() }).parse(input),
   )
   .handler(async ({ data, context }) => {
@@ -737,7 +737,7 @@ export const getSprintMetrics = createServerFn({ method: "GET" })
 // Mueve todas las tareas no cerradas de un sprint al siguiente sprint del contrato.
 export const moveSprintPendingTasks = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         sprintId: z.string().uuid(),
@@ -789,7 +789,7 @@ export const moveSprintPendingTasks = createServerFn({ method: "POST" })
 
 export const listPhases = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("phases")
@@ -802,7 +802,7 @@ export const listPhases = createServerFn({ method: "GET" })
 
 export const createPhase = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         projectId: z.string().uuid(),
@@ -834,7 +834,7 @@ export const createPhase = createServerFn({ method: "POST" })
 
 export const updatePhaseStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         phaseId: z.string().uuid(),
@@ -853,7 +853,7 @@ export const updatePhaseStatus = createServerFn({ method: "POST" })
 
 export const updatePhase = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         phaseId: z.string().uuid(),
@@ -878,7 +878,7 @@ export const updatePhase = createServerFn({ method: "POST" })
 
 export const deletePhase = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ phaseId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ phaseId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("phases").delete().eq("id", data.phaseId);
     if (error) throw new Error(error.message);
@@ -887,7 +887,7 @@ export const deletePhase = createServerFn({ method: "POST" })
 
 export const deleteProjectPhases = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("phases")
@@ -899,7 +899,7 @@ export const deleteProjectPhases = createServerFn({ method: "POST" })
 
 export const deleteProjectMilestones = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("milestones")
@@ -913,7 +913,7 @@ export const deleteProjectMilestones = createServerFn({ method: "POST" })
 
 export const listMilestones = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("milestones")
@@ -926,7 +926,7 @@ export const listMilestones = createServerFn({ method: "GET" })
 
 export const createMilestone = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         projectId: z.string().uuid(),
@@ -959,7 +959,7 @@ export const createMilestone = createServerFn({ method: "POST" })
 
 export const setMilestoneStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         milestoneId: z.string().uuid(),
@@ -980,7 +980,7 @@ export const setMilestoneStatus = createServerFn({ method: "POST" })
 
 export const listContractPayments = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("contract_payments")
@@ -993,7 +993,7 @@ export const listContractPayments = createServerFn({ method: "GET" })
 
 export const updatePaymentStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         paymentId: z.string().uuid(),
@@ -1028,7 +1028,7 @@ export const updatePaymentStatus = createServerFn({ method: "POST" })
 
 export const listOperationsTree = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const [accountsRes, contractsRes, projectsRes, phasesRes, tasksRes, handoffsRes] =
@@ -1163,7 +1163,7 @@ export const listOperationsTree = createServerFn({ method: "GET" })
 
 export const listContractChildren = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: projects, error: projectsErr } = await supabase
@@ -1263,7 +1263,7 @@ export const listContractChildren = createServerFn({ method: "GET" })
 
 export const listContractProjects = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows, error } = await supabase
@@ -1287,7 +1287,7 @@ export const listContractProjects = createServerFn({ method: "GET" })
 
 export const createContractProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         contractId: z.string().uuid(),
@@ -1347,7 +1347,7 @@ export const createContractProject = createServerFn({ method: "POST" })
 
 export const updateContractProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         projectId: z.string().uuid(),
@@ -1383,7 +1383,7 @@ export const updateContractProject = createServerFn({ method: "POST" })
 
 export const generateSprintsForProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         projectId: z.string().uuid(),
@@ -1416,7 +1416,7 @@ export const generateSprintsForProject = createServerFn({ method: "POST" })
  */
 export const createOngoingProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -1651,7 +1651,7 @@ export const createOngoingProject = createServerFn({ method: "POST" })
  */
 export const getContractSprintSummary = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
 

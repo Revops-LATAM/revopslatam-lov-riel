@@ -36,7 +36,7 @@ export type ActivityItem =
 
 export const listTaskActivity = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }): Promise<ActivityItem[]> => {
     const { supabase } = context;
     const [commentsRes, eventsRes] = await Promise.all([
@@ -76,30 +76,26 @@ export const listTaskActivity = createServerFn({ method: "GET" })
     }
 
     const merged: ActivityItem[] = [
-      ...comments.map(
-        (c): ActivityItem => ({
-          kind: "comment",
-          id: c.id,
-          created_at: c.created_at,
-          author_id: c.author_id,
-          client_author_email: c.client_author_email ?? null,
-          author: c.author_id ? (profilesById.get(c.author_id) ?? null) : null,
-          body: c.body,
-          is_client_visible: !!(c as { is_client_visible?: boolean | null }).is_client_visible,
-        }),
-      ),
-      ...events.map(
-        (e): ActivityItem => ({
-          kind: "event",
-          id: e.id,
-          created_at: e.created_at,
-          actor_id: e.actor_id,
-          actor: e.actor_id ? (profilesById.get(e.actor_id) ?? null) : null,
-          event_kind: e.kind as string,
-          from_value: e.from_value,
-          to_value: e.to_value,
-        }),
-      ),
+      ...comments.map((c): ActivityItem => ({
+        kind: "comment",
+        id: c.id,
+        created_at: c.created_at,
+        author_id: c.author_id,
+        client_author_email: c.client_author_email ?? null,
+        author: c.author_id ? (profilesById.get(c.author_id) ?? null) : null,
+        body: c.body,
+        is_client_visible: !!(c as { is_client_visible?: boolean | null }).is_client_visible,
+      })),
+      ...events.map((e): ActivityItem => ({
+        kind: "event",
+        id: e.id,
+        created_at: e.created_at,
+        actor_id: e.actor_id,
+        actor: e.actor_id ? (profilesById.get(e.actor_id) ?? null) : null,
+        event_kind: e.kind as string,
+        from_value: e.from_value,
+        to_value: e.to_value,
+      })),
     ].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
 
     return merged;

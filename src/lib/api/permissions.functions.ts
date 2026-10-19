@@ -57,7 +57,7 @@ function containsSensitive(perms: readonly WorkspacePermission[] | null | undefi
 
 export const listMyPermissions = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: perms, error } = await supabase.rpc("list_my_permissions", {
@@ -69,7 +69,7 @@ export const listMyPermissions = createServerFn({ method: "GET" })
 
 export const listRoleTemplates = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows, error } = await supabase
@@ -84,7 +84,7 @@ export const listRoleTemplates = createServerFn({ method: "GET" })
 
 export const createRoleTemplate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -114,7 +114,7 @@ export const createRoleTemplate = createServerFn({ method: "POST" })
 
 export const updateRoleTemplate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         templateId: z.string().uuid(),
@@ -147,7 +147,7 @@ export const updateRoleTemplate = createServerFn({ method: "POST" })
 
 export const deleteRoleTemplate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z.object({ templateId: z.string().uuid(), workspaceId: z.string().uuid() }).parse(input),
   )
   .handler(async ({ data, context }) => {
@@ -172,7 +172,7 @@ export const deleteRoleTemplate = createServerFn({ method: "POST" })
 
 export const assignRoleTemplate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -213,7 +213,7 @@ export const assignRoleTemplate = createServerFn({ method: "POST" })
 
 export const setMemberExtraPermissions = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -241,7 +241,7 @@ export const setMemberExtraPermissions = createServerFn({ method: "POST" })
 
 export const listMembersWithRoles = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows, error } = await supabase

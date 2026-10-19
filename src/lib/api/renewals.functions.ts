@@ -6,7 +6,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const listRenewals = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const today = new Date().toISOString().slice(0, 10);
     const { data: rows, error } = await context.supabase
@@ -41,7 +41,7 @@ export const listRenewals = createServerFn({ method: "GET" })
 
 export const renewContract = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         contractId: z.string().uuid(),
@@ -133,7 +133,7 @@ export const renewContract = createServerFn({ method: "POST" })
 
 export const cancelContract = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         contractId: z.string().uuid(),
@@ -169,7 +169,7 @@ export const cancelContract = createServerFn({ method: "POST" })
 
 export const skipRenewal = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("contracts")
@@ -181,7 +181,7 @@ export const skipRenewal = createServerFn({ method: "POST" })
 
 export const updateRenewalNotice = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         contractId: z.string().uuid(),

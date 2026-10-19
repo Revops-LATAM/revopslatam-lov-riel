@@ -5,7 +5,7 @@ import { taskStatusSchema, taskPrioritySchema } from "./_shared.server";
 
 export const listTasks = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: tasks, error } = await supabase
@@ -22,7 +22,7 @@ export const listTasks = createServerFn({ method: "GET" })
 
 export const getTask = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: task, error } = await supabase
@@ -40,7 +40,7 @@ export const getTask = createServerFn({ method: "GET" })
 
 export const resolveTaskLocation = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: task, error } = await supabase
@@ -66,7 +66,7 @@ export const resolveTaskLocation = createServerFn({ method: "GET" })
 
 export const createTask = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         projectId: z.string().uuid(),
@@ -181,7 +181,7 @@ export const createTask = createServerFn({ method: "POST" })
 
 export const updateTask = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         taskId: z.string().uuid(),
@@ -327,7 +327,7 @@ export const updateTask = createServerFn({ method: "POST" })
 
 export const reorderTasks = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         updates: z
@@ -364,7 +364,7 @@ export const reorderTasks = createServerFn({ method: "POST" })
 
 export const deleteTask = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { error } = await supabase.from("tasks").delete().eq("id", data.taskId);
@@ -374,9 +374,7 @@ export const deleteTask = createServerFn({ method: "POST" })
 
 export const listMyTasks = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ workspaceId: z.string().uuid().optional() }).parse(input ?? {}),
-  )
+  .validator((input) => z.object({ workspaceId: z.string().uuid().optional() }).parse(input ?? {}))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
 
@@ -452,7 +450,7 @@ export const listMyTasks = createServerFn({ method: "GET" })
 
 export const setTaskAssignees = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         taskId: z.string().uuid(),
@@ -565,7 +563,7 @@ function generateOccurrences(params: {
 
 export const createTaskRecurrence = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         sourceTaskId: z.string().uuid(),
@@ -703,7 +701,7 @@ export const createTaskRecurrence = createServerFn({ method: "POST" })
 
 export const setTaskEstimateForUser = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         taskId: z.string().uuid(),
@@ -739,7 +737,7 @@ export const setTaskEstimateForUser = createServerFn({ method: "POST" })
 
 export const resetTaskEstimateSplit = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     // Limpiar overrides manuales y recomputar
@@ -754,7 +752,7 @@ export const resetTaskEstimateSplit = createServerFn({ method: "POST" })
 
 export const setEventAssignees = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         eventId: z.string().uuid(),
@@ -789,7 +787,7 @@ export const setEventAssignees = createServerFn({ method: "POST" })
 
 export const listEventAssignees = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ eventId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ eventId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows, error } = await supabase

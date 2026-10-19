@@ -13,7 +13,7 @@ const CAMPAIGN_STATUSES = [
 
 export const listCampaigns = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -41,7 +41,7 @@ export const listCampaigns = createServerFn({ method: "GET" })
 
 export const getCampaign = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ campaignId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ campaignId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: row, error } = await supabase
@@ -56,7 +56,7 @@ export const getCampaign = createServerFn({ method: "GET" })
 
 export const createCampaign = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -111,7 +111,7 @@ export const createCampaign = createServerFn({ method: "POST" })
 
 export const updateCampaign = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         campaignId: z.string().uuid(),
@@ -186,7 +186,7 @@ export const updateCampaign = createServerFn({ method: "POST" })
 
 export const deleteCampaign = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ campaignId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ campaignId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { error } = await supabase.from("campaigns").delete().eq("id", data.campaignId);
@@ -197,7 +197,7 @@ export const deleteCampaign = createServerFn({ method: "POST" })
 /** Dashboard aggregate: active campaigns + pieces due this week + overdue pieces. */
 export const getMarketingDashboard = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const now = new Date();

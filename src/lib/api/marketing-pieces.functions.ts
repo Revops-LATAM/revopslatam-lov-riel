@@ -14,7 +14,7 @@ const PIECE_STATUSES = [
 
 export const listPiecesByCampaign = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ campaignId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ campaignId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows, error } = await supabase
@@ -30,7 +30,7 @@ export const listPiecesByCampaign = createServerFn({ method: "GET" })
 
 export const listPiecesInRange = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -65,7 +65,7 @@ export const listPiecesInRange = createServerFn({ method: "GET" })
 
 export const listUnscheduledPieces = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows, error } = await supabase
@@ -82,7 +82,7 @@ export const listUnscheduledPieces = createServerFn({ method: "GET" })
 
 export const getPiece = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ pieceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ pieceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: row, error } = await supabase
@@ -97,7 +97,7 @@ export const getPiece = createServerFn({ method: "GET" })
 
 export const createPiece = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -136,7 +136,7 @@ export const createPiece = createServerFn({ method: "POST" })
 
 export const updatePiece = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         pieceId: z.string().uuid(),
@@ -163,13 +163,7 @@ export const updatePiece = createServerFn({ method: "POST" })
       format?: string | null;
       publish_at?: string | null;
       status_editorial?:
-        | "idea"
-        | "draft"
-        | "in_review"
-        | "approved"
-        | "scheduled"
-        | "published"
-        | "archived";
+        "idea" | "draft" | "in_review" | "approved" | "scheduled" | "published" | "archived";
       owner_id?: string | null;
       url_published?: string | null;
       color?: string | null;
@@ -192,7 +186,7 @@ export const updatePiece = createServerFn({ method: "POST" })
 
 export const deletePiece = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ pieceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ pieceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { error } = await supabase.from("content_pieces").delete().eq("id", data.pieceId);

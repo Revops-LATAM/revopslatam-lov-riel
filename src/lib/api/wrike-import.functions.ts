@@ -214,7 +214,7 @@ function buildSprintGrid(
 
 export const importWrikeContract = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         contractId: z.string().uuid(),
@@ -914,7 +914,7 @@ export const importWrikeContract = createServerFn({ method: "POST" })
 
 export const listContractsForImport = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows, error } = await supabase

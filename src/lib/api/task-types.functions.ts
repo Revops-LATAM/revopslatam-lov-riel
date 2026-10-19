@@ -6,7 +6,7 @@ const CATEGORY = z.enum(["abierta", "en_progreso", "bloqueada", "completada", "c
 
 export const listTaskTypes = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("task_types")
@@ -19,7 +19,7 @@ export const listTaskTypes = createServerFn({ method: "GET" })
 
 export const listTaskStatuses = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("task_statuses")
@@ -46,7 +46,7 @@ function slugify(name: string) {
 
 export const upsertTaskStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         id: z.string().uuid().optional(),
@@ -110,7 +110,7 @@ export const upsertTaskStatus = createServerFn({ method: "POST" })
 
 export const deleteTaskStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { count, error: cErr } = await context.supabase
       .from("tasks")
@@ -136,7 +136,7 @@ export const deleteTaskStatus = createServerFn({ method: "POST" })
 
 export const updateTaskType = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         id: z.string().uuid(),

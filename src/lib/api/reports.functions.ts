@@ -10,7 +10,7 @@ import { dayInTz, utcFromTzWall } from "@/lib/time-tz";
  */
 export const getTimeReport = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -200,7 +200,7 @@ export const getTimeReport = createServerFn({ method: "GET" })
 /** Project-level health: estimate vs actual rollup, aggregated in Postgres. */
 export const getProjectTimeHealth = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows } = await supabase.rpc("get_project_time_health", {
@@ -221,7 +221,7 @@ export const getProjectTimeHealth = createServerFn({ method: "GET" })
 /** Rollup map for a list of tasks (used to render chips inline in kanban/lists). */
 export const getEstimateRollups = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows } = await supabase
@@ -242,7 +242,7 @@ export const getEstimateRollups = createServerFn({ method: "GET" })
 /** Per-project estimate vs logged rollup across an entire workspace (aggregated in Postgres). */
 export const getWorkspaceProjectHealth = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows } = await supabase.rpc("get_workspace_project_health", {
@@ -270,7 +270,7 @@ export const getWorkspaceProjectHealth = createServerFn({ method: "GET" })
  */
 export const getPlanVsActualReport = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),

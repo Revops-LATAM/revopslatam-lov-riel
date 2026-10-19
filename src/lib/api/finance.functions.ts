@@ -8,7 +8,7 @@ const currencyEnum = z.enum(["USD", "CLP", "UF"]);
 
 export const getMyWorkspaceRole = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: row, error } = await context.supabase
       .from("workspace_members")
@@ -24,7 +24,7 @@ export const getMyWorkspaceRole = createServerFn({ method: "GET" })
 
 export const generateContractSprints = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         contractId: z.string().uuid(),
@@ -47,7 +47,7 @@ export const generateContractSprints = createServerFn({ method: "POST" })
 
 export const listWorkspacePayments = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -121,7 +121,7 @@ export const listWorkspacePayments = createServerFn({ method: "GET" })
 
 export const getFinanceDashboard = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     // Single SQL aggregate replaces a contracts fetch + a scan of up to 5000
     // contract_payments rows in Node. See migration: get_finance_dashboard.
@@ -159,7 +159,7 @@ export const getFinanceDashboard = createServerFn({ method: "GET" })
 
 export const listCurrencyRates = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("currency_rates")
@@ -172,7 +172,7 @@ export const listCurrencyRates = createServerFn({ method: "GET" })
 
 export const upsertCurrencyRate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -203,7 +203,7 @@ export const upsertCurrencyRate = createServerFn({ method: "POST" })
 
 export const deleteCurrencyRate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ rateId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ rateId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("currency_rates").delete().eq("id", data.rateId);
     if (error) throw new Error(error.message);
@@ -216,7 +216,7 @@ export const deleteCurrencyRate = createServerFn({ method: "POST" })
 
 export const getLatestUfRate = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: row, error } = await context.supabase
       .from("currency_rates")
@@ -238,7 +238,7 @@ export const getLatestUfRate = createServerFn({ method: "GET" })
 
 export const refreshUfRates = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const year = new Date().getFullYear();
     const url = "https://mindicador.cl/api/uf";

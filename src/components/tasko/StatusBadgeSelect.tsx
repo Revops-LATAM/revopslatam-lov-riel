@@ -7,15 +7,7 @@ import {
 } from "@/components/ui/select";
 
 export type StColor =
-  | "gray"
-  | "stone"
-  | "blue"
-  | "purple"
-  | "magenta"
-  | "amber"
-  | "orange"
-  | "red"
-  | "teal";
+  "gray" | "stone" | "blue" | "purple" | "magenta" | "amber" | "orange" | "red" | "teal";
 
 export type StatusOption = { value: string; label: string; color?: StColor; hex?: string | null };
 

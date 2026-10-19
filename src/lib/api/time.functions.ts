@@ -8,7 +8,7 @@ const WORKSPACE_ROLE = ["owner", "admin", "member", "guest"] as const;
 
 export const listTaskEstimates = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows, error } = await supabase
@@ -21,7 +21,7 @@ export const listTaskEstimates = createServerFn({ method: "GET" })
 
 export const upsertTaskEstimate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         taskId: z.string().uuid(),
@@ -58,7 +58,7 @@ export const upsertTaskEstimate = createServerFn({ method: "POST" })
 
 export const deleteTaskEstimate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { error } = await supabase.from("task_estimates").delete().eq("id", data.id);
@@ -70,7 +70,7 @@ export const deleteTaskEstimate = createServerFn({ method: "POST" })
 
 export const listTimeEntries = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         taskId: z.string().uuid().optional(),
@@ -101,7 +101,7 @@ export const listTimeEntries = createServerFn({ method: "GET" })
 
 export const createTimeEntry = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         taskId: z.string().uuid().nullable().optional(),
@@ -137,7 +137,7 @@ export const createTimeEntry = createServerFn({ method: "POST" })
 
 export const updateTimeEntry = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         id: z.string().uuid(),
@@ -167,7 +167,7 @@ export const updateTimeEntry = createServerFn({ method: "POST" })
 
 export const deleteTimeEntry = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { error } = await supabase.from("time_entries").delete().eq("id", data.id);
@@ -187,7 +187,7 @@ export const deleteTimeEntry = createServerFn({ method: "POST" })
  */
 export const getActiveTimer = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({ workspaceId: z.string().uuid().optional() })
       .optional()
@@ -255,7 +255,7 @@ export const getActiveTimer = createServerFn({ method: "GET" })
 
 export const startTimer = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ taskId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     // Cerrar timer activo previo si existe
@@ -293,7 +293,7 @@ export const stopTimer = createServerFn({ method: "POST" })
 
 export const listCapacities = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows, error } = await supabase
@@ -308,7 +308,7 @@ export const listCapacities = createServerFn({ method: "GET" })
 
 export const upsertCapacity = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -356,7 +356,7 @@ export const upsertCapacity = createServerFn({ method: "POST" })
 
 export const listHolidays = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: rows, error } = await supabase
@@ -370,7 +370,7 @@ export const listHolidays = createServerFn({ method: "GET" })
 
 export const upsertHoliday = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         id: z.string().uuid().optional(),
@@ -403,7 +403,7 @@ export const upsertHoliday = createServerFn({ method: "POST" })
 
 export const deleteHoliday = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { error } = await supabase.from("workspace_holidays").delete().eq("id", data.id);
@@ -431,7 +431,7 @@ export const listMyTimeOff = createServerFn({ method: "GET" })
 /** Marca un rango de fechas (o un día suelto si start=end) como día libre del usuario en un workspace. */
 export const addMyTimeOffRange = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -514,7 +514,7 @@ export const addMyTimeOffRange = createServerFn({ method: "POST" })
 /** Elimina un día libre del usuario (solo el propio). */
 export const deleteMyTimeOff = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { error } = await supabase

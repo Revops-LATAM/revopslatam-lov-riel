@@ -3,11 +3,7 @@
 // falls back to the legacy enum `status` string when the join is absent.
 
 export type TaskStatusCategory =
-  | "abierta"
-  | "en_progreso"
-  | "bloqueada"
-  | "completada"
-  | "cancelada";
+  "abierta" | "en_progreso" | "bloqueada" | "completada" | "cancelada";
 
 export interface TaskStatusInfo {
   id: string | null;

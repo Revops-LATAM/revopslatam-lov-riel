@@ -17,7 +17,7 @@ async function resolveAssigneeReplyTo(
 
 export const notifyTicketResolved = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         taskId: z.string().uuid(),
@@ -54,7 +54,7 @@ export const notifyTicketResolved = createServerFn({ method: "POST" })
 
 export const notifyTicketQuestion = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         taskId: z.string().uuid(),

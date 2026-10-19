@@ -22,7 +22,7 @@ export type DeletedTaskRow = {
  */
 export const listDeletedTasks = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -100,7 +100,7 @@ export const listDeletedTasks = createServerFn({ method: "GET" })
 
 export const restoreDeletedTask = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: taskId, error } = await supabase.rpc("restore_deleted_task", { p_id: data.id });

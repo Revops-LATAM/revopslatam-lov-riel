@@ -140,7 +140,7 @@ const MES_TO_NUM: Record<string, number> = {
 
 export const importLegacyData = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z.object({ workspaceId: z.string().uuid(), dryRun: z.boolean().optional() }).parse(input),
   )
   .handler(async ({ data, context }) => {

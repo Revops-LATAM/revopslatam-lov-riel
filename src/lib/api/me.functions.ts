@@ -4,7 +4,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const updateMyProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         full_name: z.string().min(1).max(120).optional(),
@@ -52,7 +52,7 @@ export const getMyPreferences = createServerFn({ method: "GET" })
 
 export const updateMyPreferences = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         theme: z.enum(["light", "dark", "system"]).optional(),

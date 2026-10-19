@@ -6,7 +6,7 @@ const currencyEnum = z.enum(["USD", "CLP", "UF"]);
 
 export const listMemberCostRates = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ workspaceId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("member_cost_rates")
@@ -33,7 +33,7 @@ export const listMemberCostRates = createServerFn({ method: "GET" })
 
 export const upsertMemberCostRate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -61,7 +61,7 @@ export const upsertMemberCostRate = createServerFn({ method: "POST" })
 
 export const deleteMemberCostRate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ rateId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ rateId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("member_cost_rates")
@@ -73,7 +73,7 @@ export const deleteMemberCostRate = createServerFn({ method: "POST" })
 
 export const getCurrentMemberCostRate = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z.object({ workspaceId: z.string().uuid(), userId: z.string().uuid() }).parse(input),
   )
   .handler(async ({ data, context }) => {

@@ -40,7 +40,7 @@ const lineInput = z.object({
  */
 export const createProjectedContract = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -244,7 +244,7 @@ export const createProjectedContract = createServerFn({ method: "POST" })
  */
 export const activateContract = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("contracts")
@@ -261,7 +261,7 @@ export const activateContract = createServerFn({ method: "POST" })
  */
 export const regenerateContractPayments = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ contractId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const sb = context.supabase;
     const { data: contract, error: cerr } = await sb

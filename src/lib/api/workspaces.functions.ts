@@ -17,7 +17,7 @@ export const listWorkspaces = createServerFn({ method: "GET" })
 
 export const createWorkspace = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z.object({ name: z.string().min(1).max(60), color: z.string().optional() }).parse(input),
   )
   .handler(async ({ data, context }) => {
@@ -51,7 +51,7 @@ export const createWorkspace = createServerFn({ method: "POST" })
 
 export const getWorkspaceBySlug = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ slug: z.string() }).parse(input))
+  .validator((input) => z.object({ slug: z.string() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const { data: ws, error } = await supabase
@@ -66,7 +66,7 @@ export const getWorkspaceBySlug = createServerFn({ method: "GET" })
 
 export const updateWorkspaceTimeConfig = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -106,7 +106,7 @@ export const getMyProfile = createServerFn({ method: "GET" })
 
 export const searchWorkspace = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z.object({ workspaceId: z.string().uuid(), q: z.string().max(100) }).parse(input),
   )
   .handler(async ({ data, context }) => {

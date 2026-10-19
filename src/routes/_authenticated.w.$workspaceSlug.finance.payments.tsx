@@ -62,14 +62,7 @@ import {
 } from "@/components/ui/dialog";
 
 type StatusFilter =
-  | "all"
-  | "ready"
-  | "scheduled"
-  | "invoiced"
-  | "overdue"
-  | "draft"
-  | "paid"
-  | "cancelled";
+  "all" | "ready" | "scheduled" | "invoiced" | "overdue" | "draft" | "paid" | "cancelled";
 
 export const Route = createFileRoute("/_authenticated/w/$workspaceSlug/finance/payments")({
   ssr: false,

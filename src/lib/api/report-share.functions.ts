@@ -10,7 +10,7 @@ function randomToken(len = 24) {
 
 export const createReportShareToken = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         projectId: z.string().uuid(),
@@ -38,7 +38,7 @@ export const createReportShareToken = createServerFn({ method: "POST" })
 
 export const listReportShareTokens = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("project_share_tokens")
@@ -53,7 +53,7 @@ export const listReportShareTokens = createServerFn({ method: "GET" })
 
 export const revokeReportShareToken = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("project_share_tokens")

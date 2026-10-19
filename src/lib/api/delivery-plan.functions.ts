@@ -15,7 +15,7 @@ const budgetRow = z.object({
 
 export const listProjectHourBudget = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("project_hour_budget")
@@ -28,7 +28,7 @@ export const listProjectHourBudget = createServerFn({ method: "GET" })
 
 export const upsertProjectHourBudget = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         projectId: z.string().uuid(),
@@ -67,7 +67,7 @@ export const upsertProjectHourBudget = createServerFn({ method: "POST" })
 
 export const deleteProjectHourBudgetRow = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ rowId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ rowId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: row, error: gerr } = await context.supabase
       .from("project_hour_budget")
@@ -90,7 +90,7 @@ export const deleteProjectHourBudgetRow = createServerFn({ method: "POST" })
 
 export const listProjectServiceLines = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("project_service_lines")
@@ -104,7 +104,7 @@ export const listProjectServiceLines = createServerFn({ method: "GET" })
 
 export const setProjectServiceLines = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         projectId: z.string().uuid(),
@@ -136,7 +136,7 @@ export const setProjectServiceLines = createServerFn({ method: "POST" })
 
 export const recomputeProjectMargin = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: margin, error } = await context.supabase.rpc("compute_project_margin", {
       _project_id: data.projectId,
@@ -149,7 +149,7 @@ export const recomputeProjectMargin = createServerFn({ method: "POST" })
 
 export const listMilestoneLinks = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: ms, error: merr } = await context.supabase
       .from("milestones")
@@ -168,7 +168,7 @@ export const listMilestoneLinks = createServerFn({ method: "GET" })
 
 export const upsertMilestoneLink = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         milestoneId: z.string().uuid(),
@@ -192,7 +192,7 @@ export const upsertMilestoneLink = createServerFn({ method: "POST" })
 
 export const deleteMilestoneLink = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ linkId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ linkId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("milestone_hito_links")
@@ -206,7 +206,7 @@ export const deleteMilestoneLink = createServerFn({ method: "POST" })
 
 export const createProjectFromHandoff = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         handoffId: z.string().uuid(),
@@ -381,7 +381,7 @@ export const createProjectFromHandoff = createServerFn({ method: "POST" })
 
 export const completeHandoff = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ handoffId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ handoffId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("contract_handoffs")

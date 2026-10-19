@@ -3,6 +3,16 @@
 Estado: el código ya compila para Vercel (`nitro: { preset: "vercel" }` en `vite.config.ts`, Node 22).
 Cambiar de destino: `NITRO_PRESET=cloudflare-module npm run build`.
 
+## 0. Versiones y prueba de humo
+
+- TanStack Start 1.168.61 / Router 1.170.45. `package.json` fija una sola copia de `@tanstack/router-core`
+  (`overrides`): con dos copias el enrutador se parte en dos contextos.
+- Al subir TanStack, `npm run smoke` debe seguir pasando. Abre la app en un navegador real y comprueba que
+  `/login` renderiza y que las rutas protegidas redirigen a `/login`. Corre también en el CI.
+- Causa de la "pantalla en blanco" de Riel 1.0 al actualizar: `_authenticated.beforeLoad` llamaba a
+  `signOut()` incluso sin sesión; eso emitía `SIGNED_OUT`, `AuthListener` invalidaba el router y la carga se
+  reiniciaba en bucle antes de redirigir. Ahora solo cierra sesión si había una sesión caducada.
+
 ## 1. Vercel
 
 1. Importar el repo de GitHub en Vercel. Framework: _Other_. Build: `npm run build` (la salida se

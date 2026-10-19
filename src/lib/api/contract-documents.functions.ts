@@ -5,7 +5,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 export const listContractDocuments = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z.object({ workspaceId: z.string().uuid(), contractId: z.string().uuid() }).parse(input),
   )
   .handler(async ({ data, context }) => {
@@ -24,7 +24,7 @@ export const listContractDocuments = createServerFn({ method: "GET" })
 
 export const getContractDocumentUrl = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ path: z.string().min(1) }).parse(input))
+  .validator((input) => z.object({ path: z.string().min(1) }).parse(input))
   .handler(async ({ data, context }) => {
     // Storage paths follow `${workspaceId}/${contractId}/${filename}`. Verify
     // the caller can actually read that contract with their RLS-scoped client
@@ -52,7 +52,7 @@ export const getContractDocumentUrl = createServerFn({ method: "POST" })
 
 export const deleteContractDocument = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ path: z.string().min(1) }).parse(input))
+  .validator((input) => z.object({ path: z.string().min(1) }).parse(input))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.storage.from("contract-documents").remove([data.path]);
     if (error) throw new Error(error.message);

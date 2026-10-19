@@ -22,7 +22,7 @@ const ChannelSchema = z.enum(PIECE_CHANNELS);
 // ============ Pillars ============
 export const listPillars = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) =>
+  .validator((i) =>
     z.object({ workspaceId: z.string().uuid(), onlyActive: z.boolean().optional() }).parse(i),
   )
   .handler(async ({ data, context }) => {
@@ -39,7 +39,7 @@ export const listPillars = createServerFn({ method: "GET" })
 
 export const upsertPillar = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) =>
+  .validator((i) =>
     z
       .object({
         id: z.string().uuid().optional(),
@@ -80,7 +80,7 @@ export const upsertPillar = createServerFn({ method: "POST" })
 
 export const deletePillar = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ id: z.string().uuid() }).parse(i))
+  .validator((i) => z.object({ id: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("content_pillars").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -90,7 +90,7 @@ export const deletePillar = createServerFn({ method: "POST" })
 // ============ Cadence Templates ============
 export const listCadenceTemplates = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ workspaceId: z.string().uuid() }).parse(i))
+  .validator((i) => z.object({ workspaceId: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("cadence_templates")
@@ -104,7 +104,7 @@ export const listCadenceTemplates = createServerFn({ method: "GET" })
 
 export const getCadenceTemplate = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ templateId: z.string().uuid() }).parse(i))
+  .validator((i) => z.object({ templateId: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { data: tpl, error } = await context.supabase
       .from("cadence_templates")
@@ -124,7 +124,7 @@ export const getCadenceTemplate = createServerFn({ method: "GET" })
 
 export const upsertCadenceTemplate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) =>
+  .validator((i) =>
     z
       .object({
         id: z.string().uuid().optional(),
@@ -210,7 +210,7 @@ export const upsertCadenceTemplate = createServerFn({ method: "POST" })
 
 export const deleteCadenceTemplate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ templateId: z.string().uuid() }).parse(i))
+  .validator((i) => z.object({ templateId: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("cadence_templates")
@@ -223,7 +223,7 @@ export const deleteCadenceTemplate = createServerFn({ method: "POST" })
 // ============ Grids ============
 export const getGrid = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) =>
+  .validator((i) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -272,7 +272,7 @@ export const getGrid = createServerFn({ method: "GET" })
 
 export const getPieceDetails = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ pieceId: z.string().uuid() }).parse(i))
+  .validator((i) => z.object({ pieceId: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     const [pieceR, slidesR, sectionsR, pollR, copiesR] = await Promise.all([
@@ -301,7 +301,7 @@ const GenerateModeSchema = z.enum(["additive", "replace_drafts", "block_if_exist
 
 export const generateMonthlyGrid = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) =>
+  .validator((i) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -463,7 +463,7 @@ export const generateMonthlyGrid = createServerFn({ method: "POST" })
 // ============ Pieces CRUD ============
 export const createPiece = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) =>
+  .validator((i) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -499,7 +499,7 @@ export const createPiece = createServerFn({ method: "POST" })
 
 export const updatePiece = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) =>
+  .validator((i) =>
     z
       .object({
         pieceId: z.string().uuid(),
@@ -573,7 +573,7 @@ export const updatePiece = createServerFn({ method: "POST" })
 
 export const deletePiece = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ pieceId: z.string().uuid() }).parse(i))
+  .validator((i) => z.object({ pieceId: z.string().uuid() }).parse(i))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("content_pieces_v2")
@@ -586,7 +586,7 @@ export const deletePiece = createServerFn({ method: "POST" })
 // ============ Sub-structure ============
 export const upsertCarouselSlide = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) => z.object({ slideId: z.string().uuid(), text: z.string() }).parse(i))
+  .validator((i) => z.object({ slideId: z.string().uuid(), text: z.string() }).parse(i))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("piece_carousel_slides")
@@ -598,7 +598,7 @@ export const upsertCarouselSlide = createServerFn({ method: "POST" })
 
 export const upsertVideoSection = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) =>
+  .validator((i) =>
     z
       .object({
         sectionId: z.string().uuid(),
@@ -630,7 +630,7 @@ export const upsertVideoSection = createServerFn({ method: "POST" })
 
 export const upsertPoll = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) =>
+  .validator((i) =>
     z
       .object({
         pieceId: z.string().uuid(),
@@ -652,7 +652,7 @@ export const upsertPoll = createServerFn({ method: "POST" })
 
 export const upsertChannelCopy = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i) =>
+  .validator((i) =>
     z
       .object({
         pieceId: z.string().uuid(),

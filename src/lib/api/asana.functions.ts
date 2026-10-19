@@ -30,7 +30,7 @@ export const listAsanaWorkspaces = createServerFn({ method: "GET" })
 
 export const listAsanaProjects = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceGid: z.string().min(1) }).parse(input))
+  .validator((input) => z.object({ workspaceGid: z.string().min(1) }).parse(input))
   .handler(async ({ data }) => {
     const rows = await asanaGet<{ gid: string; name: string; archived?: boolean }[]>(
       `/projects?workspace=${encodeURIComponent(data.workspaceGid)}&archived=false&limit=100&opt_fields=name,archived`,
@@ -40,7 +40,7 @@ export const listAsanaProjects = createServerFn({ method: "GET" })
 
 export const syncAsanaProjectTasks = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z.object({ projectId: z.string().uuid(), force: z.boolean().optional() }).parse(input),
   )
   .handler(async ({ data, context }) => {
@@ -54,7 +54,7 @@ export const syncAsanaProjectTasks = createServerFn({ method: "POST" })
 // ---------- Discovery endpoints for config UI ----------
 export const listAsanaSections = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectGid: z.string().min(1) }).parse(input))
+  .validator((input) => z.object({ projectGid: z.string().min(1) }).parse(input))
   .handler(async ({ data }) => {
     return await asanaGet<{ gid: string; name: string }[]>(
       `/projects/${encodeURIComponent(data.projectGid)}/sections?opt_fields=gid,name`,
@@ -63,7 +63,7 @@ export const listAsanaSections = createServerFn({ method: "GET" })
 
 export const listAsanaCustomFields = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectGid: z.string().min(1) }).parse(input))
+  .validator((input) => z.object({ projectGid: z.string().min(1) }).parse(input))
   .handler(async ({ data }) => {
     type CF = {
       gid: string;
@@ -79,7 +79,7 @@ export const listAsanaCustomFields = createServerFn({ method: "GET" })
 
 export const listAsanaProjectUsers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ workspaceGid: z.string().min(1) }).parse(input))
+  .validator((input) => z.object({ workspaceGid: z.string().min(1) }).parse(input))
   .handler(async ({ data }) => {
     return await asanaGet<{ gid: string; name: string; email?: string }[]>(
       `/workspaces/${encodeURIComponent(data.workspaceGid)}/users?opt_fields=gid,name,email&limit=100`,
@@ -89,7 +89,7 @@ export const listAsanaProjectUsers = createServerFn({ method: "GET" })
 // ---------- Config CRUD ----------
 export const getAsanaProjectConfig = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: project } = await context.supabase
       .from("projects")
@@ -133,7 +133,7 @@ export const getAsanaProjectConfig = createServerFn({ method: "GET" })
 
 export const saveAsanaProjectConfig = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         projectId: z.string().uuid(),
@@ -172,7 +172,7 @@ export const saveAsanaProjectConfig = createServerFn({ method: "POST" })
 
 export const saveAsanaStatusMappings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         projectId: z.string().uuid(),
@@ -223,7 +223,7 @@ export const saveAsanaStatusMappings = createServerFn({ method: "POST" })
 
 export const saveAsanaUserMappings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
+  .validator((input) =>
     z
       .object({
         workspaceId: z.string().uuid(),
@@ -257,7 +257,7 @@ export const saveAsanaUserMappings = createServerFn({ method: "POST" })
 // ---------- Webhook lifecycle ----------
 export const subscribeAsanaWebhook = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: project } = await context.supabase
       .from("projects")
@@ -298,7 +298,7 @@ export const subscribeAsanaWebhook = createServerFn({ method: "POST" })
 
 export const unsubscribeAsanaWebhook = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
+  .validator((input) => z.object({ projectId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: row } = await context.supabase
       .from("asana_webhook_subscriptions")
