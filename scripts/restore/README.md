@@ -57,3 +57,13 @@ Resultado esperado: 89 tablas cargadas, 63.867 filas, 13 usuarios, 0 claves for�
   Lovable (`pgmq`, vault, `pg_cron`) no se restauran.
 - **Cron y secretos:** los 5 trabajos de `pg_cron` y las claves de Asana, HubSpot, Slack, Haulmer
   y Google Calendar se reconfiguran a mano.
+
+## Permisos de las funciones (importante)
+
+Un proyecto Supabase nuevo concede `EXECUTE` a `anon`, `authenticated` y `service_role` a toda funci처n
+que se crea, y los `REVOKE ... FROM PUBLIC` del respaldo no lo deshacen: sin correcci처n, las 106 funciones
+de `public` quedan ejecutables por `anon` (en producci처n eran 60). `00_schema.sql` termina con un bloque
+(`function_privileges_sql` en `build_restore.py`) que limpia esos tres roles y reaplica los permisos
+exactos de producci처n. Verificar tras restaurar: `anon` debe poder ejecutar 60 funciones de `public`,
+`authenticated` 88 y `service_role` 106; ninguna funci처n `SECURITY DEFINER` sensible (p. ej.
+`purge_deleted_tasks`, `enqueue_notification`) debe estar abierta a `anon`.

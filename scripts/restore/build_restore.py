@@ -36,6 +36,58 @@ def clean(defn: str) -> str | None:
     return defn.strip() and defn.rstrip() + "\n"
 
 
+FUNC_ACL = re.compile(r"^(REVOKE|GRANT) ALL ON FUNCTION (\S+?)\(.*?\) (?:FROM|TO) (\w+);$", re.M)
+ROLES = ("anon", "authenticated", "service_role")
+
+
+def function_privileges_sql(schema_sql: str) -> str:
+    """Fija el EXECUTE de cada función igual que en producción.
+
+    pg_dump emite los permisos como diferencia contra el valor inicial (dueño + PUBLIC). Un Supabase
+    nuevo, además, concede EXECUTE a anon/authenticated/service_role a toda función nueva (privilegios
+    por defecto), y eso NO lo deshacen los REVOKE ... FROM PUBLIC del respaldo: las funciones
+    quedarían más abiertas que en producción. Por eso se limpian esos tres roles y se reaplica el estado
+    final simulado a partir de las sentencias del respaldo.
+    """
+    acl: dict[str, set[str]] = {}
+    for fn in re.findall(r"^CREATE FUNCTION (\S+?)\(", schema_sql, re.M):
+        acl[fn] = {"PUBLIC"}
+    for verb, fn, role in FUNC_ACL.findall(schema_sql):
+        if fn in acl:
+            acl[fn].add(role) if verb == "GRANT" else acl[fn].discard(role)
+    groups: dict[tuple[bool, tuple[str, ...]], list[str]] = {}
+    for fn, roles in sorted(acl.items()):
+        groups.setdefault(("PUBLIC" in roles, tuple(sorted(roles & set(ROLES)))), []).append(fn)
+    lines = [
+        "-- Permisos de EXECUTE de las funciones: igual que en producción (ver function_privileges_sql).",
+        "DO $acl$",
+        "DECLARE r record; g record;",
+        "BEGIN",
+        "  FOR r IN SELECT p.oid::regprocedure AS sig FROM pg_proc p",
+        "    WHERE p.pronamespace IN ('public'::regnamespace, 'app_private'::regnamespace) LOOP",
+        "    EXECUTE format('REVOKE ALL ON FUNCTION %s FROM anon, authenticated, service_role', r.sig);",
+        "  END LOOP;",
+        "  FOR g IN SELECT * FROM (VALUES",
+    ]
+    rows = []
+    for (public, roles), fns in groups.items():
+        arr = ",".join(f"'{f}'" for f in fns)
+        rows.append(f"    ({str(public).lower()}, '{','.join(roles)}', ARRAY[{arr}])")
+    lines.append(",\n".join(rows))
+    lines += [
+        "  ) AS t(keep_public, roles, names) LOOP",
+        "    FOR r IN SELECT p.oid::regprocedure AS sig FROM pg_proc p",
+        "      WHERE (p.pronamespace::regnamespace::text || '.' || p.proname) = ANY(g.names) LOOP",
+        "      IF NOT g.keep_public THEN EXECUTE format('REVOKE ALL ON FUNCTION %s FROM PUBLIC', r.sig); END IF;",
+        "      IF g.roles <> '' THEN EXECUTE format('GRANT ALL ON FUNCTION %s TO %s', r.sig, g.roles); END IF;",
+        "    END LOOP;",
+        "  END LOOP;",
+        "END",
+        "$acl$;",
+    ]
+    return "\n".join(lines) + "\n"
+
+
 def build_schema(toc) -> list[str]:
     """Sentencias DDL del esquema public/app_private, el trigger de auth y las políticas de Storage."""
     schema = [
@@ -59,6 +111,7 @@ def build_schema(toc) -> list[str]:
         d = clean(e["defn"])
         if d:
             schema.append(d)
+    schema.append(function_privileges_sql("".join(schema)))
     return schema
 
 
