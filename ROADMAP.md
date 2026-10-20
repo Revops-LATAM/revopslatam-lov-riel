@@ -45,4 +45,6 @@ Estrategia: modernización por fases sobre la misma base de datos (Supabase / Lo
 - [ ] Archivos de Storage: `task-attachments` (139) pendiente. `marketing-assets`: se subieron 3 de 6; **omitidos por ahora**
       (ver `docs/storage-pendiente.md`).
 - [ ] Tareas programadas (`supabase/cron/schedule.sql`) y secretos en Vault.
-- [ ] Endurecer funciones SECURITY DEFINER abiertas a anon/authenticated (hoy iguales a Riel 1.0).
+- [x] Endurecimiento de funciones: `anon` 0 (antes 60), `authenticated` 36 (antes 88), triggers fuera del RPC y
+      3 funciones SECURITY DEFINER sin control de acceso corregidas (`20261020000000_harden_function_privileges.sql`).
+- [ ] Opcional: mover a `app_private` los helpers de políticas que aún se pueden llamar por RPC (25 avisos INFO/WARN restantes).

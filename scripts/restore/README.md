@@ -67,3 +67,10 @@ de `public` quedan ejecutables por `anon` (en producción eran 60). `00_schema.s
 exactos de producción. Verificar tras restaurar: `anon` debe poder ejecutar 60 funciones de `public`,
 `authenticated` 88 y `service_role` 106; ninguna función `SECURITY DEFINER` sensible (p. ej.
 `purge_deleted_tasks`, `enqueue_notification`) debe estar abierta a `anon`.
+
+## Después de restaurar: endurecimiento
+
+Aplicar `supabase/migrations/20261020000000_harden_function_privileges.sql`. El restauro deja los permisos igual que
+Riel 1.0 (fiel a producción); esta migración los cierra: ninguna función para `anon`, las funciones de trigger fuera
+del RPC y comprobación de acceso en `insert_phase_raw` y `upsert_sprint_raw`. Resultado esperado: `anon` 0 funciones
+de `public`, `authenticated` 36, `service_role` 106.
