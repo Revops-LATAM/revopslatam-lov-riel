@@ -11,7 +11,7 @@ Estrategia: modernización por fases sobre la misma base de datos (Supabase / Lo
 
 - [x] Salir de Lovable: correos directos por Resend, sin cola `pgmq` (ver `docs/correos.md`).
 - [x] Salir de Lovable: login con Google nativo de Supabase (ver `docs/supabase.md`).
-- [x] Compila para Vercel y guía de despliegue (`docs/despliegue.md`); cron propio (`supabase/cron/schedule.sql`).
+- [x] Compila para Vercel (`vercel.json`, región iad1, 60 s), ruta `/api/public/health` y guía paso a paso (`docs/vercel-y-login.md`).
 - [ ] **En pausa, para el final:** Slack y HubSpot sin `connector-gateway` (esperan los tokens del equipo).
 - [ ] Servidor MCP sin `mcp-js` y logo de correos en `public/` (necesita el archivo `logo-revopslatam-blanco.png`).
 - [x] `email_queue_dispatch` / `email_queue_wake`: permisos verificados (solo service_role y postgres); migración idempotente de refuerzo.
@@ -47,4 +47,8 @@ Estrategia: modernización por fases sobre la misma base de datos (Supabase / Lo
 - [ ] Tareas programadas (`supabase/cron/schedule.sql`) y secretos en Vault.
 - [x] Endurecimiento de funciones: `anon` 0 (antes 60), `authenticated` 36 (antes 88), triggers fuera del RPC y
       3 funciones SECURITY DEFINER sin control de acceso corregidas (`20261020000000_harden_function_privileges.sql`).
-- [ ] Opcional: mover a `app_private` los helpers de políticas que aún se pueden llamar por RPC (25 avisos INFO/WARN restantes).
+- [ ] Opcional (informe de seguridad limpio): quedan 25 avisos WARN de funciones SECURITY DEFINER ejecutables por `authenticated`.
+      15 son RPC que la app necesita y comprueban el acceso por dentro (sin arreglo salvo rediseñar); 10 son helpers de políticas
+      (`can_access_*`, `has_*`, `is_workspace_member`, `shares_workspace_with`, `project_account_visible`): se pueden cerrar
+      reescribiendo ~110 políticas y ~15 funciones para usar la copia de `app_private`. Riesgo moderado, beneficio bajo: hacerlo
+      después de validar la app con usuarios reales y con el recorrido de pruebas local antes y después.

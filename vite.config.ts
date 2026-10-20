@@ -9,7 +9,12 @@ import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/tanstack/vite";
 
 export default defineConfig({
   // Destino de despliegue. Por defecto Vercel; se puede cambiar con NITRO_PRESET (p. ej. cloudflare-module).
-  nitro: { preset: process.env.NITRO_PRESET || "vercel" },
+  nitro: {
+    preset: process.env.NITRO_PRESET || "vercel",
+    // Hasta 60 s para la emisión de DTE y las tareas programadas. La región va en vercel.json.
+    vercel: { functions: { maxDuration: 60 } },
+    // El tipo del envoltorio de Lovable no declara la opción `vercel`, pero Nitro la aplica.
+  } as unknown as NonNullable<Parameters<typeof defineConfig>[0]>["nitro"],
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this

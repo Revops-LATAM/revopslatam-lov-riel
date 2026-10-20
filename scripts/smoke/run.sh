@@ -4,7 +4,7 @@
 set -u
 cd "$(dirname "$0")/../.."
 export VITE_SUPABASE_URL=https://example.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=smoke-publishable
-export SUPABASE_URL=https://example.supabase.co SUPABASE_PUBLISHABLE_KEY=smoke-publishable SUPABASE_SERVICE_ROLE_KEY=smoke-service
+export SUPABASE_URL=https://example.supabase.co SUPABASE_PUBLISHABLE_KEY=smoke-publishable SUPABASE_SERVICE_ROLE_KEY=smoke-service PUBLIC_APP_URL=http://127.0.0.1:8787
 PORT="${SMOKE_PORT:-8787}"
 rm -rf .output
 NITRO_PRESET=node-server npm run build > /tmp/smoke-build.log 2>&1 || { echo "FALLA el build"; tail -20 /tmp/smoke-build.log; exit 2; }

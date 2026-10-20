@@ -33,6 +33,7 @@ import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authentic
 import { Route as AuthenticatedMeSettingsRouteImport } from './routes/_authenticated.me.settings'
 import { Route as AuthenticatedTasksTaskIdRouteImport } from './routes/_authenticated.tasks.$taskId'
 import { Route as AuthenticatedWWorkspaceSlugRouteImport } from './routes/_authenticated.w.$workspaceSlug'
+import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as TicketsSlugIndexRouteImport } from './routes/tickets.$slug.index'
 import { Route as TicketsSlugNewRouteImport } from './routes/tickets.$slug.new'
 import { Route as AuthenticatedMeSettingsIndexRouteImport } from './routes/_authenticated.me.settings.index'
@@ -244,6 +245,11 @@ const AuthenticatedWWorkspaceSlugRoute =
     path: '/w/$workspaceSlug',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
+  id: '/api/public/health',
+  path: '/api/public/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TicketsSlugIndexRoute = TicketsSlugIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -755,6 +761,7 @@ export interface FileRoutesByFullPath {
   '/me/settings': typeof AuthenticatedMeSettingsRouteWithChildren
   '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/w/$workspaceSlug': typeof AuthenticatedWWorkspaceSlugRouteWithChildren
+  '/api/public/health': typeof ApiPublicHealthRoute
   '/tickets/$slug/new': typeof TicketsSlugNewRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/tickets/$slug/': typeof TicketsSlugIndexRoute
@@ -859,6 +866,7 @@ export interface FileRoutesByTo {
   '/admin/system': typeof AuthenticatedAdminSystemRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
   '/tickets/$slug/new': typeof TicketsSlugNewRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/tickets/$slug': typeof TicketsSlugIndexRoute
@@ -962,6 +970,7 @@ export interface FileRoutesById {
   '/_authenticated/me/settings': typeof AuthenticatedMeSettingsRouteWithChildren
   '/_authenticated/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/_authenticated/w/$workspaceSlug': typeof AuthenticatedWWorkspaceSlugRouteWithChildren
+  '/api/public/health': typeof ApiPublicHealthRoute
   '/tickets/$slug/new': typeof TicketsSlugNewRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/tickets/$slug/': typeof TicketsSlugIndexRoute
@@ -1072,6 +1081,7 @@ export interface FileRouteTypes {
     | '/me/settings'
     | '/tasks/$taskId'
     | '/w/$workspaceSlug'
+    | '/api/public/health'
     | '/tickets/$slug/new'
     | '/admin/'
     | '/tickets/$slug/'
@@ -1176,6 +1186,7 @@ export interface FileRouteTypes {
     | '/admin/system'
     | '/admin/users'
     | '/tasks/$taskId'
+    | '/api/public/health'
     | '/tickets/$slug/new'
     | '/admin'
     | '/tickets/$slug'
@@ -1278,6 +1289,7 @@ export interface FileRouteTypes {
     | '/_authenticated/me/settings'
     | '/_authenticated/tasks/$taskId'
     | '/_authenticated/w/$workspaceSlug'
+    | '/api/public/health'
     | '/tickets/$slug/new'
     | '/_authenticated/admin/'
     | '/tickets/$slug/'
@@ -1377,6 +1389,7 @@ export interface RootRouteChildren {
   TicketsSlugRoute: typeof TicketsSlugRouteWithChildren
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
+  ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   ApiPublicCronAsanaQueueRoute: typeof ApiPublicCronAsanaQueueRoute
   ApiPublicCronAsanaSyncRoute: typeof ApiPublicCronAsanaSyncRoute
   ApiPublicCronDispatchNotificationsRoute: typeof ApiPublicCronDispatchNotificationsRoute
@@ -1559,6 +1572,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/w/$workspaceSlug'
       preLoaderRoute: typeof AuthenticatedWWorkspaceSlugRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/api/public/health': {
+      id: '/api/public/health'
+      path: '/api/public/health'
+      fullPath: '/api/public/health'
+      preLoaderRoute: typeof ApiPublicHealthRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/tickets/$slug/': {
       id: '/tickets/$slug/'
@@ -2561,6 +2581,7 @@ const rootRouteChildren: RootRouteChildren = {
   TicketsSlugRoute: TicketsSlugRouteWithChildren,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
+  ApiPublicHealthRoute: ApiPublicHealthRoute,
   ApiPublicCronAsanaQueueRoute: ApiPublicCronAsanaQueueRoute,
   ApiPublicCronAsanaSyncRoute: ApiPublicCronAsanaSyncRoute,
   ApiPublicCronDispatchNotificationsRoute:

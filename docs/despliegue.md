@@ -1,5 +1,7 @@
 # Despliegue de Riel 2.0 fuera de Lovable (GitHub + Vercel + Supabase)
 
+Guía paso a paso: [`vercel-y-login.md`](./vercel-y-login.md).
+
 Estado: el código ya compila para Vercel (`nitro: { preset: "vercel" }` en `vite.config.ts`, Node 22).
 Cambiar de destino: `NITRO_PRESET=cloudflare-module npm run build`.
 

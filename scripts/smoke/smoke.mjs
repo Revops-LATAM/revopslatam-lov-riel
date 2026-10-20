@@ -40,6 +40,16 @@ check(
   "ruta profunda redirige a /login conservando ?redirect",
 );
 
+const health = await fetch(`${base}/api/public/health`);
+const hj = await health.json().catch(() => ({}));
+check(
+  health.status === 200 &&
+    Array.isArray(hj.missing) &&
+    hj.missing.length === 0 &&
+    !("ok" in hj && hj.ok === undefined),
+  `/api/public/health responde y no faltan variables obligatorias (${JSON.stringify(hj.missing)})`,
+);
+
 const cron = await fetch(`${base}/api/public/cron/asana-sync`, { method: "POST" });
 check(cron.status === 401, "los endpoints cron exigen clave (401)");
 const missing = await fetch(`${base}/ruta-que-no-existe`);
