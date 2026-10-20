@@ -3,10 +3,12 @@
 Estrategia: modernización por fases sobre la misma base de datos (Supabase / Lovable Cloud).
 
 ## Fase 0 — Base (hecha)
+
 - [x] Importar Riel 1.0, regenerar lockfile, typecheck y build en verde.
 - [x] Formato Prettier, Vitest y CI (typecheck, formato, tests, build).
 
 ## Fase 1 — Seguridad y deuda técnica
+
 - [x] Salir de Lovable: correos directos por Resend, sin cola `pgmq` (ver `docs/correos.md`).
 - [x] Salir de Lovable: login con Google nativo de Supabase (ver `docs/supabase.md`).
 - [x] Compila para Vercel y guía de despliegue (`docs/despliegue.md`); cron propio (`supabase/cron/schedule.sql`).
@@ -21,21 +23,26 @@ Estrategia: modernización por fases sobre la misma base de datos (Supabase / Lo
 - [ ] `content_pieces` v1 sigue en uso por campañas y plantillas de marketing: migrarlas a `content_pieces_v2` antes de retirarlo.
 
 ## Fase 2 — Diseño y UX
+
 - [ ] Sistema de diseño 2.0 (tokens), modo oscuro, responsive real, navegación simplificada.
 - [ ] Reemplazar colores fijos por tokens.
 
 ## Fase 3 — Rendimiento y estructura
+
 - [ ] SSR/prefetch en rutas autenticadas, code-splitting de vistas pesadas (Gantt, PDF, xlsx).
 - [ ] Dividir `operations.functions.ts`, `dte.functions.ts`, `_authenticated.tsx` por subdominio.
 
 ## Fase 4 — Calidad
+
 - [ ] Pruebas de reglas de dinero (cuotas, splits, comisiones) y e2e con Playwright.
 - [ ] Corregir advertencias de lint (hooks, `any`).
 
 ## Estado del Supabase nuevo (`db_riel`)
+
 - [x] Esquema, datos (63.867 filas), 182 claves foráneas sin huérfanos, RLS en las 87 tablas.
 - [x] Permisos EXECUTE de funciones iguales a producción (60/88/106 para anon/authenticated/service_role).
 - [x] Migraciones de asignados en lote y cuotas idempotentes aplicadas.
-- [ ] Archivos de Storage (`task-attachments`, `marketing-assets`).
+- [ ] Archivos de Storage: `task-attachments` (139) pendiente. `marketing-assets`: se subieron 3 de 6; **omitidos por ahora**
+      (ver `docs/storage-pendiente.md`).
 - [ ] Tareas programadas (`supabase/cron/schedule.sql`) y secretos en Vault.
 - [ ] Endurecer funciones SECURITY DEFINER abiertas a anon/authenticated (hoy iguales a Riel 1.0).
