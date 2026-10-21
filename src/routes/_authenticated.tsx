@@ -277,28 +277,24 @@ function AuthLayout() {
       </Sheet>
 
       <main data-app-main className="flex-1 flex flex-col min-w-0 relative h-dvh overflow-y-auto">
-        <div className="md:hidden sticky top-0 z-30 flex h-12 shrink-0 items-center gap-2 border-b border-border bg-background px-2">
+        {/* Un solo grupo (el cronómetro y las notificaciones abren canales realtime: no pueden montarse dos veces). */}
+        <div className="sticky top-0 z-30 flex h-12 shrink-0 items-center gap-2 border-b border-border bg-background px-2 md:absolute md:right-3 md:top-2 md:h-auto md:border-0 md:bg-transparent md:p-0">
           <Button
             variant="ghost"
             size="icon"
-            className="h-9 w-9"
+            className="h-9 w-9 md:hidden"
             aria-label="Abrir menú"
             onClick={() => setMobileNavOpen(true)}
           >
             <Menu className="h-5 w-5" />
           </Button>
-          <img src={rielLogo} alt="Riel" className="h-6 w-6 object-contain" />
-          <span className="font-semibold text-sm">Riel</span>
-          <div className="ml-auto flex items-center gap-1">
+          <img src={rielLogo} alt="Riel" className="h-6 w-6 object-contain md:hidden" />
+          <span className="font-semibold text-sm md:hidden">Riel</span>
+          <div className="ml-auto flex items-center gap-1 md:gap-2">
             <ThemeToggle />
             <NotificationsBell />
             <TimerPill workspaceSlug={currentWs.slug} workspaceId={currentWs.id} />
           </div>
-        </div>
-        <div className="absolute top-2 right-3 z-30 hidden md:flex items-center gap-2">
-          <ThemeToggle />
-          <NotificationsBell />
-          <TimerPill workspaceSlug={currentWs.slug} workspaceId={currentWs.id} />
         </div>
         <Outlet />
       </main>

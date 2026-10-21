@@ -40,7 +40,8 @@ export function useActiveTimer() {
   useEffect(() => {
     if (!uid) return;
     const ch = supabase
-      .channel(`active-timer-shared-${uid}`)
+      // Nombre único por instancia: supabase-js reutiliza canales con el mismo nombre y falla al añadir listeners.
+      .channel(`active-timer-${uid}-${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "time_entries", filter: `user_id=eq.${uid}` },
