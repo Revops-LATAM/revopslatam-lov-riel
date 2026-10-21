@@ -1,3 +1,4 @@
+@import "@fontsource-variable/inter";
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -128,6 +129,7 @@
   --active-bg: oklch(0.24 0.012 260 / 0.08);
 
   /* ---------- Elevación ---------- */
+  --shadow-xs: 0 1px 2px oklch(0.2 0.01 260 / 0.05);
   --shadow-sm: 0 1px 3px oklch(0.2 0.01 260 / 0.07), 0 1px 2px oklch(0.2 0.01 260 / 0.04);
   --shadow-md: 0 4px 12px oklch(0.2 0.01 260 / 0.1), 0 2px 4px oklch(0.2 0.01 260 / 0.05);
   --shadow-lg: 0 12px 32px oklch(0.2 0.01 260 / 0.14), 0 4px 8px oklch(0.2 0.01 260 / 0.06);
@@ -191,7 +193,12 @@
 }
 
 @theme inline {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --shadow-xs: 0 1px 2px oklch(0.2 0.01 260 / 0.05);
+  --shadow-sm: 0 1px 3px oklch(0.2 0.01 260 / 0.07), 0 1px 2px oklch(0.2 0.01 260 / 0.04);
+  --shadow-md: 0 4px 12px oklch(0.2 0.01 260 / 0.1), 0 2px 4px oklch(0.2 0.01 260 / 0.05);
+  --shadow-lg: 0 12px 32px oklch(0.2 0.01 260 / 0.14), 0 4px 8px oklch(0.2 0.01 260 / 0.06);
+
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
 
   --radius-sm: 4px;
   --radius-md: 6px;
@@ -301,6 +308,7 @@
 
 html {
   font-family:
+    "Inter Variable",
     "Inter",
     ui-sans-serif,
     system-ui,
@@ -310,7 +318,7 @@ html {
     "Helvetica Neue",
     Arial,
     sans-serif;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss03";
   color: var(--foreground);
   background: var(--background);
 }
@@ -483,6 +491,7 @@ html {
   --hover-2: oklch(1 0 0 / 0.07);
   --active-bg: oklch(1 0 0 / 0.1);
 
+  --shadow-xs: 0 1px 2px oklch(0 0 0 / 0.3);
   --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.4), 0 1px 2px oklch(0 0 0 / 0.3);
   --shadow-md: 0 4px 12px oklch(0 0 0 / 0.45), 0 2px 4px oklch(0 0 0 / 0.3);
   --shadow-lg: 0 12px 32px oklch(0 0 0 / 0.55), 0 4px 8px oklch(0 0 0 / 0.35);
@@ -565,14 +574,24 @@ html {
 }
 
 /* Cabeceras de página: título legible y espacio reservado para el grupo fijo (tema, notificaciones, cronómetro). */
+[data-app-main] header.h-12 {
+  height: 3.5rem;
+}
 [data-app-main] header h1 {
-  font-size: 15px;
-  line-height: 22px;
-  letter-spacing: -0.005em;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
 }
 @media (min-width: 768px) {
   [data-app-main] header.h-12,
   [data-app-main] header.py-2 {
     padding-right: 11.5rem;
   }
+}
+
+/* Números alineados en cualquier tabla y KPI. */
+table,
+.numeric {
+  font-variant-numeric: tabular-nums;
 }

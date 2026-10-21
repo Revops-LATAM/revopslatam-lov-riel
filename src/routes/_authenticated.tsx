@@ -263,7 +263,7 @@ function AuthLayout() {
 
   return (
     <div className="h-dvh flex bg-background text-foreground overflow-hidden">
-      <aside className="hidden md:flex w-72 h-dvh border-r border-sidebar-border bg-sidebar text-sidebar-foreground flex-col overflow-hidden">
+      <aside className="hidden md:flex w-64 h-dvh border-r border-sidebar-border bg-sidebar text-sidebar-foreground flex-col overflow-hidden">
         {sidebarBody}
       </aside>
       <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
@@ -278,7 +278,7 @@ function AuthLayout() {
 
       <main data-app-main className="flex-1 flex flex-col min-w-0 relative h-dvh overflow-y-auto">
         {/* Un solo grupo (el cronómetro y las notificaciones abren canales realtime: no pueden montarse dos veces). */}
-        <div className="sticky top-0 z-30 flex h-12 shrink-0 items-center gap-2 border-b border-border bg-background px-2 md:absolute md:right-4 md:top-2.5 md:h-auto md:border-0 md:bg-transparent md:p-0">
+        <div className="sticky top-0 z-30 flex h-12 shrink-0 items-center gap-2 border-b border-border bg-background px-2 md:absolute md:right-4 md:top-3 md:h-auto md:border-0 md:bg-transparent md:p-0">
           <Button
             variant="ghost"
             size="icon"
@@ -326,10 +326,10 @@ function SidebarLink({
     <Link
       to={to}
       params={params}
-      className={`flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors ${
+      className={`relative flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-[13px] transition-colors ${
         active
-          ? "bg-sidebar-accent text-sidebar-accent-foreground"
-          : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50"
+          ? "bg-primary-soft text-primary font-medium before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-0.5 before:rounded-full before:bg-primary"
+          : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent"
       }`}
     >
       {icon}
