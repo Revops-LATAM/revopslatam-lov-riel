@@ -573,25 +573,17 @@ html {
   }
 }
 
-/* Cabeceras de página: título legible y espacio reservado para el grupo fijo (tema, notificaciones, cronómetro). */
+/* Cabeceras de página: bloque de título (no una franja) con jerarquía clara. */
 [data-app-main] header.h-12 {
-  height: 3.5rem;
+  height: auto;
+  min-height: 4.25rem;
+  padding-top: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom-color: transparent;
 }
 [data-app-main] header h1 {
-  font-size: 17px;
-  line-height: 24px;
-  font-weight: 600;
-  letter-spacing: -0.015em;
-}
-@media (min-width: 768px) {
-  [data-app-main] header.h-12,
-  [data-app-main] header.py-2 {
-    padding-right: 11.5rem;
-  }
-}
-
-/* Números alineados en cualquier tabla y KPI. */
-table,
-.numeric {
-  font-variant-numeric: tabular-nums;
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
 }

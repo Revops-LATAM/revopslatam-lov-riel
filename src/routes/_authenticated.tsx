@@ -195,7 +195,18 @@ function AuthLayout() {
         </div>
       </div>
 
-      <nav className="px-2 pt-2 space-y-0.5">
+      <WorkspacePicker workspaces={workspacesQuery.data ?? []} currentWs={currentWs} />
+
+      <AreaSwitcher
+        workspaces={workspacesQuery.data ?? []}
+        currentWs={currentWs}
+        pathname={pathname}
+      />
+
+      <nav className="px-2 pt-3 space-y-0.5">
+        <div className="px-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          Mi trabajo
+        </div>
         <SidebarLink
           to="/"
           params={{}}
@@ -236,15 +247,7 @@ function AuthLayout() {
         />
       </nav>
 
-      <WorkspacePicker workspaces={workspacesQuery.data ?? []} currentWs={currentWs} />
-
-      <AreaSwitcher
-        workspaces={workspacesQuery.data ?? []}
-        currentWs={currentWs}
-        pathname={pathname}
-      />
-
-      <div className="px-2">
+      <div className="mx-2 mt-3 border-t border-sidebar-border pt-2 px-0">
         <ClientFilter workspaceId={currentWs.id} workspaceSlug={currentWs.slug} />
       </div>
 
@@ -276,9 +279,9 @@ function AuthLayout() {
         </SheetContent>
       </Sheet>
 
-      <main data-app-main className="flex-1 flex flex-col min-w-0 relative h-dvh overflow-y-auto">
+      <main data-app-main className="flex-1 flex flex-col min-w-0 h-dvh overflow-hidden">
         {/* Un solo grupo (el cronómetro y las notificaciones abren canales realtime: no pueden montarse dos veces). */}
-        <div className="sticky top-0 z-30 flex h-12 shrink-0 items-center gap-2 border-b border-border bg-background px-2 md:absolute md:right-4 md:top-3 md:h-auto md:border-0 md:bg-transparent md:p-0">
+        <div className="z-30 flex h-14 shrink-0 items-center gap-3 border-b border-border bg-background px-3 md:px-6">
           <Button
             variant="ghost"
             size="icon"
@@ -289,14 +292,35 @@ function AuthLayout() {
             <Menu className="h-5 w-5" />
           </Button>
           <img src={rielLogo} alt="Riel" className="h-6 w-6 object-contain md:hidden" />
-          <span className="font-semibold text-sm md:hidden">Riel</span>
+          <button
+            type="button"
+            onClick={() => setPaletteOpen(true)}
+            className="hidden md:flex h-9 w-full max-w-md items-center gap-2 rounded-md border border-border bg-card px-3 text-sm text-muted-foreground shadow-xs transition-colors hover:border-border-strong hover:text-foreground"
+          >
+            <Search className="h-4 w-4" />
+            <span className="flex-1 text-left">Buscar o ir a…</span>
+            <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-medium">
+              Ctrl K
+            </kbd>
+          </button>
           <div className="ml-auto flex items-center gap-1 md:gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 md:hidden"
+              aria-label="Buscar"
+              onClick={() => setPaletteOpen(true)}
+            >
+              <Search className="h-4 w-4" />
+            </Button>
             <ThemeToggle />
             <NotificationsBell />
             <TimerPill workspaceSlug={currentWs.slug} workspaceId={currentWs.id} />
           </div>
         </div>
-        <Outlet />
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          <Outlet />
+        </div>
       </main>
       <CommandPalette
         workspaceId={currentWs.id}

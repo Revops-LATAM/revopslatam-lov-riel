@@ -26,9 +26,14 @@ function MyTasksPage() {
   return (
     <div className="flex flex-col h-full">
       <header className="h-12 border-b border-border px-6 flex items-center">
-        <h1 className="text-sm font-semibold">Mis tareas</h1>
+        <div>
+          <h1 className="text-sm font-semibold">Mis tareas</h1>
+          <p className="text-xs text-muted-foreground">
+            Todo lo que tienes asignado, en todos tus espacios.
+          </p>
+        </div>
       </header>
-      <div className="flex-1 overflow-auto p-6 w-full max-w-6xl">
+      <div className="flex-1 overflow-auto px-6 pb-8 pt-2 w-full">
         <MyTasksList tasks={tasks} showWorkspace />
       </div>
     </div>

@@ -54,10 +54,7 @@ function GlobalHome() {
 
   return (
     <div className="flex flex-col h-full">
-      <header className="h-12 border-b border-border px-6 flex items-center">
-        <h1 className="text-sm font-semibold">Inicio</h1>
-      </header>
-      <div className="flex-1 overflow-auto p-6 space-y-8 w-full max-w-5xl">
+      <div className="flex-1 overflow-auto px-6 py-8 space-y-8 w-full max-w-5xl">
         <section>
           <p className="text-xs text-muted-foreground capitalize mb-1">{dateLabel}</p>
           <h2 className="text-2xl font-semibold tracking-tight">
