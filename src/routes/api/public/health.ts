@@ -30,8 +30,14 @@ export const Route = createFileRoute("/api/public/health")({
             supabase = "inalcanzable";
           }
         }
-        const ok = missing.length === 0 && supabase === "ok";
-        return Response.json({ ok, missing, supabase }, { status: 200 });
+        // Una clave con formato equivocado (p. ej. un secreto de Google) "existe" pero Supabase la rechaza.
+        const okFormat = (v: string | undefined) =>
+          !v || /^sb_publishable_[\w-]+$/.test(v) || /^eyJ[\w-]+\.[\w-]+\.[\w-]+$/.test(v);
+        const invalid = (
+          ["SUPABASE_PUBLISHABLE_KEY", "VITE_SUPABASE_PUBLISHABLE_KEY"] as const
+        ).filter((k) => !okFormat(process.env[k]));
+        const ok = missing.length === 0 && invalid.length === 0 && supabase === "ok";
+        return Response.json({ ok, missing, invalid, supabase }, { status: 200 });
       },
     },
   },
