@@ -55,5 +55,29 @@ check(cron.status === 401, "los endpoints cron exigen clave (401)");
 const missing = await fetch(`${base}/ruta-que-no-existe`);
 check(missing.status === 404, "ruta inexistente responde 404");
 
+// Tema oscuro: la preferencia guardada se aplica antes de pintar y el móvil no desborda horizontalmente.
+const ctxDark = await browser.newContext({
+  viewport: { width: 375, height: 700 },
+  colorScheme: "light",
+});
+await ctxDark.addInitScript(() => localStorage.setItem("riel-theme", "dark"));
+const dark = await ctxDark.newPage();
+await dark.goto(`${base}/login`, { waitUntil: "networkidle", timeout: 30000 });
+check(
+  await dark.evaluate(() => document.documentElement.classList.contains("dark")),
+  "preferencia 'dark' aplica la clase .dark",
+);
+const bg = await dark.evaluate(() => getComputedStyle(document.body).backgroundColor);
+check(
+  bg !== "rgb(250, 250, 251)" && !bg.startsWith("oklch(0.985"),
+  `fondo oscuro en modo dark (${bg})`,
+);
+check(
+  await dark.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+  "sin scroll horizontal a 375px",
+);
+if (process.env.SMOKE_SHOTS)
+  await dark.screenshot({ path: `${process.env.SMOKE_SHOTS}/login-dark-375.png` });
+
 await browser.close();
 process.exit(failed ? 1 : 0);

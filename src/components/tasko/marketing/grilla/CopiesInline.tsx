@@ -84,7 +84,7 @@ function CopyCell({
 
   return (
     <div
-      className="rounded-lg border bg-white p-3 space-y-2"
+      className="rounded-lg border bg-card p-3 space-y-2"
       style={{ borderColor: "var(--border)" }}
     >
       <div className="flex items-center gap-1.5">

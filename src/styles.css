@@ -2,12 +2,16 @@
 @source "../src";
 @import "tw-animate-css";
 
+@custom-variant dark (&:is(.dark, .dark *));
+
 /* ============================================================
    RIEL — Design System v1.0 · Revops LATAM
-   Light único. Inter. Tokens únicos.
+   Claro y oscuro (clase .dark). Inter. Tokens únicos.
    ============================================================ */
 
 :root {
+  color-scheme: light;
+
   /* ---------- Neutros (Ink #22262A, hue 260) ---------- */
   --background: oklch(0.985 0.002 260);
   --foreground: oklch(0.24 0.012 260);
@@ -398,5 +402,164 @@ html {
       opacity: 0;
       transform: translateY(4px);
     }
+  }
+}
+
+/* ============================================================
+   Modo oscuro — se activa con la clase .dark en <html>
+   (ver src/lib/theme.ts). Solo redefine tokens; los componentes
+   no cambian.
+   ============================================================ */
+.dark {
+  color-scheme: dark;
+
+  --background: oklch(0.17 0.01 260);
+  --foreground: oklch(0.95 0.005 260);
+  --card: oklch(0.21 0.011 260);
+  --card-foreground: oklch(0.95 0.005 260);
+  --popover: oklch(0.23 0.012 260);
+  --popover-foreground: oklch(0.95 0.005 260);
+  --surface-2: oklch(0.245 0.012 260);
+  --muted: oklch(0.255 0.012 260);
+  --muted-foreground: oklch(0.72 0.012 260);
+  --faint-foreground: oklch(0.6 0.012 260);
+  --border: oklch(1 0 0 / 0.1);
+  --border-strong: oklch(1 0 0 / 0.18);
+  --input: oklch(1 0 0 / 0.14);
+
+  --primary: oklch(0.62 0.2 295);
+  --primary-hover: oklch(0.67 0.19 295);
+  --primary-soft: oklch(0.3 0.08 295);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.255 0.012 260);
+  --secondary-foreground: oklch(0.95 0.005 260);
+  --accent: oklch(0.285 0.014 260);
+  --accent-foreground: oklch(0.95 0.005 260);
+  --success: #2dbfb3;
+  --warning: #f7be1a;
+  --destructive: #ef5b60;
+  --info: #3b9be8;
+  --brand: #e0458c;
+  --ring: oklch(0.7 0.18 295 / 0.55);
+
+  --sidebar: oklch(0.15 0.01 260);
+  --sidebar-foreground: oklch(0.95 0.005 260);
+  --sidebar-accent: oklch(1 0 0 / 0.07);
+  --sidebar-accent-foreground: oklch(0.95 0.005 260);
+  --sidebar-primary: oklch(0.62 0.2 295);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-border: oklch(1 0 0 / 0.09);
+  --sidebar-ring: oklch(0.7 0.18 295 / 0.55);
+
+  --st-gray: oklch(0.68 0.02 260);
+  --st-gray-soft: oklch(0.29 0.01 260);
+  --st-gray-text: oklch(0.82 0.015 260);
+  --st-stone: oklch(0.7 0.04 80);
+  --st-stone-soft: oklch(0.29 0.02 80);
+  --st-stone-text: oklch(0.82 0.05 80);
+  --st-blue: oklch(0.7 0.14 245);
+  --st-blue-soft: oklch(0.29 0.06 245);
+  --st-blue-text: oklch(0.82 0.1 245);
+  --st-purple: oklch(0.7 0.17 295);
+  --st-purple-soft: oklch(0.3 0.08 295);
+  --st-purple-text: oklch(0.83 0.11 295);
+  --st-magenta: oklch(0.7 0.18 355);
+  --st-magenta-soft: oklch(0.3 0.08 355);
+  --st-magenta-text: oklch(0.83 0.11 355);
+  --st-amber: oklch(0.8 0.15 85);
+  --st-amber-soft: oklch(0.31 0.06 85);
+  --st-amber-text: oklch(0.86 0.12 85);
+  --st-orange: oklch(0.73 0.16 45);
+  --st-orange-soft: oklch(0.3 0.07 45);
+  --st-orange-text: oklch(0.84 0.11 45);
+  --st-red: oklch(0.7 0.18 25);
+  --st-red-soft: oklch(0.3 0.08 25);
+  --st-red-text: oklch(0.83 0.11 25);
+  --st-teal: oklch(0.74 0.11 183);
+  --st-teal-soft: oklch(0.29 0.05 183);
+  --st-teal-text: oklch(0.84 0.09 183);
+
+  --hover-1: oklch(1 0 0 / 0.04);
+  --hover-2: oklch(1 0 0 / 0.07);
+  --active-bg: oklch(1 0 0 / 0.1);
+
+  --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.4), 0 1px 2px oklch(0 0 0 / 0.3);
+  --shadow-md: 0 4px 12px oklch(0 0 0 / 0.45), 0 2px 4px oklch(0 0 0 / 0.3);
+  --shadow-lg: 0 12px 32px oklch(0 0 0 / 0.55), 0 4px 8px oklch(0 0 0 / 0.35);
+
+  --grilla-paper: oklch(0.2 0.012 320);
+  --grilla-paper-alt: oklch(0.225 0.014 320);
+  --grilla-header-strip: oklch(0.28 0.05 300);
+  --grilla-header-text: oklch(0.85 0.07 300);
+
+  --fmt-carrusel: #f06aa8;
+  --fmt-carrusel-soft: oklch(0.3 0.07 350);
+  --fmt-reel: #a78bfa;
+  --fmt-reel-soft: oklch(0.3 0.07 295);
+  --fmt-post: #38b6f0;
+  --fmt-post-soft: oklch(0.29 0.06 230);
+  --fmt-encuesta: #f5a524;
+  --fmt-encuesta-soft: oklch(0.3 0.06 70);
+  --fmt-demo: #34d399;
+  --fmt-demo-soft: oklch(0.29 0.06 160);
+  --fmt-video: #22c5dd;
+  --fmt-video-soft: oklch(0.29 0.05 200);
+
+  --pst-idea: #94a3b8;
+  --pst-idea-soft: oklch(0.29 0.01 260);
+  --pst-copy: #38b6f0;
+  --pst-copy-soft: oklch(0.29 0.06 230);
+  --pst-diseno: #a78bfa;
+  --pst-diseno-soft: oklch(0.3 0.07 295);
+  --pst-revision: #f5a524;
+  --pst-revision-soft: oklch(0.3 0.06 70);
+  --pst-programada: #f06aa8;
+  --pst-programada-soft: oklch(0.3 0.07 350);
+  --pst-publicada: #34d399;
+  --pst-publicada-soft: oklch(0.29 0.06 160);
+}
+
+/* Tonos -600/-700 de Tailwind pensados para fondo claro: se aclaran en oscuro. */
+.dark .text-emerald-600,
+.dark .text-emerald-700 {
+  color: var(--color-emerald-400);
+}
+.dark .text-amber-600,
+.dark .text-amber-700 {
+  color: var(--color-amber-400);
+}
+.dark .text-blue-600,
+.dark .text-blue-700 {
+  color: var(--color-blue-400);
+}
+.dark .text-sky-600,
+.dark .text-sky-700 {
+  color: var(--color-sky-400);
+}
+.dark .text-violet-600,
+.dark .text-violet-700 {
+  color: var(--color-violet-400);
+}
+.dark .text-rose-600,
+.dark .text-rose-700,
+.dark .text-red-600,
+.dark .text-red-700 {
+  color: var(--color-rose-400);
+}
+.dark .text-neutral-500,
+.dark .text-neutral-600 {
+  color: var(--muted-foreground);
+}
+
+/* Móvil: los contenedores de página usan px-6 / p-6; en pantallas chicas ganan espacio útil. */
+@media (max-width: 767px) {
+  [data-app-main] .px-6 {
+    padding-inline: 1rem;
+  }
+  [data-app-main] .p-6 {
+    padding: 1rem;
+  }
+  [data-app-main] .py-6 {
+    padding-block: 1rem;
   }
 }

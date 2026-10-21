@@ -37,7 +37,7 @@ export function PillarChip({
       value={allPillars.find((p) => p.label === pillar?.label)?.id ?? "__none__"}
       onValueChange={(v) => onChange(v === "__none__" ? null : v)}
     >
-      <SelectTrigger className="h-7 border-0 bg-transparent hover:bg-black/[0.04] shadow-none px-1.5 gap-1.5 w-full">
+      <SelectTrigger className="h-7 border-0 bg-transparent hover:bg-foreground/[0.05] shadow-none px-1.5 gap-1.5 w-full">
         {pillar ? (
           <span
             className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium truncate max-w-[10rem]"
@@ -124,7 +124,7 @@ export function DateCell({
       <PopoverTrigger asChild>
         <button
           className={cn(
-            "flex items-center gap-1.5 text-left rounded-md px-1.5 py-1 hover:bg-black/[0.04] transition-colors w-full min-w-0",
+            "flex items-center gap-1.5 text-left rounded-md px-1.5 py-1 hover:bg-foreground/[0.05] transition-colors w-full min-w-0",
             !d && "text-muted-foreground",
           )}
         >
@@ -355,7 +355,7 @@ export function InlineText({
           e.currentTarget.blur();
         }
       }}
-      className="h-7 text-[12px] w-full border-0 bg-transparent hover:bg-black/[0.04] focus-visible:bg-background focus-visible:ring-1 px-1.5 font-medium"
+      className="h-7 text-[12px] w-full border-0 bg-transparent hover:bg-foreground/[0.05] focus-visible:bg-background focus-visible:ring-1 px-1.5 font-medium"
     />
   );
 }
@@ -380,7 +380,7 @@ export function InlineTextarea({
         if (v !== value) onCommit(v);
       }}
       rows={2}
-      className="min-h-[44px] text-[12px] w-full max-w-[20rem] resize-y border-0 bg-transparent hover:bg-black/[0.04] focus-visible:bg-background focus-visible:ring-1 px-1.5 py-1 leading-snug shadow-none"
+      className="min-h-[44px] text-[12px] w-full max-w-[20rem] resize-y border-0 bg-transparent hover:bg-foreground/[0.05] focus-visible:bg-background focus-visible:ring-1 px-1.5 py-1 leading-snug shadow-none"
     />
   );
 }

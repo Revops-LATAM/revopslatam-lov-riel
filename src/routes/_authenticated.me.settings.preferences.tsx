@@ -14,6 +14,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
+import { getStoredTheme, setThemePreference } from "@/lib/theme";
 
 export const Route = createFileRoute("/_authenticated/me/settings/preferences")({
   component: MePreferences,
@@ -36,7 +37,8 @@ function MePreferences() {
 
   useEffect(() => {
     if (!prefs.data) return;
-    setTheme(prefs.data.theme ?? "system");
+    // El tema vive en este dispositivo (el toggle de la barra superior lo cambia al instante).
+    setTheme(getStoredTheme());
     setLanguage(prefs.data.language ?? "es");
     setEmailMentions(prefs.data.notifications?.email_mentions ?? true);
     setEmailAssignments(prefs.data.notifications?.email_assignments ?? true);
@@ -70,7 +72,13 @@ function MePreferences() {
         <div className="space-y-3">
           <div className="space-y-1.5">
             <Label className="text-xs">Tema</Label>
-            <Select value={theme} onValueChange={(v) => setTheme(v as typeof theme)}>
+            <Select
+              value={theme}
+              onValueChange={(v) => {
+                setTheme(v as typeof theme);
+                setThemePreference(v as typeof theme);
+              }}
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>

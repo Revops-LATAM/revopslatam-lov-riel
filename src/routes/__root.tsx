@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
+import { themeInitScript } from "@/lib/theme";
 import appCss from "../styles.css?url";
 import { supabase } from "../integrations/supabase/client";
 import { Toaster } from "../components/ui/sonner";
@@ -100,6 +101,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
     ],
     links: [{ rel: "stylesheet", href: appCss }],
+    scripts: [{ children: themeInitScript }],
   }),
   shellComponent: RootShell,
   component: RootComponent,

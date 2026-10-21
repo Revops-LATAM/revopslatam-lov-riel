@@ -46,6 +46,7 @@ import {
   GraduationCap,
   CalendarHeart,
   Coffee,
+  Menu,
 } from "lucide-react";
 import { pendingHandoffsCountQO } from "@/lib/api/tasko.queries";
 import { inboxPendingCount } from "@/lib/api/calendar.functions";
@@ -57,6 +58,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { toast } from "sonner";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { CommandPalette } from "@/components/tasko/CommandPalette";
 import { ShortcutsDialog } from "@/components/tasko/ShortcutsDialog";
 import { TimerPill } from "@/components/tasko/TimerPill";
@@ -124,6 +127,10 @@ function AuthLayout() {
     navigate({ to: "/login", search: { redirect: "/" } });
   };
 
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  useEffect(() => {
+    setMobileNavOpen(false);
+  }, [pathname]);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   useEffect(() => {
@@ -169,93 +176,127 @@ function AuthLayout() {
     profileQuery.data?.email?.[0]?.toUpperCase() ??
     "T";
 
+  const sidebarBody = (
+    <>
+      <div className="px-4 h-14 flex items-center gap-2.5 border-b border-sidebar-border">
+        <img src={rielLogo} alt="Riel" className="h-7 w-7 object-contain shrink-0" />
+        <div className="flex flex-col leading-tight min-w-0">
+          <span className="font-semibold text-sm flex items-center gap-1.5">
+            Riel
+            {currentWs.slug.includes("sandbox") && (
+              <span className="text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                Sandbox
+              </span>
+            )}
+          </span>
+          <span className="text-[10px] text-muted-foreground truncate">
+            Donde corre nuestra operación
+          </span>
+        </div>
+      </div>
+
+      <nav className="px-2 pt-2 space-y-0.5">
+        <SidebarLink
+          to="/"
+          params={{}}
+          icon={<Inbox className="w-4 h-4" />}
+          label="Inicio"
+          active={pathname === "/"}
+        />
+        <SidebarLink
+          to="/my-tasks"
+          params={{}}
+          icon={<CheckSquare className="w-4 h-4" />}
+          label="Mis tareas"
+          active={pathname.startsWith("/my-tasks")}
+        />
+        <SidebarLink
+          to="/my-time"
+          params={{}}
+          icon={<Clock className="w-4 h-4" />}
+          label="Mi tiempo"
+          active={pathname.startsWith("/my-time") || pathname.endsWith("/my-time")}
+        />
+        <SidebarLink
+          to="/w/$workspaceSlug/my-team"
+          params={{ workspaceSlug: currentWs.slug }}
+          icon={<Users className="w-4 h-4" />}
+          label="Mi equipo"
+          active={pathname === `/w/${currentWs.slug}/my-team`}
+        />
+        <CalendarInboxLink
+          workspaceId={currentWs.id}
+          slug={currentWs.slug}
+          active={pathname === `/w/${currentWs.slug}/inbox`}
+        />
+        <ReportsSidebarLink
+          workspaceId={currentWs.id}
+          slug={currentWs.slug}
+          active={pathname.startsWith(`/w/${currentWs.slug}/reports`)}
+        />
+      </nav>
+
+      <WorkspacePicker workspaces={workspacesQuery.data ?? []} currentWs={currentWs} />
+
+      <AreaSwitcher
+        workspaces={workspacesQuery.data ?? []}
+        currentWs={currentWs}
+        pathname={pathname}
+      />
+
+      <div className="px-2">
+        <ClientFilter workspaceId={currentWs.id} workspaceSlug={currentWs.slug} />
+      </div>
+
+      <nav className="px-2 mt-2 space-y-0.5 flex-1 overflow-y-auto">
+        <SidebarNav workspace={currentWs} pathname={pathname} />
+      </nav>
+
+      <UserMenuFooter
+        initial={initial}
+        fullName={profileQuery.data?.full_name ?? null}
+        email={profileQuery.data?.email ?? null}
+        onLogout={handleLogout}
+      />
+    </>
+  );
+
   return (
-    <div className="h-screen flex bg-background text-foreground overflow-hidden">
-      <aside className="w-72 h-screen border-r border-sidebar-border bg-sidebar text-sidebar-foreground flex flex-col overflow-hidden">
-        <div className="px-4 h-14 flex items-center gap-2.5 border-b border-sidebar-border">
-          <img src={rielLogo} alt="Riel" className="h-7 w-7 object-contain shrink-0" />
-          <div className="flex flex-col leading-tight min-w-0">
-            <span className="font-semibold text-sm flex items-center gap-1.5">
-              Riel
-              {currentWs.slug.includes("sandbox") && (
-                <span className="text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                  Sandbox
-                </span>
-              )}
-            </span>
-            <span className="text-[10px] text-muted-foreground truncate">
-              Donde corre nuestra operación
-            </span>
+    <div className="h-dvh flex bg-background text-foreground overflow-hidden">
+      <aside className="hidden md:flex w-72 h-dvh border-r border-sidebar-border bg-sidebar text-sidebar-foreground flex-col overflow-hidden">
+        {sidebarBody}
+      </aside>
+      <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
+        <SheetContent
+          side="left"
+          className="md:hidden p-0 w-72 max-w-[85vw] bg-sidebar text-sidebar-foreground flex flex-col gap-0 border-sidebar-border"
+        >
+          <SheetTitle className="sr-only">Navegación</SheetTitle>
+          {sidebarBody}
+        </SheetContent>
+      </Sheet>
+
+      <main data-app-main className="flex-1 flex flex-col min-w-0 relative h-dvh overflow-y-auto">
+        <div className="md:hidden sticky top-0 z-30 flex h-12 shrink-0 items-center gap-2 border-b border-border bg-background px-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9"
+            aria-label="Abrir menú"
+            onClick={() => setMobileNavOpen(true)}
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+          <img src={rielLogo} alt="Riel" className="h-6 w-6 object-contain" />
+          <span className="font-semibold text-sm">Riel</span>
+          <div className="ml-auto flex items-center gap-1">
+            <ThemeToggle />
+            <NotificationsBell />
+            <TimerPill workspaceSlug={currentWs.slug} workspaceId={currentWs.id} />
           </div>
         </div>
-
-        <nav className="px-2 pt-2 space-y-0.5">
-          <SidebarLink
-            to="/"
-            params={{}}
-            icon={<Inbox className="w-4 h-4" />}
-            label="Inicio"
-            active={pathname === "/"}
-          />
-          <SidebarLink
-            to="/my-tasks"
-            params={{}}
-            icon={<CheckSquare className="w-4 h-4" />}
-            label="Mis tareas"
-            active={pathname.startsWith("/my-tasks")}
-          />
-          <SidebarLink
-            to="/my-time"
-            params={{}}
-            icon={<Clock className="w-4 h-4" />}
-            label="Mi tiempo"
-            active={pathname.startsWith("/my-time") || pathname.endsWith("/my-time")}
-          />
-          <SidebarLink
-            to="/w/$workspaceSlug/my-team"
-            params={{ workspaceSlug: currentWs.slug }}
-            icon={<Users className="w-4 h-4" />}
-            label="Mi equipo"
-            active={pathname === `/w/${currentWs.slug}/my-team`}
-          />
-          <CalendarInboxLink
-            workspaceId={currentWs.id}
-            slug={currentWs.slug}
-            active={pathname === `/w/${currentWs.slug}/inbox`}
-          />
-          <ReportsSidebarLink
-            workspaceId={currentWs.id}
-            slug={currentWs.slug}
-            active={pathname.startsWith(`/w/${currentWs.slug}/reports`)}
-          />
-        </nav>
-
-        <WorkspacePicker workspaces={workspacesQuery.data ?? []} currentWs={currentWs} />
-
-        <AreaSwitcher
-          workspaces={workspacesQuery.data ?? []}
-          currentWs={currentWs}
-          pathname={pathname}
-        />
-
-        <div className="px-2">
-          <ClientFilter workspaceId={currentWs.id} workspaceSlug={currentWs.slug} />
-        </div>
-
-        <nav className="px-2 mt-2 space-y-0.5 flex-1 overflow-y-auto">
-          <SidebarNav workspace={currentWs} pathname={pathname} />
-        </nav>
-
-        <UserMenuFooter
-          initial={initial}
-          fullName={profileQuery.data?.full_name ?? null}
-          email={profileQuery.data?.email ?? null}
-          onLogout={handleLogout}
-        />
-      </aside>
-
-      <main className="flex-1 flex flex-col min-w-0 relative h-screen overflow-y-auto">
-        <div className="absolute top-2 right-3 z-30 flex items-center gap-2">
+        <div className="absolute top-2 right-3 z-30 hidden md:flex items-center gap-2">
+          <ThemeToggle />
           <NotificationsBell />
           <TimerPill workspaceSlug={currentWs.slug} workspaceId={currentWs.id} />
         </div>
