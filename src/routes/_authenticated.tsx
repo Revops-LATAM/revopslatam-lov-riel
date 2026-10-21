@@ -278,7 +278,7 @@ function AuthLayout() {
 
       <main data-app-main className="flex-1 flex flex-col min-w-0 relative h-dvh overflow-y-auto">
         {/* Un solo grupo (el cronómetro y las notificaciones abren canales realtime: no pueden montarse dos veces). */}
-        <div className="sticky top-0 z-30 flex h-12 shrink-0 items-center gap-2 border-b border-border bg-background px-2 md:absolute md:right-3 md:top-2 md:h-auto md:border-0 md:bg-transparent md:p-0">
+        <div className="sticky top-0 z-30 flex h-12 shrink-0 items-center gap-2 border-b border-border bg-background px-2 md:absolute md:right-4 md:top-2.5 md:h-auto md:border-0 md:bg-transparent md:p-0">
           <Button
             variant="ghost"
             size="icon"
@@ -548,7 +548,7 @@ function AreaSwitcher({
 
   return (
     <div className="px-2 pt-2 pb-1">
-      <div className="px-1 pb-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+      <div className="px-2 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
         Espacio
       </div>
       <DropdownMenu>
@@ -622,7 +622,7 @@ function OperationsNav({ workspace, pathname }: { workspace: WsLite; pathname: s
         <div className="mt-2">
           {isOps && perms.has("ops_view") ? (
             <>
-              <div className="px-2 pt-1 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <div className="px-2 pt-1 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Clientes
               </div>
               <ProjectTree workspaceId={workspace.id} workspaceSlug={slug} />

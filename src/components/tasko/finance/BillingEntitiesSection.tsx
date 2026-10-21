@@ -118,7 +118,7 @@ export function BillingEntitiesSection({ accountId }: { accountId: string }) {
     <section>
       <div className="flex items-center justify-between mb-3">
         <div>
-          <h2 className="text-sm font-semibold">Razones sociales de facturación</h2>
+          <h2 className="section-label">Razones sociales de facturación</h2>
           <p className="text-xs text-muted-foreground">
             Agrega todas las empresas del grupo a las que se puede facturar.
           </p>

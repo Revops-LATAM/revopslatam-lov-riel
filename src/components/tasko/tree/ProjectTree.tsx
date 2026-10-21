@@ -112,7 +112,7 @@ export function ProjectTree({ workspaceId, workspaceSlug }: Props) {
           </p>
         ) : (
           accounts.map((account) => {
-            const accOpen = isOpen(`a:${account.id}`, true);
+            const accOpen = isOpen(`a:${account.id}`, false);
             const isActiveAccount = activeAccountId === account.id;
             return (
               <div key={account.id}>

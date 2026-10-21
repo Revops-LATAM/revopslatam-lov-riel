@@ -563,3 +563,16 @@ html {
     padding-block: 1rem;
   }
 }
+
+/* Cabeceras de página: título legible y espacio reservado para el grupo fijo (tema, notificaciones, cronómetro). */
+[data-app-main] header h1 {
+  font-size: 15px;
+  line-height: 22px;
+  letter-spacing: -0.005em;
+}
+@media (min-width: 768px) {
+  [data-app-main] header.h-12,
+  [data-app-main] header.py-2 {
+    padding-right: 11.5rem;
+  }
+}

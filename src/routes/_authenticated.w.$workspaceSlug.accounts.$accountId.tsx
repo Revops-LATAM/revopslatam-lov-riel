@@ -131,59 +131,75 @@ function AccountDetail() {
         workspaceId={ws.id}
       />
 
-      <div className="flex-1 overflow-auto p-6 space-y-6">
-        {/* Datos comerciales */}
-        <section className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
-          <Field label="Razón social" value={account.legal_name} />
-          <Field label="RUT" value={account.tax_id} />
-          <Field label="Giro" value={account.business_activity} className="col-span-2" />
-          <Field label="Email DTE" value={account.billing_email} />
-          <Field label="Comuna" value={account.commune} />
-          <Field label="Dirección" value={account.address} className="col-span-2" />
-          <Field label="Contacto principal" value={account.primary_contact_name} />
-          <Field label="Email contacto" value={account.primary_contact_email} />
-        </section>
+      <div className="flex-1 overflow-auto p-6 space-y-6 w-full max-w-6xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <section className="border border-border bg-card rounded-lg p-4 space-y-3">
+            <h2 className="section-label">Empresa</h2>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+              <Field label="Razón social" value={account.legal_name} className="col-span-2" />
+              <Field label="RUT" value={account.tax_id} />
+              <Field label="Comuna" value={account.commune} />
+              <Field label="Giro" value={account.business_activity} className="col-span-2" />
+              <Field label="Dirección" value={account.address} className="col-span-2" />
+            </div>
+          </section>
 
-        {(() => {
-          const secs = parseSecondaryContacts(account.secondary_contacts);
-          if (secs.length === 0) return null;
-          return (
-            <section>
-              <h3 className="text-xs font-semibold uppercase text-muted-foreground mb-2">
-                Contactos secundarios
-              </h3>
-              <ul className="space-y-1 text-xs">
-                {secs.map((c, i) => (
-                  <li key={i} className="text-muted-foreground">
-                    <span className="text-foreground">{c.nombre}</span>
-                    {" — "}
-                    {c.email}
-                  </li>
-                ))}
-              </ul>
+          <section className="border border-border bg-card rounded-lg p-4 space-y-3">
+            <h2 className="section-label">Contacto y facturación</h2>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+              <Field label="Contacto principal" value={account.primary_contact_name} />
+              <Field label="Email contacto" value={account.primary_contact_email} />
+              <Field label="Email DTE" value={account.billing_email} className="col-span-2" />
+            </div>
+            {(() => {
+              const secs = parseSecondaryContacts(account.secondary_contacts);
+              if (secs.length === 0) return null;
+              return (
+                <div className="border-t border-border pt-3">
+                  <div className="text-[11px] text-muted-foreground mb-1.5">
+                    Contactos secundarios
+                  </div>
+                  <ul className="space-y-1 text-sm">
+                    {secs.map((c, i) => (
+                      <li key={i} className="flex flex-wrap gap-x-2">
+                        <span className="text-foreground">{c.nombre}</span>
+                        <span className="text-muted-foreground">{c.email}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })()}
+            {account.website && (
+              <a
+                href={account.website}
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm text-primary hover:underline block truncate"
+              >
+                {account.website}
+              </a>
+            )}
+          </section>
+        </div>
+
+        {account.notes &&
+          (/^legacy_cliente_id:/.test(account.notes.trim()) ? (
+            <p className="text-[11px] text-faint-foreground font-mono break-all">
+              ID en Riel 1.0: {account.notes.trim().replace(/^legacy_cliente_id:/, "")}
+            </p>
+          ) : (
+            <section className="border border-border bg-card rounded-lg p-4">
+              <h2 className="section-label mb-2">Notas</h2>
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap">{account.notes}</p>
             </section>
-          );
-        })()}
-
-        {account.website && (
-          <a
-            href={account.website}
-            target="_blank"
-            rel="noreferrer"
-            className="text-xs text-primary hover:underline block"
-          >
-            {account.website}
-          </a>
-        )}
-        {account.notes && (
-          <p className="text-sm text-muted-foreground whitespace-pre-wrap">{account.notes}</p>
-        )}
+          ))}
 
         <BillingEntitiesSection accountId={accountId} />
 
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold">Contratos</h2>
+            <h2 className="section-label">Contratos</h2>
             <Link
               to="/w/$workspaceSlug/contracts"
               params={{ workspaceSlug }}
@@ -206,7 +222,7 @@ function AccountDetail() {
                   key={c.id}
                   to="/w/$workspaceSlug/contracts/$contractId"
                   params={{ workspaceSlug, contractId: c.id }}
-                  className="block border border-border rounded-md p-3 hover:border-primary/50 hover:bg-accent/30 transition-colors"
+                  className="block border border-border bg-card rounded-lg p-3 hover:border-primary/50 transition-colors"
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-sm font-medium">{c.name}</span>
@@ -239,8 +255,8 @@ function Field({
 }) {
   return (
     <div className={className}>
-      <div className="text-[10px] uppercase text-muted-foreground tracking-wide">{label}</div>
-      <div className="text-foreground">
+      <div className="text-[11px] text-muted-foreground mb-0.5">{label}</div>
+      <div className="text-sm text-foreground break-words">
         {value || <span className="text-muted-foreground">—</span>}
       </div>
     </div>

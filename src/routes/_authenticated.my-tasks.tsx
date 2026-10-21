@@ -28,7 +28,7 @@ function MyTasksPage() {
       <header className="h-12 border-b border-border px-6 flex items-center">
         <h1 className="text-sm font-semibold">Mis tareas</h1>
       </header>
-      <div className="flex-1 overflow-auto p-6 max-w-3xl">
+      <div className="flex-1 overflow-auto p-6 w-full max-w-6xl">
         <MyTasksList tasks={tasks} showWorkspace />
       </div>
     </div>
