@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Bell, Check, CheckCheck } from "lucide-react";
 import { toast } from "sonner";
@@ -9,13 +9,13 @@ import { es } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import {
   listNotifications,
   countUnreadNotifications,
   markNotificationRead,
   markAllNotificationsRead,
+  NOTIFICATIONS_PAGE_SIZE,
   type AppNotification,
 } from "@/lib/api/notifications.functions";
 
@@ -53,10 +53,13 @@ export function NotificationsBell() {
     };
   }, []);
 
-  const listQ = useQuery({
+  const listQ = useInfiniteQuery({
     queryKey: ["notifications", "list", userId],
-    queryFn: () => listFn(),
-    refetchInterval: 60_000,
+    initialPageParam: null as string | null,
+    queryFn: ({ pageParam }) => listFn({ data: { before: pageParam } }),
+    getNextPageParam: (last) =>
+      last.length < NOTIFICATIONS_PAGE_SIZE ? undefined : last[last.length - 1]?.created_at,
+    refetchInterval: open ? 60_000 : false,
     enabled: !!userId,
   });
   const countQ = useQuery({
@@ -136,7 +139,23 @@ export function NotificationsBell() {
   }, [userId, navigate, qc]);
 
   const unread = countQ.data?.count ?? 0;
-  const items = listQ.data ?? [];
+  const items = listQ.data?.pages.flat() ?? [];
+
+  // Al llegar al final de la lista se cargan las más antiguas.
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const { hasNextPage, isFetchingNextPage, fetchNextPage } = listQ;
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || !open || !hasNextPage) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && !isFetchingNextPage) void fetchNextPage();
+      },
+      { rootMargin: "80px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [open, hasNextPage, isFetchingNextPage, fetchNextPage, items.length]);
 
   const handleOpen = async (isOpen: boolean) => {
     setOpen(isOpen);
@@ -180,7 +199,7 @@ export function NotificationsBell() {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-96 p-0">
+      <PopoverContent align="end" className="w-[min(24rem,calc(100vw-1rem))] p-0">
         <div className="flex items-center justify-between p-3 border-b">
           <div className="font-semibold text-sm">Notificaciones</div>
           <div className="flex items-center gap-2">
@@ -203,7 +222,7 @@ export function NotificationsBell() {
             </Button>
           </div>
         </div>
-        <ScrollArea className="max-h-[480px]">
+        <div className="max-h-[min(30rem,70dvh)] overflow-y-auto overscroll-contain">
           {items.length === 0 ? (
             <div className="p-8 text-center text-sm text-muted-foreground">
               No tienes notificaciones
@@ -238,7 +257,25 @@ export function NotificationsBell() {
               ))}
             </div>
           )}
-        </ScrollArea>
+          {hasNextPage && (
+            <div ref={sentinelRef} className="p-3 text-center">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 text-xs"
+                disabled={isFetchingNextPage}
+                onClick={() => void fetchNextPage()}
+              >
+                {isFetchingNextPage ? "Cargando…" : "Ver anteriores"}
+              </Button>
+            </div>
+          )}
+          {!hasNextPage && items.length > 0 && (
+            <div className="p-3 text-center text-[11px] text-muted-foreground">
+              No hay más notificaciones
+            </div>
+          )}
+        </div>
       </PopoverContent>
     </Popover>
   );

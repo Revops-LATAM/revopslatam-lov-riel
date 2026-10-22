@@ -1,3 +1,4 @@
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -55,8 +56,16 @@ export function MyTeamView({ workspaceId }: Props) {
     return ((diff + 0.5) / win.totalDays) * 100;
   }, [win.start, win.totalDays]);
 
-  const NAME_COL = 240;
+  // En pantallas chicas la cuadrícula conserva un ancho mínimo por columna y se desplaza en horizontal
+  // en lugar de aplastar las tareas.
+  const isMobile = useIsMobile();
+  const NAME_COL = isMobile ? 132 : 240;
+  const COL_MIN = win.columns.length > 8 ? 44 : isMobile ? 104 : 96;
   const gridTemplate = `${NAME_COL}px repeat(${win.columns.length}, minmax(0, 1fr))`;
+  const gridStyle = {
+    gridTemplateColumns: gridTemplate,
+    minWidth: NAME_COL + win.columns.length * COL_MIN,
+  };
   const STRIP_H = 40;
 
   const members = teamQ.data?.members ?? [];
@@ -113,11 +122,11 @@ export function MyTeamView({ workspaceId }: Props) {
       </header>
 
       <div className="p-6 space-y-4">
-        <div className="border border-border rounded-md overflow-hidden bg-card">
+        <div className="border border-border rounded-md overflow-x-auto bg-card">
           {/* Header row */}
           <div
             className="grid bg-muted/30 text-xs uppercase tracking-wider text-muted-foreground border-b border-border"
-            style={{ gridTemplateColumns: gridTemplate }}
+            style={gridStyle}
           >
             <div className="px-3 py-2 border-r border-border">Miembro / Tareas</div>
             {win.columns.map((c) => (
@@ -177,7 +186,7 @@ export function MyTeamView({ workspaceId }: Props) {
                 <div
                   key={m.user_id}
                   className="grid border-b border-border last:border-b-0"
-                  style={{ gridTemplateColumns: gridTemplate }}
+                  style={gridStyle}
                 >
                   <div className="px-3 py-2 border-r border-border flex items-start gap-2">
                     <button

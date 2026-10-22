@@ -24,14 +24,20 @@ export interface AppNotification {
   actor_id: string | null;
 }
 
+export const NOTIFICATIONS_PAGE_SIZE = 30;
+
+// Paginado por cursor: `before` es el created_at de la última notificación ya cargada.
 export const listNotifications = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const { data, error } = await context.supabase
+  .validator((input: { before?: string | null } | undefined) => ({ before: input?.before ?? null }))
+  .handler(async ({ context, data: input }) => {
+    let q = context.supabase
       .from("notifications")
       .select("id,kind,title,body,entity_type,entity_id,url,read_at,created_at,actor_id")
       .order("created_at", { ascending: false })
-      .limit(50);
+      .limit(NOTIFICATIONS_PAGE_SIZE);
+    if (input.before) q = q.lt("created_at", input.before);
+    const { data, error } = await q;
     if (error) throw new Error(error.message);
     return (data ?? []) as AppNotification[];
   });

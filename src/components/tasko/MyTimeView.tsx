@@ -1,3 +1,4 @@
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -285,7 +286,7 @@ export function MyTimeView({ workspaceId, extraInvalidateKeys = [] }: Props) {
         />
       ) : (
         <div className="flex-1 overflow-auto p-6 space-y-6">
-          <div className="grid grid-cols-7 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
             {days.map((d) => {
               const k = format(d, "yyyy-MM-dd");
               const realMin = totalsByDay.get(k)?.total ?? 0;
@@ -610,8 +611,16 @@ function TimelineBody({
   onTaskClick,
   colorMode,
 }: TimelineProps) {
-  const NAME_COL = 240;
+  // En pantallas chicas la cuadrícula conserva un ancho mínimo por columna y se desplaza en horizontal
+  // en lugar de aplastar las tareas.
+  const isMobile = useIsMobile();
+  const NAME_COL = isMobile ? 132 : 240;
+  const COL_MIN = win.columns.length > 8 ? 44 : isMobile ? 104 : 96;
   const gridTemplate = `${NAME_COL}px repeat(${win.columns.length}, minmax(0, 1fr))`;
+  const gridStyle = {
+    gridTemplateColumns: gridTemplate,
+    minWidth: NAME_COL + win.columns.length * COL_MIN,
+  };
 
   // Logged split (client vs internal) per ISO day
   const splitByDay = useMemo(() => {
@@ -681,11 +690,11 @@ function TimelineBody({
 
   return (
     <div className="flex-1 overflow-auto p-6 space-y-4">
-      <div className="border border-border rounded-md overflow-hidden bg-card">
+      <div className="border border-border rounded-md overflow-x-auto bg-card">
         {/* Header row */}
         <div
           className="grid bg-muted/30 text-xs uppercase tracking-wider text-muted-foreground border-b border-border"
-          style={{ gridTemplateColumns: gridTemplate }}
+          style={gridStyle}
         >
           <div className="px-3 py-2 border-r border-border">Proyecto / Tareas</div>
           {win.columns.map((c) => (
@@ -705,10 +714,7 @@ function TimelineBody({
         </div>
 
         {/* Logged hours row (compact strip under header) */}
-        <div
-          className="grid border-b border-border bg-muted/10"
-          style={{ gridTemplateColumns: gridTemplate }}
-        >
+        <div className="grid border-b border-border bg-muted/10" style={gridStyle}>
           <div className="px-3 py-2 border-r border-border text-[10px] uppercase tracking-wider text-muted-foreground">
             <div>Horas registradas</div>
             <div className="mt-1 flex items-center gap-2 normal-case tracking-normal text-[9px] font-normal text-muted-foreground/70">
@@ -820,7 +826,7 @@ function TimelineBody({
               <div
                 key={g.projectId || g.projectName}
                 className="grid border-b border-border last:border-b-0 relative"
-                style={{ gridTemplateColumns: gridTemplate }}
+                style={gridStyle}
               >
                 <div className="px-3 py-2 border-r border-border flex items-start gap-2">
                   <span

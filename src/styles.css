@@ -587,3 +587,16 @@ html {
   font-weight: 650;
   letter-spacing: -0.02em;
 }
+
+/* Cabeceras con barras de herramientas (fechas, vistas, exportar): en móvil bajan de línea en vez de salirse. */
+@media (max-width: 767px) {
+  [data-app-main] header.h-12 {
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.5rem;
+  }
+  [data-app-main] header .min-w-\[200px\] {
+    min-width: 0;
+  }
+}
