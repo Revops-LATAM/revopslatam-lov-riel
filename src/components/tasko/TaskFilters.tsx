@@ -55,19 +55,19 @@ export function TaskFilters({
     value.taskType !== "all";
   return (
     <div className="flex items-center gap-2 flex-wrap">
-      <div className="relative flex-1 min-w-[160px] max-w-xs">
+      <div className="relative flex-1 min-w-[160px] max-w-sm">
         <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
         <Input
           value={value.q}
           onChange={(e) => onChange({ ...value, q: e.target.value })}
           placeholder="Buscar..."
           aria-label="Buscar tareas"
-          className="h-7 pl-7 text-xs"
+          className="h-8 pl-7 text-xs"
         />
       </div>
 
       <Select value={value.priority} onValueChange={(v) => onChange({ ...value, priority: v })}>
-        <SelectTrigger className="h-7 w-auto gap-1.5 text-xs" aria-label="Filtrar por prioridad">
+        <SelectTrigger className="h-8 w-auto gap-1.5 text-xs" aria-label="Filtrar por prioridad">
           <SelectValue placeholder="Prioridad" />
         </SelectTrigger>
         <SelectContent>
@@ -83,7 +83,7 @@ export function TaskFilters({
       </Select>
 
       <Select value={value.assignee} onValueChange={(v) => onChange({ ...value, assignee: v })}>
-        <SelectTrigger className="h-7 w-auto gap-1.5 text-xs" aria-label="Filtrar por asignado">
+        <SelectTrigger className="h-8 w-auto gap-1.5 text-xs" aria-label="Filtrar por asignado">
           <SelectValue placeholder="Asignado" />
         </SelectTrigger>
         <SelectContent>
@@ -104,7 +104,7 @@ export function TaskFilters({
 
       {meta.types.length > 0 && (
         <Select value={value.taskType} onValueChange={(v) => onChange({ ...value, taskType: v })}>
-          <SelectTrigger className="h-7 w-auto gap-1.5 text-xs" aria-label="Filtrar por tipo">
+          <SelectTrigger className="h-8 w-auto gap-1.5 text-xs" aria-label="Filtrar por tipo">
             <SelectValue placeholder="Tipo" />
           </SelectTrigger>
           <SelectContent>

@@ -164,6 +164,10 @@ export const Route = createFileRoute("/_authenticated/w/$workspaceSlug/projects/
   component: ProjectDetail,
 });
 
+// Pestañas subrayadas (en vez de píldoras): más formales y con scroll horizontal en móvil.
+const TAB_CLS =
+  "text-[13px] gap-1.5 rounded-none border-b-2 border-transparent px-3 py-2.5 -mb-px hover:bg-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:hover:bg-transparent";
+
 function ProjectDetail() {
   const { projectId, workspaceSlug } = Route.useParams();
   const search = Route.useSearch();
@@ -506,10 +510,10 @@ function ProjectDetail() {
 
   return (
     <div className="flex flex-col h-full">
-      <header className="border-b border-border px-6 py-2 flex flex-col gap-1">
+      <header className="px-6 pt-3 pb-2 flex flex-col gap-1.5">
         <Breadcrumbs items={breadcrumbCrumbs} />
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
           <div
             className="w-2 h-2 rounded-full"
             style={{ background: project.color ?? "#8b5cf6" }}
@@ -519,7 +523,7 @@ function ProjectDetail() {
           {health && (health.estimateHours > 0 || health.loggedHours > 0) && (
             <EstimateChip estimate={health.estimateHours} logged={health.loggedHours} />
           )}
-          <span className="ml-auto text-xs text-muted-foreground" aria-live="polite">
+          <span className="ml-auto text-xs text-muted-foreground tabular-nums" aria-live="polite">
             {hasActiveFilters
               ? `${filteredTasks.length} de ${rootTasks.length}`
               : `${rootTasks.length} ${rootTasks.length === 1 ? "tarea" : "tareas"}`}
@@ -536,45 +540,48 @@ function ProjectDetail() {
         onValueChange={setActiveTab}
         className="flex-1 flex flex-col overflow-hidden"
       >
-        <div className="border-b border-border px-6 py-1.5 flex items-center gap-3 flex-wrap">
-          <TabsList className="h-8">
+        <div className="border-b border-border px-6 overflow-x-auto">
+          <TabsList className="h-auto p-0 gap-1 bg-transparent">
             {showTicketsPipeline && (
-              <TabsTrigger value="tickets-pipeline" className="text-xs gap-1.5">
+              <TabsTrigger value="tickets-pipeline" className={TAB_CLS}>
                 <Ticket className="w-3.5 h-3.5" /> Tickets
               </TabsTrigger>
             )}
             {showPhases && (
-              <TabsTrigger value="phases" className="text-xs gap-1.5">
+              <TabsTrigger value="phases" className={TAB_CLS}>
                 <Layers className="w-3.5 h-3.5" /> Fases
-                <span className="ml-1 text-[10px] tabular-nums text-muted-foreground">
+                <span className="ml-1 rounded-full bg-muted px-1.5 text-[10px] tabular-nums text-muted-foreground">
                   {phases.length}
                 </span>
               </TabsTrigger>
             )}
             {showSprints && (
-              <TabsTrigger value="sprints" className="text-xs gap-1.5">
+              <TabsTrigger value="sprints" className={TAB_CLS}>
                 <Rocket className="w-3.5 h-3.5" /> Sprints
-                <span className="ml-1 text-[10px] tabular-nums text-muted-foreground">
+                <span className="ml-1 rounded-full bg-muted px-1.5 text-[10px] tabular-nums text-muted-foreground">
                   {sprintsCount}
                 </span>
               </TabsTrigger>
             )}
-            <TabsTrigger value="table" className="text-xs gap-1.5">
+            <TabsTrigger value="table" className={TAB_CLS}>
               <Table2 className="w-3.5 h-3.5" /> Tabla
-              <span className="ml-1 text-[10px] tabular-nums text-muted-foreground">
+              <span className="ml-1 rounded-full bg-muted px-1.5 text-[10px] tabular-nums text-muted-foreground">
                 {tableCount}
               </span>
             </TabsTrigger>
             {contractType === "implementation" && (
-              <TabsTrigger value="gantt" className="text-xs gap-1.5">
+              <TabsTrigger value="gantt" className={TAB_CLS}>
                 <GitBranch className="w-3.5 h-3.5" /> Gantt
               </TabsTrigger>
             )}
-            <TabsTrigger value="tickets" className="text-xs gap-1.5">
+            <TabsTrigger value="tickets" className={TAB_CLS}>
               <Ticket className="w-3.5 h-3.5" /> Portal de tickets
             </TabsTrigger>
           </TabsList>
-          <div className="ml-auto">
+        </div>
+
+        {activeTab !== "tickets" && (
+          <div className="border-b border-border bg-muted/20 px-6 py-2">
             <TaskFilters
               value={filters}
               onChange={setFilters}
@@ -582,7 +589,7 @@ function ProjectDetail() {
               workspaceId={ws.id}
             />
           </div>
-        </div>
+        )}
 
         {showTicketsPipeline && isMounted("tickets-pipeline") && (
           <TabsContent

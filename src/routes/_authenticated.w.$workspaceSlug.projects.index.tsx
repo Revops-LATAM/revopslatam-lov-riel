@@ -147,8 +147,13 @@ function ProjectsList() {
 
   return (
     <div className="flex flex-col h-full">
-      <header className="h-12 border-b border-border px-6 flex items-center justify-between">
-        <h1 className="text-sm font-semibold">Proyectos</h1>
+      <header className="h-12 border-b border-border px-6 flex items-center justify-between gap-3">
+        <div>
+          <h1 className="text-sm font-semibold">Proyectos</h1>
+          <p className="text-xs text-muted-foreground">
+            {projects.length} {projects.length === 1 ? "proyecto" : "proyectos"} en este espacio
+          </p>
+        </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button size="sm">
